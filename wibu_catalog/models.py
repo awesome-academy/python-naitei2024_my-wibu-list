@@ -209,7 +209,10 @@ class Content(models.Model):
 
     def get_absolute_url(self):
         """Returns the url to access a detail record for this content."""
-        return reverse("content-detail", args=[str(self.id)])
+        if (self.category == 'anime'):
+            return reverse("anime_detail", args=[str(self.cid)])
+        elif (self.category == 'manga'):
+            return reverse("manga_detail", args=[str(self.cid)])
 
     def __str__(self):
         """String for representing the Model object."""

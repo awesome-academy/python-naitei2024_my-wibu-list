@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  {% load static i18n %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ manga_detail.name }} - {% trans "Details" %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles_list_detail.css' %}">
+</head>
+<body>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+  <header>
+    <h1>{{ manga_detail.name }} - {% trans "Details" %}</h1>
+  </header>
+  <main>
+    <img src="{{ manga_detail.picture.url }}" alt="{% trans 'manga_detail cover picture' %}">
+    <div class="score-container">
+      <strong>{% trans "Average Score:" %}</strong> {{ manga_detail.scoreAvg }}
+      <div class="score-info">
+        {% if score_ %}
+          <ul>
+            {% for score in score_ %}
+              <li>{% trans "Score 10: " %}{{ score.score10 }}</li>
+              <li>Score 9: {{ score.score9 }}</li>
+              <li>Score 8: {{ score.score8 }}</li>
+              <li>Score 7: {{ score.score7 }}</li>
+              <li>Score 6: {{ score.score6 }}</li>
+              <li>Score 5: {{ score.score5 }}</li>
+              <li>Score 4: {{ score.score4 }}</li>
+              <li>Score 3: {{ score.score3 }}</li>
+              <li>Score 2: {{ score.score2 }}</li>
+              <li>Score 1: {{ score.score1 }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+            <p>{% trans "No scores available." %}</p>
+        {% endif %}
+      </div>
+    </div>
+    <p><strong>{% trans "Genres:" %}</strong> {{ manga_detail.genres }}</p>
+    <p><strong>{% trans "Type:" %}</strong> {{ manga_detail.cType }}</p>
+    <p><strong>{% trans "Chapters:" %}</strong> {{ manga_detail.episodes }}</p>
+    <p><strong>{% trans "Published date:" %}</strong> {{ manga_detail.aired }}</p>
+    <p><strong>{% trans "Last Update:" %}</strong> {{ manga_detail.lastUpdate }}</p>
+    <p><strong>{% trans "Licensors:" %}</strong> {{ manga_detail.licensors }}</p>
+    <p><strong>{% trans "Studios:" %}</strong> {{ manga_detail.studios }}</p>
+    <p><strong>{% trans "Source:" %}</strong> {{ manga_detail.source }}</p>
+    <p><strong>{% trans "Rating:" %}</strong> {{ manga_detail.rating }}</p>
+    <p><strong>{% trans "Ranked:" %}</strong> {{ manga_detail.ranked }}</p>
+    <p><strong>{% trans "Favorites:" %}</strong> {{ manga_detail.favorites }}</p>
+    <p><strong>{% trans "Watching:" %}</strong> {{ manga_detail.watching }}</p>
+    <p><strong>{% trans "Completed:" %}</strong> {{ manga_detail.completed }}</p>
+    <p><strong>{% trans "On Hold:" %}</strong> {{ manga_detail.onHold }}</p>
+    <p><strong>{% trans "Dropped:" %}</strong> {{ manga_detail.dropped }}</p>
+    <p><strong>{% trans "Plan to Watch:" %}</strong> {{ manga_detail.planToWatch }}</p>
+
+    <a href="{{ referrer }}">{% trans "Back to List" %}</a>
+
+  </main>
+</body>
+</html>
+

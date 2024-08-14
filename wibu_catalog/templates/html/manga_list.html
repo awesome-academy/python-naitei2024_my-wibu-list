@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  {% load static i18n %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% trans "Manga List Page:" %} {{ page_number }}</title>
+  <link rel="stylesheet" href="{% static 'css/styles_list_detail.css' %}">
+</head>
+<body>
+  <h1>{% trans "Manga List" %}</h1>
+  {% if manga_list %}
+    <ul>
+      {% for content in manga_list %}
+      <li>
+        <a href="{{ content.get_absolute_url }}">{{ content.name }}</a>
+        ({{ content.cType }})
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{% trans "There are no manga in the list." %}</p>
+  {% endif %}
+</body>
+</html>
