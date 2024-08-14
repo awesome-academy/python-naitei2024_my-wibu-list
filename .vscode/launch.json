@@ -1,0 +1,14 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open registerform.html",
+            "file": "c:\\Users\\laptop\\Documents\\my_wibu_list\\python-naitei2024_my-wibu-list\\wibu_catalog\\templates\\html\\registerform.html"
+        }
+    ]
+}

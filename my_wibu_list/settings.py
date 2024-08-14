@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'wibu_catalog',
+    'wibu_catalog.apps.WibuCatalogConfig',
 ]
 
 MIDDLEWARE = [
@@ -152,3 +152,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR / 'wibu_catalog/static',
 ]
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mywibulist',  # Tên cơ sở dữ liệu bạn đã tạo
+        'USER': 'mywibu_user',  # Tên người dùng MySQL
+        'PASSWORD': 'mywibu_password',  # Mật khẩu của người dùng MySQL
+        'HOST': 'localhost',  # Hoặc IP của server MySQL
+        'PORT': '3306',  # Cổng mặc định của MySQL
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
+    }
+}
+AUTH_USER_MODEL = 'wibu_catalog.CustomUser'
+
