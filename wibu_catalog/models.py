@@ -1,4 +1,4 @@
-# wibu_catalog/models.py
+# wibu_catalog/models.py 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 import uuid
@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# import data from constant
+# import data from constant 
 from wibu_catalog.constants import Role_dict, Score_dict
 from wibu_catalog.constants import ITEMS_PER_PAGE, Content_category
 from wibu_catalog.constants import Manga_status, Anime_status

@@ -146,7 +146,20 @@ nav ul li:hover .submenu {
 .buttonlogin button:hover {
     background-color: #263238;
 }
+.buttonregister button {
+    background-color: #B71C1C;
+    font-weight: bold;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
+.buttonregister button:hover {
+    background-color: #263238;
+}
 @media screen and (max-width: 768px) {
     nav ul {
         display: none;
