@@ -1,0 +1,47 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+    {% load static i18n %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Register" %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>{% trans "Register" %}</h2>
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.birth_date.label_tag }}
+                {{ form.birth_date }}
+                {{ form.birth_date.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.password_confirm.label_tag }}
+                {{ form.password_confirm }}
+                {{ form.password_confirm.errors }}
+            </div>
+            <button type="submit" class="btn btn-primary">{% trans "Register" %}</button>
+        </form>
+    </div>
+</body>
+</html>
