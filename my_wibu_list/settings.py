@@ -86,11 +86,11 @@ WSGI_APPLICATION = 'my_wibu_list.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('USER'),
-        'PASSWORD': os.getenv('PASSWORD'),
-        'HOST': os.getenv('HOST'),
-        'PORT': os.getenv('PORT'),
+        'NAME': 'mywibulist',
+        'USER': 'root',  # Thay bằng username của MySQL
+        'PASSWORD': 'your_mysql_password',  # Thay bằng mật khẩu của MySQL
+        'HOST': 'localhost',  # Hoặc IP của server MySQL nếu không chạy cục bộ
+        'PORT': '3306',  # Cổng mặc định của MySQL
     }
 }
 
@@ -166,4 +166,14 @@ DATABASES = {
     }
 }
 AUTH_USER_MODEL = 'wibu_catalog.CustomUser'
+
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your_email@example.com'
+EMAIL_HOST_PASSWORD = 'your_password'
+
 

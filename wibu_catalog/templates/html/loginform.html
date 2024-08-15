@@ -1,4 +1,3 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
@@ -10,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Đăng nhập</h2>
+        <h2>Login </h2>
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
             {{ form.non_field_errors }}
@@ -24,7 +23,10 @@
                 {{ form.password }}
                 {{ form.password.errors }}
             </div>
-            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <div class="forgot-password">
+                <a href="{% url 'password_reset' %}" class="btn btn-secondary">Forgot Password?</a>
+            </div>
         </form>
     </div>
 </body>

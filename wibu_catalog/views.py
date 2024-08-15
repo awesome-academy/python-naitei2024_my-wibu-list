@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import PasswordResetView
 
 def homepage(request):
     return render(request, 'html/homepage.html')
@@ -29,12 +30,17 @@ def login(request):
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            user = authenticate(email=email, password=password)
             if user is not None:
                 auth_login(request, user)
                 return redirect('homepage')  # Thay thế 'home' bằng tên URL bạn muốn chuyển hướng đến
     else:
         form = LoginForm()
     return render(request, 'html/loginform.html', {'form': form})
+
+#Reset passwword
+
+class PasswordResetView(PasswordResetView):
+    template_name = 'registration/password_reset_form.html'
