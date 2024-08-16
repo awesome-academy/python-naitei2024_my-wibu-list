@@ -438,6 +438,9 @@ class Comments(models.Model):
         help_text=_("Number of likes."),
     )
 
+    class Meta:
+        verbose_name_plural = "Comments"
+
     def __str__(self):
         return f"{str(self.uid)},{str(self.cid)},{self.content}"
 

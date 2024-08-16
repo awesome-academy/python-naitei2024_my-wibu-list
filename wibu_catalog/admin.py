@@ -46,3 +46,24 @@ class OrderAdmin(admin.ModelAdmin):
         queryset = super().get_queryset(request)
         queryset = queryset.select_related("uid")  # Optimize queries by using select_related
         return queryset
+
+
+@admin.register(Comments)
+class CommentsAdmin(admin.ModelAdmin):
+    list_display = [
+        'uid',
+        'get_username',
+        'cid',
+        'content',
+        'dateOfCmt',
+        'likes'
+        ]
+    search_fields = ('content',)
+    list_filter = ('dateOfCmt', 'likes')
+    ordering = ('-dateOfCmt',)
+    readonly_fields = list_display
+
+    def get_username(self, obj):
+        return obj.uid.username
+
+    get_username.short_description = 'Username'
