@@ -6,7 +6,7 @@
   </h1>
   <nav>
       <ul>
-          <li><a href="#">{% trans "HOME" %}</a></li>
+          <li><a href="{% url 'homepage' %}">{% trans "HOME" %}</a></li>
           <li>
               <a href="#">{% trans "CATEGORIES" %} <i class="fa-solid fa-chevron-down"></i></a>
               <ul class="submenu">
@@ -65,7 +65,7 @@
                   <li><a href="#">{% trans "Summer 2021" %}</a></li>
               </ul>
           </li>
-          <li><a href="#">{% trans "LIBRARY" %}</a></li>
+          <li><a href="{% url 'favorite_list' %}">{% trans "FAVORITES" %}</a></li>
           <li><a href="{% url 'product' %}">{% trans "PRODUCTS" %}</a></li>
       </ul>
   </ul>

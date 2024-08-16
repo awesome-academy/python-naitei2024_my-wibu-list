@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginForm, CommentForm, EditCommentForm
 from django.contrib.auth.forms import UserCreationForm
-from django.views import generic
-from django.core.paginator import Paginator
+from django.views import generic, View
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.utils import timezone
 
 from django.db.models import Q
 # import data from constants.py
@@ -22,12 +23,8 @@ from .constants import TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMI
 from wibu_catalog.constants import ITEMS_PER_PAGE
 from django.contrib.auth.hashers import check_password
 
-from django.shortcuts import redirect, render
-from .models import Users
-from .forms import LoginForm
-from django.views import View
 
-
+# Function definition:
 def _get_user_from_session(request):
     user_id = request.session.get('user_id')
     if user_id:
@@ -66,9 +63,116 @@ def register(request):
     return render(request, 'html/registerform.html', {'form': form})
 
 
+def logout(request):
+    request.session.flush()
+    return redirect('homepage')
+
+
+# Comment section:
+def post_comment(request, content_id):
+    userr = _get_user_from_session(request)
+    cmtedContent = get_object_or_404(Content, cid=content_id)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.cid = cmtedContent
+            comment.uid = userr
+            comment.dateOfCmt = timezone.now().date()
+            comment.save()
+            # debuging corner
+            print("Comment saved:", comment)  # Debugging line
+            print(Comments.objects.filter(uid=userr, cid=cmtedContent))
+            return redirect('anime_detail', pk=content_id)
+    return redirect('anime_detail', pk=content_id)
+
+
+def edit_comment(request, comment_id):
+    userr = _get_user_from_session(request)
+    try:
+        comment = Comments.objects.get(id=comment_id, uid=userr.uid)
+    except Comments.DoesNotExist:
+        return redirect('anime_detail', pk=comment.cid.cid)
+
+    if request.method == 'POST':
+        form = EditCommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment.dateOfCmt = timezone.now().date()  # Update the date
+            comment.save()
+            return redirect('anime_detail', pk=comment.cid.cid)
+            # somehow comment.cid = Content.__str__
+    else:
+        form = EditCommentForm(instance=comment)
+
+    return redirect('anime_detail', pk=comment.cid.cid)
+
+
+def delete_comment(request, comment_id):
+    userr = _get_user_from_session(request)
+
+    try:
+        comment = Comments.objects.get(id=comment_id)
+        comment.delete()
+    except Comments.DoesNotExist:
+        return redirect('anime_detail', pk=comment.cid.cid)
+    return redirect('anime_detail', pk=comment.cid.cid)
+# end of Comment section
+
+
+def list_product(request):
+    userr = _get_user_from_session(request)
+    query = request.GET.get('q', '')  # Lấy từ khóa tìm kiếm từ URL, mặc định là chuỗi rỗng
+    sort_by = request.GET.get('sort_by', 'id')  # Giá trị mặc định là 'id'
+
+    # Tìm kiếm sản phẩm theo từ khóa
+    if query:
+        products_list = Product.objects.filter(name__icontains=query)
+    else:
+        products_list = Product.objects.all()
+
+    # Sắp xếp sản phẩm theo yêu cầu
+    if sort_by == 'highest_rate':
+        products_list = products_list.order_by('-ravg')
+    elif sort_by == 'low_to_high':
+        products_list = products_list.order_by('price')
+    elif sort_by == 'high_to_low':
+        products_list = products_list.order_by('-price')
+
+    paginator = Paginator(products_list, 12)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
+    return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by, 'query': query,"userr":userr})
+
+
+def search_content(request):
+    query = request.GET.get('q','').lower()
+    search_results = None
+    if query:
+        search_results = Content.objects.filter(name__icontains=query)
+    else:
+        search_results = Content.objects.all()  # Nếu không có từ khóa, hiển thị tất cả
+
+    return render(request, 'html/search_content_results.html', {'search_results': search_results,})
+
+
+def filter_by_genre(request, genre):
+    userr = _get_user_from_session(request)
+
+    # Lọc content theo thể loại và sắp xếp theo scoreAvg
+    filtered_content = Content.objects.filter(genres__icontains=genre).order_by('-scoreAvg')[:ITEMS_PER_PAGE]
+
+    context = {
+        'filtered_content': filtered_content,
+        'selected_genre': genre,
+        'userr': userr
+    }
+    return render(request, 'html/filtered_content.html', context)
+
+
 # Class definition:
 class AnimeListView(generic.ListView):
-    """Class for the view of the book list."""
+    """Class based view for anime list."""
     model = Content
     context_object_name = "anime_list"
     paginate_by = ITEMS_PER_PAGE_MORE
@@ -77,10 +181,17 @@ class AnimeListView(generic.ListView):
     def get_queryset(self):
         return Content.objects.filter(category="anime")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        userr = _get_user_from_session(self.request)
+        context["userr"] = userr
+        return context
+
 
 class AnimeDetailView(generic.DetailView):
+    """Class based view for anime detail."""
     model = Content
-    context_object_name = "anime_detail"
+    context_object_name = "anime_detail" # get overide by get_context_data
     template_name = "html/anime_detail.html"
 
     # passing Score to view
@@ -88,7 +199,18 @@ class AnimeDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         content_instance = self.get_object()
         score_data_ = content_instance.score_data.all()
-        context['score_'] = score_data_
+        # Auth user if user in User table
+        userr = _get_user_from_session(self.request)
+        # Get comments for this anime
+        comments_list = Comments.objects.filter(cid=content_instance.cid).order_by('-dateOfCmt')
+        # Pagination
+        paginator = Paginator(comments_list, 5)
+        page_number = self.request.GET.get('page')
+        comments = paginator.get_page(page_number)
+        # Sumarize context
+        context["score_"] = score_data_
+        context["userr"] = userr
+        context["comments"] = comments
         return context
 
 
@@ -115,54 +237,6 @@ class MangaDetailView(generic.DetailView):
         score_data_ = content_instance.score_data.all()
         context['score_'] = score_data_
         return context
-def list_product(request):
-    userr = _get_user_from_session(request)
-    query = request.GET.get('q', '')  # Lấy từ khóa tìm kiếm từ URL, mặc định là chuỗi rỗng
-    sort_by = request.GET.get('sort_by', 'id')  # Giá trị mặc định là 'id'
-
-    # Tìm kiếm sản phẩm theo từ khóa
-    if query:
-        products_list = Product.objects.filter(name__icontains=query)
-    else:
-        products_list = Product.objects.all()
-
-    # Sắp xếp sản phẩm theo yêu cầu
-    if sort_by == 'highest_rate':
-        products_list = products_list.order_by('-ravg')
-    elif sort_by == 'low_to_high':
-        products_list = products_list.order_by('price')
-    elif sort_by == 'high_to_low':
-        products_list = products_list.order_by('-price')
-
-    paginator = Paginator(products_list, 12)
-    page_number = request.GET.get('page')
-    products = paginator.get_page(page_number)
-
-    return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by, 'query': query,"userr":userr})
-
-def search_content(request):
-    query = request.GET.get('q','').lower()
-    search_results = None
-    if query:
-        search_results = Content.objects.filter(name__icontains=query)
-    else:
-        search_results = Content.objects.all()  # Nếu không có từ khóa, hiển thị tất cả
-
-    return render(request, 'html/search_content_results.html', {'search_results': search_results,})
-
-def filter_by_genre(request, genre):
-    userr = _get_user_from_session(request)
-
-    # Lọc content theo thể loại và sắp xếp theo scoreAvg
-    filtered_content = Content.objects.filter(genres__icontains=genre).order_by('-scoreAvg')[:ITEMS_PER_PAGE]
-
-    context = {
-        'filtered_content': filtered_content,
-        'selected_genre': genre,
-        'userr': userr
-    }
-    return render(request, 'html/filtered_content.html', context)
-
 
 
 class LoginView(View):
@@ -192,6 +266,25 @@ class LoginView(View):
         return render(request, 'html/loginform.html', {'form': form})
 
 
-def logout(request):
-    request.session.flush()
-    return redirect('homepage')
+class FavoriteListView(generic.ListView):
+    """Class based view for favorite anime list."""
+    model = Content
+    context_object_name = "favorites_list"
+    paginate_by = ITEMS_PER_PAGE_MORE
+    template_name = "html/favorites_list.html"
+
+    def get_queryset(self):
+        userr = _get_user_from_session(self.request)
+        if userr:
+            # favListInstance = FavoriteList.objects.get(uid=userr.uid)
+            # return FavoriteList.objects.filter(uid=userr).select_related('cid')
+            # return Content.objects.filter(category='manga').all()
+            favorite_content_cids = FavoriteList.objects.filter(uid=userr).values_list('cid', flat=True)
+            return Content.objects.filter(cid__in=favorite_content_cids)
+        return FavoriteList.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        userr = _get_user_from_session(self.request)
+        context["userr"] = userr
+        return context
