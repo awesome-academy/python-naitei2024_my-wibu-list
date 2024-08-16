@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegistrationForm
 from django.contrib.auth.forms import UserCreationForm
 from django.views import generic
+from django.core.paginator import Paginator
 
 # import data from constants.py
 from wibu_catalog.constants import Role_dict, Score_dict, ITEMS_PER_PAGE_MORE
@@ -20,11 +21,11 @@ from .constants import TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMI
 
 def homepage(request):
     top_watching_content = Content.objects.order_by('-watching')[:TOP_WATCHING_LIMIT]
-    
+
     latest_content = Content.objects.order_by('-lastUpdate')[:LATEST_CONTENT_LIMIT]
-    
+
     top_ranked_content = Content.objects.order_by('ranked')[:TOP_RANKED_LIMIT]
-    
+
     return render(request, 'html/homepage.html', {
         'top_watching_content': top_watching_content,
         'latest_content': latest_content,
@@ -94,6 +95,21 @@ class MangaDetailView(generic.DetailView):
         score_data_ = content_instance.score_data.all()
         context['score_'] = score_data_
         return context
-def product(request):
-    products = Product.objects.all()
-    return render(request, 'html/warehouse.html',{'products': products})
+def list_product(request):
+    sort_by = request.GET.get('sort_by', 'id')  # Giá trị mặc định là 'id'
+    if sort_by == 'highest_rate':
+        products_list = Product.objects.all().order_by('-ravg')
+    elif sort_by == 'low_to_high':
+        products_list = Product.objects.all().order_by('price')
+    elif sort_by == 'high_to_low':
+        products_list = Product.objects.all().order_by('-price')
+    else:
+        products_list = Product.objects.all()
+
+    paginator = Paginator(products_list, 12)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+
+    return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by})
+
+
