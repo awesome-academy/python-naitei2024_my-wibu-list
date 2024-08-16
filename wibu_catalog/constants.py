@@ -74,3 +74,8 @@ Score_dict = {
     9: "9",
     10: "10",
 }
+
+
+TOP_WATCHING_LIMIT = 5
+LATEST_CONTENT_LIMIT = 10
+TOP_RANKED_LIMIT = 10

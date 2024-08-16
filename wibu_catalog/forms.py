@@ -37,3 +37,5 @@ class RegistrationForm(forms.ModelForm):
 
         if password != password_confirm:
             raise ValidationError(_("Password and confirm password are not the same."))
+        
+

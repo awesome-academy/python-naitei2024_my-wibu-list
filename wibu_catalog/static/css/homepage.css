@@ -18,6 +18,14 @@ header {
     align-items: center;
     justify-content: center;
 }
+.mywibulist-title {
+    color: brown;
+}
+
+.mywibulist-link {
+    text-decoration: none;
+    color: brown;
+}
 
 header h1 {
     margin: 0;
