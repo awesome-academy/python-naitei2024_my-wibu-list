@@ -514,7 +514,7 @@ class Product(models.Model):
     )
 
     def __str__(self):
-        return self.pid
+        return str(self.pid)
 
 
 class Order(models.Model):
@@ -539,7 +539,7 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return f"Order {self.oid} by User {self.uid}"
+        return f"Order {str(self.oid)} by User {str(self.uid)}"
 
 
 class OrderItems(models.Model):
@@ -565,7 +565,12 @@ class OrderItems(models.Model):
     )
 
     def __str__(self):
-        return f"OrderItem {str(self.oid)} - Product {str(self.pid)}"
+        return f"{str(self.oid)} - {str(self.pid)}"
+
+    def product_name(self):
+        return self.pid.name  # Access the name from the related Product
+
+    product_name.short_description = 'Product Name'  # Label for the column in the admin
 
 
 class Feedback(models.Model):
