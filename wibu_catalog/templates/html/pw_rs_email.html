@@ -1,0 +1,5 @@
+{% block content %}
+    <p>Hello {{ user.username }},</p>
+    <p>To reset your password, please click the link below:</p>
+    <p><a href="{{ protocol }}://{{ domain }}{{ reset_link }}">Reset your password</a></p>
+{% endblock %}

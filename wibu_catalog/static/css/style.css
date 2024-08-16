@@ -13,7 +13,7 @@ body {
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.9); /* Nền trắng với độ trong suốt */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.9)); /* Gradient từ trắng sang xám nhạt với độ trong suốt */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -21,6 +21,7 @@ body {
     max-width: 450px;
     text-align: center;
 }
+
 
 h2 {
     margin-bottom: 20px;
@@ -68,4 +69,25 @@ h2 {
     margin-top: -15px;
     margin-bottom: 10px;
 }
+/* Existing CSS code */
 
+/* Style for Forgot Password button */
+.forgot-password {
+    margin-top: 15px;
+}
+
+.forgot-password .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.forgot-password .btn-secondary:hover {
+    background-color: #5a6268;
+}

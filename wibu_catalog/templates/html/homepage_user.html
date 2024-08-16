@@ -7,10 +7,10 @@
     <title>My Wibu List</title>
     <link rel="stylesheet" href="{% static 'css/homepage.css' %}"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmF/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-..." crossorigin="anonymous">
-        crossorigin="anonymous" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 
 <body>
@@ -25,8 +25,8 @@
                 <li>
                     <a href="#">DẠNG <i class="fa-solid fa-chevron-down"></i></a>
                     <ul class="submenu">
-                        <li><a href="{% url 'anime' %}">Anime</a></li>
-                        <li><a href="{% url 'manga' %}">Manga</a></li>
+                        <li><a href="#">Anime</a></li>
+                        <li><a href="#">Manga</a></li>
                     </ul>
                 </li>
                 <li>
@@ -89,12 +89,27 @@
                     <input type="text" name="" id="" placeholder="Tìm: tên tiếng Nhật, Anh, Việt">
                 </div>
                 <div class="buttonlogin">
-                    <button type="button" onclick="window.location.href='/login'">Đăng nhập</button>
-                    <button type="button" onclick="window.location.href='/register'">Đăng ký</button>
+                    <!-- Hiển thị khác nhau dựa trên trạng thái đăng nhập -->
+                    {% if user.is_authenticated %}
+                        <div class="user-dropdown">
+                            <img src="{% static 'images/user-icon.png' %}" alt="User Icon" class="user-icon">
+                            <div class="user-menu">
+                                <ul>
+                                    <li><a href="#">Trang cá nhân</a></li>
+                                    <li><a href="{% url 'logout' %}">Đăng xuất</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    {% else %}
+                        <button type="button" onclick="window.location.href='/login'">Đăng nhập</button>
+                        <button type="button" onclick="window.location.href='/register'">Đăng ký</button>
+                    {% endif %}
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- Nội dung của trang -->
     <section>
         <div class="center">
             <div class="notification">
@@ -109,35 +124,13 @@
                 <div class="carousel">
                     <button class="carousel-button prev">&#10094;</button>
                     <div class="carousel-wrapper">
-                        <div class="carousel-slide">
-                            <img src="{% static 'images/movie1.jpg' %}" alt="Movie 1">
-                            <p>Khuyển dạ xoa</p>
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="{% static 'images/movie3.jpg' %}" alt="Movie 2">
-                            <p>Thanh gươm diệt quỷ</p>
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="{% static 'images/shin.jpg' %}" alt="Movie 3">
-                            <p>Lớp học giám sát</p>
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="{% static 'images/shin.jpg' %}" alt="Movie 4">
-                            <p>Doraemon</p>
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="{% static 'images/movie3.jpg' %}" alt="Movie 5">
-                            <p>Dragon Ball</p>
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="{% static 'images/movie3.jpg' %}" alt="Movie 6">
-                            <p>Thám tử lừng danh conan</p>
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="{% static 'images/movie3.jpg' %}" alt="Movie 7">
-                            <p>Shin- Cậu bé bút chì</p>
-                        </div>
-                    </div>
+                        {% for content in top_watching_content %}
+                            <div class="carousel-slide">
+                                <img src="{% static content.picture %}" alt="{{ content.name }}">
+                                <p>{{ content.name }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>                                         
                     <button class="carousel-button next">&#10095;</button>
                 </div>
             </div>
@@ -152,7 +145,7 @@
                             </div>
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
-                                    <img src="% static 'images/movie2.jpg' %" class="d-block w-100" alt="...">
+                                    <img src="{% static 'images/shin.jpg' %}" class="d-block w-100" alt="...">
                                     <div class="carousel-caption d-none d-md-block">
                                         <h1>Wistoria: Trường Và Kiếm</h1>
                                         <p>Will Serfort thề ước với bạn thuở nhỏ là sẽ trở thành Magia Vander, là danh hiệu mạnh nhất đứng trên đỉnh của...</p>
@@ -199,56 +192,18 @@
                                     <button class="btn gray">HIT Trung Quốc</button>
                                 </div>
                                 <div class="row">
-                                    <!-- Phim 1 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="WeChat Của Ta Thông Thiên">
-                                            <div class="card-body">
-                                                <h6 class="card-title">WeChat Của Ta Thông Thiên</h6>
-                                                <p class="card-text">Lượt xem: 4,477</p>
+                                    {% for content in latest_content %}
+                                        <!-- Phim {{ forloop.counter }} -->
+                                        <div class="col-6 col-md-4 col-lg-3 mb-4">
+                                            <div class="card bg-dark text-white">
+                                                <img src="{% static content.picture %}" class="card-img-top" alt="{{ content.name }}">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">{{ content.name }}</h6>
+                                                    <p class="card-text">Lượt xem: {{ content.watching }}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <!-- Phim 2 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="Võ Thần Chúa Tể">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Võ Thần Chúa Tể</h6>
-                                                <p class="card-text">Lượt xem: 9,068,951</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Phim 3 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="Võ Thần Chúa Tể">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Võ Thần Chúa Tể</h6>
-                                                <p class="card-text">Lượt xem: 9,068,951</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Phim 4 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="Võ Thần Chúa Tể">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Võ Thần Chúa Tể</h6>
-                                                <p class="card-text">Lượt xem: 9,068,951</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Phim 5 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="Võ Thần Chúa Tể">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Võ Thần Chúa Tể</h6>
-                                                <p class="card-text">Lượt xem: 9,068,951</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {% endfor %}
                                     <!-- Các phần phim khác tiếp tục tương tự -->
                                 </div>
                                 <a href="/anime-bo/" class="viewall">Xem thêm.. <i class="ion-ios-arrow-right"></i></a>
@@ -258,7 +213,7 @@
 
                         <div class="row mt-4">
                             <div class="col-12">
-                                <h5 class="text-white">Mới Cập Nhật</h5>
+                                <button class="btn btn-danger fw-bold">ĐỀ CỬ ></button>
                                 <div class="d-flex justify-content-between mb-2">
                                     <button class="btn btn-danger">Mới Cập Nhật</button>
                                     <button class="btn btn-outline-light">Tất cả</button>
@@ -268,57 +223,17 @@
                                     <button class="btn btn-outline-light">HIT Trung Quốc</button>
                                 </div>
                                 <div class="row">
-                                    <!-- Phim 1 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="WeChat Của Ta Thông Thiên">
-                                            <div class="card-body">
-                                                <h6 class="card-title">WeChat Của Ta Thông Thiên</h6>
-                                                <p class="card-text">Lượt xem: 4,477</p>
+                                    {% for content in top_ranked_content %}
+                                        <div class="col-6 col-md-4 col-lg-3 mb-4">
+                                            <div class="card bg-dark text-white">
+                                                <img src="{% static content.picture %}" class="card-img-top" alt="{{ content.name }}">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">{{ content.name }}</h6>
+                                                    <p class="card-text">Lượt xem: {{ content.watching }}</p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <!-- Phim 2 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="Võ Thần Chúa Tể">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Võ Thần Chúa Tể</h6>
-                                                <p class="card-text">Lượt xem: 9,068,951</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Phim 3 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="Võ Thần Chúa Tể">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Võ Thần Chúa Tể</h6>
-                                                <p class="card-text">Lượt xem: 9,068,951</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Phim 4 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="Võ Thần Chúa Tể">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Võ Thần Chúa Tể</h6>
-                                                <p class="card-text">Lượt xem: 9,068,951</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Phim 5 -->
-                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
-                                        <div class="card bg-dark text-white">
-                                            <img src="{% static 'images/one_piece.jpg' %}" class="card-img-top" alt="Võ Thần Chúa Tể">
-                                            <div class="card-body">
-                                                <h6 class="card-title">Võ Thần Chúa Tể</h6>
-                                                <p class="card-text">Lượt xem: 9,068,951</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Các phần phim khác tiếp tục tương tự -->
+                                    {% endfor %}
                                 </div>
                                 <div class="text-center">
                                     <a href="#" class="btn btn-outline-light">Xem Thêm</a>
@@ -438,7 +353,6 @@
             </div>
         </div>
     </section>
-
-    <script src="/js/homepage.js"></script>
+  
 </body>
 </html>
