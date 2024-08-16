@@ -5,6 +5,7 @@ SPECIAL THANKS TO:
     https://api.mangadex.org/docs/2-limitations/
 """
 ITEMS_PER_PAGE = 10
+ITEMS_PER_PAGE_MORE = 20
 
 FIELD_MAX_LENGTH_S = 1
 FIELD_MAX_LENGTH_M = 20
