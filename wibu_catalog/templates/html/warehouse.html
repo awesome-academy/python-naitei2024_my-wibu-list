@@ -84,10 +84,12 @@
             </ul>
         </ul>
         <div class="timkiem">
-            <div class="searchbox">
-                <a href=""><i class="fa-solid fa-magnifying-glass"></i></a>
-                <input type="text" name="" id="" placeholder="Tìm: tên tiếng Nhật, Anh, Việt">
-            </div>
+          <div class="searchbox">
+            <form method="GET" action="{% url 'product' %}">
+                <input type="text" name="q" placeholder="Find something" value="{{ query }}">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+          </div>
             <div class="buttonlogin">
                 <button type="submit">{% trans "Login" %}</button>
                 <button type="button" onclick="window.location.href='/register'">{% trans "Register" %}</button>
