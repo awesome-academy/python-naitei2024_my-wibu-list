@@ -40,7 +40,7 @@ class RegistrationForm(forms.ModelForm):
             raise ValidationError(_("Password and confirm password are not the same."))
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(
+    email = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
         label='Email'
     )

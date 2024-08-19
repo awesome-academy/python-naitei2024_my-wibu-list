@@ -1,64 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
   {% load static %}
   {% load static i18n %}
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ anime_detail.name }} - {% trans "Details" %}</title>
-  <link rel="stylesheet" href="{% static 'css/styles_list_detail.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime List</title>
+    <link rel="stylesheet" href="{% static 'css/anime_detail.css' %}">
+    <script src="{% static 'js/anime_detail.js' %}" defer></script>
 </head>
 <body>
-  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-  <header>
-    <h1>{{ anime_detail.name }} - {% trans "Details" %}</h1>
-  </header>
-  <main>
-    <img src="" alt="{% trans 'anime_detail cover picture' %}">
-    <div class="score-container">
-      <strong>{% trans "Average Score:" %}</strong> {{ anime_detail.scoreAvg }}
-      <div class="score-info">
-        {% if score_ %}
-          <ul>
-            {% for score in score_ %}
-              <li>Score 10: {{ score.score10 }}</li>
-              <li>Score 9: {{ score.score9 }}</li>
-              <li>Score 8: {{ score.score8 }}</li>
-              <li>Score 7: {{ score.score7 }}</li>
-              <li>Score 6: {{ score.score6 }}</li>
-              <li>Score 5: {{ score.score5 }}</li>
-              <li>Score 4: {{ score.score4 }}</li>
-              <li>Score 3: {{ score.score3 }}</li>
-              <li>Score 2: {{ score.score2 }}</li>
-              <li>Score 1: {{ score.score1 }}</li>
-            {% endfor %}
-          </ul>
-        {% else %}
-            <p>{% trans "No scores available." %}</p>
-        {% endif %}
-      </div>
+    <header>
+        <h1 style="color: brown;">
+            <a href="#" style="text-decoration: none; color: brown;">MYWIBULIST</a>
+        </h1>
+        <nav>
+            <ul>
+                <li><a href="#">TRANG CHỦ</a></li>
+                <li>
+                    <a href="#">DẠNG <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="submenu">
+                        <li><a href="{% url 'anime' %}">Anime</a></li>
+                        <li><a href="{% url 'manga' %}">Manga</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">TOP<i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="submenu">
+                        <li><a href="#">Theo Ngày</a></li>
+                        <li><a href="#">Theo Tháng</a></li>
+                        <li><a href="#">Theo Năm</a></li>
+                        <li><a href="#">Yêu Thích</a></li>
+                        <li><a href="#">Nổi Bật</a></li>
+                        <li><a href="#">Theo Mùa</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">THỂ LOẠI <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="submenu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Comedy</a></li>
+                        <li><a href="#">Drama</a></li>
+                        <li><a href="#">Game</a></li>
+                        <li><a href="#">Horror</a></li>
+                        <li><a href="#">Adventure</a></li>
+                        <li><a href="#">Dementia</a></li>
+                        <li><a href="#">Ecchi</a></li>
+                        <li><a href="#">Harem</a></li>
+                        <li><a href="#">Josei</a></li>
+                        <li><a href="#">Cartoon</a></li>
+                        <li><a href="#">Demons</a></li>
+                        <li><a href="#">Fantasy</a></li>
+                        <li><a href="#">Historical</a></li>
+                        <li><a href="#">Kids</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">SEASON <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="submenu">
+                        <li><a href="#">Mùa đông 2024</a></li>
+                        <li><a href="#">Mùa Thu 2024</a></li>
+                        <li><a href="#">Mùa hạ 2024</a></li>
+                        <li><a href="#">Mùa xuân 2024</a></li>
+                        <li><a href="#">Mùa đông 2023</a></li>
+                        <li><a href="#">Mùa Thu 2023</a></li>
+                        <li><a href="#">Mùa hạ 2023</a></li>
+                        <li><a href="#">Mùa xuân 2023</a></li>
+                        <li><a href="#">Mùa đông 2022</a></li>
+                        <li><a href="#">Mùa Thu 2022</a></li>
+                        <li><a href="#">Mùa hạ 2022</a></li>
+                        <li><a href="#">Mùa xuân 2022</a></li>
+                        <li><a href="#">Mùa đông 2021</a></li>
+                        <li><a href="#">Mùa Thu 2021</a></li>
+                        <li><a href="#">Mùa hạ 2021</a></li>                     
+                    </ul>
+                </li>
+                <li><a href="#">THƯ VIỆN</a></li>
+                <li><a href="#">LỊCH CHIẾU</a></li>
+            </ul>
+            <div class="timkiem">
+                <div class="searchbox">
+                    <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                    <input type="text" name="" id="" placeholder="Tìm: tên tiếng Nhật, Anh, Việt">
+                </div>
+                <div class="buttonlogin">
+                    <button type="button" onclick="window.location.href='/login'">Đăng nhập</button>
+                    <button type="button" onclick="window.location.href='/register'">Đăng ký</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <h1>{{ anime_detail.name }}</h1>
+    <div class="anime-detail">
+        <img src="{{ anime_detail.picture.url }}" alt="{{ anime_detail.name }}">
+        <p>Average Score: {{ anime_detail.scoreAvg }}</p>
+        <p>Genres: {{ anime_detail.genres }}</p>
+        <p>Type: {{ anime_detail.cType }}</p>
+        <p>Episodes: {{ anime_detail.episodes }}</p>
+        <p>Aired: {{ anime_detail.aired }}</p>
+        <p>Last Update: {{ anime_detail.lastUpdate }}</p>
+        <p>Producers: {{ anime_detail.producers }}</p>
+        <p>Licensors: {{ anime_detail.licensors }}</p>
+        <p>Studios: {{ anime_detail.studios }}</p>
+        <p>Source: {{ anime_detail.source }}</p>
+        <p>Duration: {{ anime_detail.duration }}</p>
+        <p>Rating: {{ anime_detail.rating }}</p>
+        <p>Ranked: {{ anime_detail.ranked }}</p>
+        <p>Favorites: {{ anime_detail.favorites }}</p>
+        <p>Watching: {{ anime_detail.watching }}</p>
+        <p>Completed: {{ anime_detail.completed }}</p>
+        <p>On Hold: {{ anime_detail.onHold }}</p>
+        <p>Dropped: {{ anime_detail.dropped }}</p>
+        <p>Plan to Watch: {{ anime_detail.planToWatch }}</p>
+        <a href="{% url 'anime_list' %}">Back to list</a>
     </div>
-    <p><strong>{% trans "Genres:" %}</strong> {{ anime_detail.genres }}</p>
-    <p><strong>{% trans "Type:" %}</strong> {{ anime_detail.cType }}</p>
-    <p><strong>{% trans "Episodes:" %}</strong> {{ anime_detail.episodes }}</p>
-    <p><strong>{% trans "Aired:" %}</strong> {{ anime_detail.aired }}</p>
-    <p><strong>{% trans "Last Update:" %}</strong> {{ anime_detail.lastUpdate }}</p>
-    <p><strong>{% trans "Producers:" %}</strong> {{ anime_detail.producers }}</p>
-    <p><strong>{% trans "Licensors:" %}</strong> {{ anime_detail.licensors }}</p>
-    <p><strong>{% trans "Studios:" %}</strong> {{ anime_detail.studios }}</p>
-    <p><strong>{% trans "Source:" %}</strong> {{ anime_detail.source }}</p>
-    <p><strong>{% trans "Duration:" %}</strong> {{ anime_detail.duration }}</p>
-    <p><strong>{% trans "Rating:" %}</strong> {{ anime_detail.rating }}</p>
-    <p><strong>{% trans "Ranked:" %}</strong> {{ anime_detail.ranked }}</p>
-    <p><strong>{% trans "Favorites:" %}</strong> {{ anime_detail.favorites }}</p>
-    <p><strong>{% trans "Watching:" %}</strong> {{ anime_detail.watching }}</p>
-    <p><strong>{% trans "Completed:" %}</strong> {{ anime_detail.completed }}</p>
-    <p><strong>{% trans "On Hold:" %}</strong> {{ anime_detail.onHold }}</p>
-    <p><strong>{% trans "Dropped:" %}</strong> {{ anime_detail.dropped }}</p>
-    <p><strong>{% trans "Plan to Watch:" %}</strong> {{ anime_detail.planToWatch }}</p>
-
-    <a href="{{ referrer }}">{% trans "Back to List" %}</a>
-  </main>
 </body>
 </html>
+    <!-- Content of anime_list.html or anime_detail.html -->
 

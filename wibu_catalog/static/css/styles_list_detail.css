@@ -1,28 +1,217 @@
-/*For Anime and Manga detail*/
-
-.score-info {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    padding: 10px;
-    z-index: 10;
-    width: auto;
-    height: auto;
-    white-space: nowrap;  /* Prevents line breaks */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.score-container:hover .score-info {
-    display: block;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
 }
 
-.score-container {
+/* header */
+header {
+    background-color: #0F1416;
+    padding: 5px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+nav {
+    display: flex;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin-right: 20px;
+    margin-top: 15px;
+}
+
+nav ul li {
     position: relative;
-    display: inline-block;
+    margin-left: 20px;
 }
 
-.sidebar-nav {
-  margin-top: 20px;
-  padding: 0;
-  list-style: none;
+nav ul li a {
+    display: block;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-bottom: 3px solid transparent;
+    transition: background-color 0.3s ease;
+}
+
+nav ul li a i {
+    font-size: 13px;
+    font-weight: bold;
+    color: #B5E745;
+}
+
+nav ul li a:hover {
+    border-bottom: 3px solid #B5E745;
+}
+
+.submenu {
+    display: none; 
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    min-width: 600px; 
+    z-index: 1000;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-top: 5px solid #B5E745; 
+}
+
+.submenu li {
+    flex: 1 1 calc(33.33% - 15px);
+    margin: 5px 0;
+    box-sizing: border-box;
+}
+
+.submenu li a {
+    padding: 10px 15px;
+    color: black;
+    background-color: white;
+    display: block;
+    text-align: left;
+    transition: background-color 0.3s ease;
+    border-radius: 4px;
+}
+
+.submenu li a:hover {
+    color: #5f5f5f;
+}
+
+nav ul li:hover .submenu {
+    display: flex;
+}
+
+.timkiem {
+    display: flex;
+    align-items: center;
+}
+
+.searchbox {
+    display: flex;
+    align-items: center;
+    background-color: #0A0E0F;
+    border-radius: 25px;
+    padding: 5px 10px;
+    border: 2px solid #333;
+    margin-right: 20px;
+}
+
+.searchbox input {
+    border: none;
+    outline: none;
+    padding: 5px;
+    font-size: 16px;
+    flex: 1;
+    margin-left: 10px;
+    border-radius: 25px;
+    background-color: #0A0E0F;
+    color: #808283;
+}
+
+.searchbox i {
+    color: #808283;
+    font-size: 18px;
+}
+
+.buttonlogin button {
+    background-color: #B71C1C;
+    font-weight: bold;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buttonlogin button:hover {
+    background-color: #263238;
+}
+.buttonregister button {
+    background-color: #B71C1C;
+    font-weight: bold;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buttonregister button:hover {
+    background-color: #263238;
+}
+/* Styles for anime_list */
+body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+.anime-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.anime-item {
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    cursor: pointer;
+}
+
+.anime-item img {
+    width: 100%;
+    height: auto;
+}
+
+.anime-item h3 {
+    margin: 0.5rem;
+}
+
+.pagination {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.pagination a, .pagination span {
+    margin: 0 0.5rem;
+}
+
+/* Styles for anime_details */
+.anime-detail {
+    text-align: center;
+}
+
+.anime-detail img {
+    width: 300px;
+    height: auto;
+}
+
+.anime-detail p {
+    margin: 0.5rem 0;
 }

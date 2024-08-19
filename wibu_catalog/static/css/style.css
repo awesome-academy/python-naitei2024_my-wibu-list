@@ -8,7 +8,7 @@ body {
     margin: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;    
     height: 100vh;
 }
 
@@ -26,6 +26,11 @@ body {
 h2 {
     margin-bottom: 20px;
     color: #333;
+}
+.error-message {
+    color: red !important;
+    font-weight: bold;
+
 }
 
 .form-group {

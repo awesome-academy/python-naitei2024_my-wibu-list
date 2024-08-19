@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login as auth_login
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.hashers import check_password
+from .models import Users
 
 
 # import data from constants.py
@@ -88,21 +90,30 @@ class MangaDetailView(generic.DetailView):
         context['score_'] = score_data_
         return context
     
-
+def authenticate_user(email, password):
+    try:
+        user = Users.objects.get(email=email)
+        if password==user.password:
+            return user
+        else:
+            return None
+    except Users.DoesNotExist:
+        return None
 
 def login(request):
+    check = 1
     if request.method == 'POST':
-        form = LoginForm(request, data=request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            user = authenticate(email=email, password=password)
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            user = authenticate_user(email=email, password=password)
             if user is not None:
-                auth_login(request, user)
-                return redirect('homepage')  # Thay thế 'home' bằng tên URL bạn muốn chuyển hướng đến
+                return render(request, 'html/homepage_user.html',{'user': user})
+            else:
+                form = LoginForm()
+                check = 0
     else:
         form = LoginForm()
-    return render(request, 'html/loginform.html', {'form': form})
+    return render(request, 'html/loginform.html', {'form': form, 'check': check})
 
 #Reset passwword
 
