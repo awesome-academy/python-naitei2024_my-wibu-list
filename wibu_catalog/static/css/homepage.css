@@ -70,18 +70,18 @@ nav ul li a:hover {
 }
 
 .submenu {
-    display: none; 
+    display: none;
     position: absolute;
-    top: 100%; 
+    top: 100%;
     left: 0;
     background-color: white;
     padding: 0;
     margin: 0;
-    min-width: 600px; 
+    min-width: 600px;
     z-index: 1000;
     flex-wrap: wrap;
     gap: 10px;
-    border-top: 5px solid #B5E745; 
+    border-top: 5px solid #B5E745;
 }
 
 .submenu li {
@@ -174,7 +174,7 @@ nav ul li:hover .submenu {
     nav ul {
         display: none;
     }
-    
+
     .timkiem {
         flex-direction: column;
     }
@@ -188,16 +188,16 @@ nav ul li:hover .submenu {
 /* section */
 /* notification */
 section {
-    background-color: #263238; 
-    padding: 20px 0; 
+    background-color: #263238;
+    padding: 20px 0;
 }
 
 section .center {
-    background-color: black; 
+    background-color: black;
     padding: 5px 10px;
     margin: 0 auto;
-    max-width: 1300px; 
-    color: #ecf0f1; 
+    max-width: 1300px;
+    color: #ecf0f1;
 }
 
 .notification {
@@ -261,11 +261,11 @@ section .center {
 .carousel-wrapper {
     display: flex;
     transition: transform 0.5s ease;
-    width: calc(100% * 2); 
+    width: calc(100% * 2);
 }
 
 .carousel-slide {
-    flex: 1 0 calc(100% / 6); 
+    flex: 1 0 calc(100% / 6);
     box-sizing: border-box;
     padding: 10px;
     text-align: center;
@@ -356,8 +356,8 @@ section .center {
 }
 
 .btn-outline-light {
-    color: #fff;
-    border-color: #fff;
+  color: #fff;
+  border-color: #fff;
 }
 
 .btn-outline-light:hover {
@@ -428,12 +428,12 @@ section .center {
 .like-box-header {
     font-weight: bold;
     font-size: 14px;
-    color: #000; 
+    color: #000;
 }
 
 .like-box-content {
     font-size: 12px;
-    color: #000; 
+    color: #000;
 }
 
 .like-box-content .btn {
@@ -445,7 +445,7 @@ section .center {
     display: flex;
     align-items: flex-start;
     margin-bottom: 10px;
-    color: #000; 
+    color: #000;
 }
 
 .fb-comments .comment img.avatar {
@@ -461,12 +461,12 @@ section .center {
 
 .fb-comments .comment p {
     margin: 0;
-    color: #000; 
+    color: #000;
 }
 
 .fb-comments .comment small {
     font-size: 11px;
-    color: #666; 
+    color: #666;
 }
 
 .fb-comments .reply {
@@ -491,7 +491,7 @@ section .center {
 }
 
 .anime-updates {
-    background-color: #1c1c1c; 
+    background-color: #1c1c1c;
     border: 1px solid #333;
     border-radius: 5px;
     color: #fff;
@@ -516,7 +516,7 @@ section .center {
 .list-group-item {
     background-color: #1c1c1c;
     border: none;
-    color: #999; 
+    color: #999;
     padding: 10px 15px;
     font-size: 14px;
     display: flex;
@@ -524,11 +524,11 @@ section .center {
     align-items: center;
     text-decoration: none;
     position: relative;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .list-group-item:hover {
-    color: #fff; 
+    color: #fff;
     background-color: #1c1c1c;
 }
 
@@ -546,18 +546,18 @@ section .center {
 }
 
 .list-group-item:hover::before {
-    background-color: #e53935; 
+    background-color: #e53935;
 }
 
 .anime-title {
-    color: #ff4081; 
+    color: #ff4081;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .episode {
-    color: #999; 
+    color: #999;
     font-weight: bold;
     flex-shrink: 0;
 }
