@@ -203,7 +203,7 @@ class Content(models.Model):
     )
 
     picture = CloudinaryField(
-        default=None,
+        default='movie3.jpg',
         blank=True,
         null=True,
         help_text=_("Content cover picture."),

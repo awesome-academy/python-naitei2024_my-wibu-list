@@ -15,4 +15,6 @@ urlpatterns = [
     path('manga/<int:pk>', views.MangaDetailView.as_view(), name='manga_detail'),
     #url mapping for warehouse views
     path('product/',views.list_product,name='product'),
+    path('search_content/', views.search_content, name='search_content'),
+    path('filter_by_genre/<str:genre>/', views.filter_by_genre, name='filter_by_genre'),
 ]
