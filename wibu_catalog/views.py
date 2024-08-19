@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.views import generic
 from django.core.paginator import Paginator
 
+from django.db.models import Q
 # import data from constants.py
 from wibu_catalog.constants import Role_dict, Score_dict, ITEMS_PER_PAGE_MORE
 from wibu_catalog.constants import ITEMS_PER_PAGE, Content_category
@@ -18,6 +19,7 @@ from wibu_catalog.models import ScoreList, Comments, Notifications
 from wibu_catalog.models import Product, Order, OrderItems, Feedback
 
 from .constants import TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMIT
+from wibu_catalog.constants import ITEMS_PER_PAGE
 
 def homepage(request):
     top_watching_content = Content.objects.order_by('-watching')[:TOP_WATCHING_LIMIT]
@@ -112,4 +114,23 @@ def list_product(request):
 
     return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by})
 
+def search_content(request):
+    query = request.GET.get('q','').lower() 
+    search_results = None
+    if query:
+        search_results = Content.objects.filter(name__icontains=query) 
+    else:
+        search_results = Content.objects.all()  # Nếu không có từ khóa, hiển thị tất cả
+
+    return render(request, 'html/search_content_results.html', {'search_results': search_results,})
+
+def filter_by_genre(request, genre):
+    # Lọc content theo thể loại và sắp xếp theo scoreAvg
+    filtered_content = Content.objects.filter(genres__icontains=genre).order_by('-scoreAvg')[:ITEMS_PER_PAGE]
+
+    context = {
+        'filtered_content': filtered_content,
+        'selected_genre': genre  # Truyền thể loại đã chọn để hiển thị trên trang kết quả
+    }
+    return render(request, 'html/filtered_content.html', context)
 

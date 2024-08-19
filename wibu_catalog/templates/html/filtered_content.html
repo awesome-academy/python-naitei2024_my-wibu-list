@@ -1,0 +1,41 @@
+{% extends 'html/homepage.html' %}
+{% load static %}
+{% load static i18n %}
+
+{% block notification %}
+{% endblock notification %} 
+
+{% block top_carousel %}
+{% endblock top_carousel %}
+
+{% block anime_carousel %}
+{% endblock anime_carousel %}
+
+{% block title %}Filtered Content - {{ selected_genre }}{% endblock %}
+
+{% block latest_updates %}
+<div class="row mt-4">
+    <div class="col-12">
+      <h2>{% trans "Filtered Content: " %} {{ selected_genre }}</h2>
+    </div>
+    <div class="row">
+      {% for content in filtered_content %}
+          <div class="col-6 col-md-4 col-lg-3 mb-4">
+              <div class="card bg-dark text-white">
+                  {% if content.picture %}
+                  <img src="{{ content.picture.url }}" class="card-img-top" alt="{{ content.name }}">
+                  {% else %}
+                  <img src="{% static 'images/movie3.jpg' %}" class="card-img-top" alt="Default Image">
+                  {% endif %}
+                  <div class="card-body">
+                      <h6 class="card-title">{{ content.name }}</h6>
+                      <p class="card-text">{% trans "Score: " %} {{ content.scoreAvg }}</p>
+                  </div>
+              </div>
+          </div>
+      {% endfor %}
+  </div>
+</div>
+{% endblock latest_updates %}
+
+
