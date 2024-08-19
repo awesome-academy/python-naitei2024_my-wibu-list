@@ -13,6 +13,7 @@ from wibu_catalog.constants import Manga_status, Anime_status
 from wibu_catalog.constants import Manga_rating, Anime_rating
 from wibu_catalog.constants import FIELD_MAX_LENGTH_S, FIELD_MAX_LENGTH_M
 from wibu_catalog.constants import FIELD_MAX_LENGTH_L, FIELD_MAX_LENGTH_XL
+from cloudinary.models import CloudinaryField
 
 # turn coca into tuple to use with choices
 Content_category_tuple = [
@@ -200,7 +201,8 @@ class Content(models.Model):
             else _("Plan to Read.")
         ),
     )
-    picture = models.ImageField(
+
+    picture = CloudinaryField(
         default=None,
         blank=True,
         null=True,
@@ -213,7 +215,6 @@ class Content(models.Model):
             return reverse("anime_detail", args=[str(self.cid)])
         elif (self.category == 'manga'):
             return reverse("manga_detail", args=[str(self.cid)])
-
     def __str__(self):
         """String for representing the Model object."""
         return self.name
@@ -307,7 +308,7 @@ class Users(models.Model):
         null=True,
         help_text=_("Date of birth"),
     )
-    profilePicture = models.ImageField(
+    profilePicture = CloudinaryField(
         blank=True,
         null=True,
         help_text=_("Profile picture"),
@@ -505,7 +506,7 @@ class Product(models.Model):
         null=True,
         help_text=_("Product's average rating."),
     )
-    picture = models.ImageField(
+    picture = CloudinaryField(
         blank=True,
         null=True,
         help_text=_("Product's picture."),

@@ -16,8 +16,20 @@ from wibu_catalog.models import Content, Score, Users, FavoriteList
 from wibu_catalog.models import ScoreList, Comments, Notifications
 from wibu_catalog.models import Product, Order, OrderItems, Feedback
 
+from .constants import TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMIT
+
 def homepage(request):
-    return render(request, 'html/homepage.html')
+    top_watching_content = Content.objects.order_by('-watching')[:TOP_WATCHING_LIMIT]
+    
+    latest_content = Content.objects.order_by('-lastUpdate')[:LATEST_CONTENT_LIMIT]
+    
+    top_ranked_content = Content.objects.order_by('ranked')[:TOP_RANKED_LIMIT]
+    
+    return render(request, 'html/homepage.html', {
+        'top_watching_content': top_watching_content,
+        'latest_content': latest_content,
+        'top_ranked_content': top_ranked_content,
+    })
 
 
 def register(request):
@@ -82,3 +94,6 @@ class MangaDetailView(generic.DetailView):
         score_data_ = content_instance.score_data.all()
         context['score_'] = score_data_
         return context
+def product(request):
+    products = Product.objects.all()
+    return render(request, 'html/warehouse.html',{'products': products})

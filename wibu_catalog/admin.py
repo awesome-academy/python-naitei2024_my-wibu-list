@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Content, Score, Users, FavoriteList
 from .models import ScoreList, Comments, Notifications
 from .models import Product, Order, OrderItems, Feedback
+from django.utils.translation import gettext_lazy as _
 
 
 class OrderItemsInline(admin.TabularInline):
@@ -17,6 +18,7 @@ class OrderItemsInline(admin.TabularInline):
 
     def has_delete_permission(self, request, obj=None):
         return False  # Disable the delete checkbox
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -67,3 +69,19 @@ class CommentsAdmin(admin.ModelAdmin):
         return obj.uid.username
 
     get_username.short_description = 'Username'
+
+
+@admin.register(Content)
+class ContentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'lastUpdate')
+    list_filter = ('lastUpdate',)
+    search_fields = ('name',)
+    fields = ('name', 'lastUpdate', 'picture')
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+    def get_field_display(self, obj):
+        return _("Title: {name} - Last updated: {last_update}").format(name=obj.name, last_update=obj.lastUpdate)
+
+
