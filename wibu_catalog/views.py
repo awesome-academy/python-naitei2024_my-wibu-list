@@ -98,21 +98,28 @@ class MangaDetailView(generic.DetailView):
         context['score_'] = score_data_
         return context
 def list_product(request):
+    query = request.GET.get('q', '')  # Lấy từ khóa tìm kiếm từ URL, mặc định là chuỗi rỗng
     sort_by = request.GET.get('sort_by', 'id')  # Giá trị mặc định là 'id'
-    if sort_by == 'highest_rate':
-        products_list = Product.objects.all().order_by('-ravg')
-    elif sort_by == 'low_to_high':
-        products_list = Product.objects.all().order_by('price')
-    elif sort_by == 'high_to_low':
-        products_list = Product.objects.all().order_by('-price')
+
+    # Tìm kiếm sản phẩm theo từ khóa
+    if query:
+        products_list = Product.objects.filter(name__icontains=query)
     else:
         products_list = Product.objects.all()
+
+    # Sắp xếp sản phẩm theo yêu cầu
+    if sort_by == 'highest_rate':
+        products_list = products_list.order_by('-ravg')
+    elif sort_by == 'low_to_high':
+        products_list = products_list.order_by('price')
+    elif sort_by == 'high_to_low':
+        products_list = products_list.order_by('-price')
 
     paginator = Paginator(products_list, 12)
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
 
-    return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by})
+    return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by, 'query': query})
 
 def search_content(request):
     query = request.GET.get('q','').lower() 
