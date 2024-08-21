@@ -2,7 +2,7 @@
   display: grid;
   grid-template-rows: repeat(40, 50px);
   grid-template-columns: repeat(20, 1fr);
-/*  grid-gap: 1em;*/
+  /*  grid-gap: 1em;*/
   height: auto;
 }
 
@@ -11,7 +11,6 @@
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   overflow: hidden !important;
-
 }
 
 .detail-container .cover-picture img {
@@ -45,17 +44,17 @@
   margin: 0;
 }
 
-.detail-container .status-button ul:hover{
+.detail-container .status-button ul:hover {
   display: block;
 }
 
-.detail-container .status-button li{
+.detail-container .status-button li {
   background: #ddd;
   padding: 10px;
   list-style: none;
 }
 
-.detail-container .status-button li:hover{
+.detail-container .status-button li:hover {
   background: #eee;
   cursor: pointer;
 }
@@ -63,7 +62,7 @@
 .detail-container .status-button:active ul {
   display: block;
 }
-.detail-container .status-button:active ul:hover{
+.detail-container .status-button:active ul:hover {
   display: block;
 }
 /*end of status button dropdown*/
@@ -82,17 +81,17 @@
   margin: 0;
 }
 
-.detail-container .rate-button ul:hover{
+.detail-container .rate-button ul:hover {
   display: block;
 }
 
-.detail-container .rate-button li{
+.detail-container .rate-button li {
   background: #ddd;
   padding: 10px;
   list-style: none;
 }
 
-.detail-container .rate-button li:hover{
+.detail-container .rate-button li:hover {
   background: #eee;
   cursor: pointer;
 }
@@ -100,7 +99,7 @@
 .detail-container .rate-button:active ul {
   display: block;
 }
-.detail-container .rate-button:active ul:hover{
+.detail-container .rate-button:active ul:hover {
   display: block;
 }
 /* End of rate button dropdown */
@@ -149,7 +148,14 @@
 }
 
 /*For debug purpose*/
-.cover-picture, .anime-title, .status-button, .rate-button, .average-score-display, .favorite-display, .info1, .comments-section {
+.cover-picture,
+.anime-title,
+.status-button,
+.rate-button,
+.average-score-display,
+.favorite-display,
+.info1,
+.comments-section {
   background-color: rgba(0, 0, 0, 0);
   border: 1px solid #000;
 }
@@ -168,7 +174,7 @@
   display: block;
 }
 
-.detail-container .favorite-display .favorite-display-list li{
+.detail-container .favorite-display .favorite-display-list li {
   background: #474f49;
   padding: 10px;
   list-style: none;
@@ -205,7 +211,7 @@
 .comment-box button {
   align-self: flex-end;
   padding: 8px 16px;
-  background-color: #FF5733;
+  background-color: #ff5733;
   color: white;
   border: none;
   border-radius: 8px;
@@ -263,7 +269,7 @@
 }
 
 .comment-actions {
-  padding-left:50px;
+  padding-left: 50px;
   margin-top: 5px;
   display: flex;
   gap: 10px;
@@ -272,7 +278,7 @@
 .comment-actions button {
   background: none;
   border: none;
-  color: #007BFF;
+  color: #007bff;
   cursor: pointer;
   font-size: 14px;
   transition: color 0.3s ease;
@@ -290,7 +296,7 @@
 
 .see-more button {
   padding: 10px 20px;
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 8px;
@@ -324,23 +330,23 @@
 }
 
 .edit-cmt-div,
-.edit-cmt-div .edit-cmt-button :hover{
+.edit-cmt-div .edit-cmt-button :hover {
   display: block;
 }
 /*End of edit comment div*/
 
 /*Delete comment div*/
 .delete-cmt-div .confirm-del-cmt {
-    display: none;
-    position: relative;
-    top: -55px;
-    padding: 55px 0 0 0;
-    margin: 0;
-    border: 1px solid #ccc;
-    background-color: #f5f5f5;
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+  position: relative;
+  top: -55px;
+  padding: 55px 0 0 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .delete-cmt-div .confirm-del-cmt p {
@@ -348,16 +354,16 @@
 }
 
 .delete-cmt-div {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .delete-cmt-div .delete-cmt-button:active + .confirm-del-cmt,
 .delete-cmt-div .confirm-del-cmt:hover {
-    display: block;
+  display: block;
 }
 
 .delete-cmt-div .delete-cmt-button:active,
 .delete-cmt-div .delete-cmt-button:hover {
-    display: block;
+  display: block;
 }
 /*End of delete comment div*/

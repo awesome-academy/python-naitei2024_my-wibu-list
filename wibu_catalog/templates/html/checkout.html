@@ -1,0 +1,231 @@
+{% extends 'html/base.html' %} {% load static %} {% load i18n %} {% block
+extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
+{% endblock extra_css %} {% block header %} {% include 'html/header.html' %} {%
+endblock %} {% block content %}
+<h2>{% trans "Checkout" %}</h2>
+<div class="checkout-container">
+  <!-- Customer Information Section -->
+  <div class="customer-info">
+    <h2>{% trans "Payment Information" %}</h2>
+    <form method="POST" id="checkout-form">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="first-name">
+          {% trans "First Name" %} <span>*</span>
+        </label>
+        <input
+          type="text"
+          id="first-name"
+          name="first_name"
+          value="{{ user.first_name }}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="last-name"> {% trans "Last Name" %} <span>*</span> </label>
+        <input
+          type="text"
+          id="last-name"
+          name="last_name"
+          value="{{ user.last_name }}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="country">
+          {% trans "Country/Region" %} <span>*</span>
+        </label>
+        <select id="country" name="country" required>
+          <option value="Vietnam">{% trans "Vietnam" %}</option>
+          <!-- Add more countries if necessary -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="address"> {% trans "Address" %} <span>*</span> </label>
+        <input type="text" id="address" name="address" required />
+      </div>
+      <div class="form-group">
+        <label for="postcode">{% trans "Postal Code (optional)" %}</label>
+        <input type="text" id="postcode" name="postcode" />
+      </div>
+      <div class="form-group">
+        <label for="city"> {% trans "City" %} <span>*</span> </label>
+        <input type="text" id="city" name="city" required />
+      </div>
+      <div class="form-group">
+        <label for="phone"> {% trans "Phone Number" %} <span>*</span> </label>
+        <input type="tel" id="phone" name="phone" required />
+      </div>
+      <div class="form-group">
+        <label for="email"> {% trans "Email Address" %} <span>*</span> </label>
+        <input type="email" id="email" name="email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">
+          {% trans "Create Account Password" %} <span>*</span>
+        </label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <a href="{% url 'order-confirmation' %}" class="order-button"
+        >{% trans "PROCEED TO CHECKOUT" %} →</a
+      >
+      <input type="hidden" id="cart_data" name="cart_data" value="" />
+    </form>
+  </div>
+  <!-- Order Summary Section -->
+  <div class="order-summary">
+    <h2>{% trans "Your Order" %}</h2>
+    <div class="cart-summary">
+      <div class="summary-item">
+        <span>{% trans "Subtotal" %}</span>
+        <span id="subtotal">₫{{ cart_total|floatformat:2 }}</span>
+      </div>
+      <div class="summary-item">
+        <span>{% trans "Total" %}</span>
+        <span id="order-total">₫{{ cart_total|floatformat:2 }}</span>
+      </div>
+    </div>
+    <!-- Payment Methods Section -->
+    <div class="payment-method" style="display: none">
+      <input
+        type="radio"
+        id="bank-transfer"
+        name="payment-method"
+        onclick="showDetails('bank-details')"
+      />
+      <label for="bank-transfer">{% trans "Bank Transfer" %}</label>
+    </div>
+    <div id="bank-details" class="payment-details" style="display: none">
+      <p>
+        <strong
+          >{% trans "Please transfer the payment to the following account:"
+          %}</strong
+        >
+      </p>
+      <hr />
+      <p>
+        <strong>VIETCOMBANK</strong>
+      </p>
+      <p>
+        <strong>{% trans "Instructions:" %}</strong>
+      </p>
+      <p>&#9888; {% trans "Your Name + Phone Number + Item Code" %}</p>
+      <hr />
+      <p>
+        {% trans "Once payment is made, notify the shop owner by texting the
+        following format to 0938 100 525:" %}
+      </p>
+      <p>&#9888; {% trans "Your Name + Phone Number + Item Code" %}</p>
+      <p>{% trans "Example: Nguyen Van A, 0909 909 090, PK026" %}</p>
+    </div>
+    <div class="payment-method" style="display: none">
+      <input
+        type="radio"
+        id="momo-payment"
+        name="payment-method"
+        onclick="showDetails('momo-payment-details')"
+      />
+      <label for="momo-payment">{% trans "Payment via MoMo" %}</label>
+    </div>
+    <div
+      id="momo-payment-details"
+      class="payment-details"
+      style="display: none"
+    >
+      <p>
+        <strong
+          >{% trans "Please transfer the payment to the following account:"
+          %}</strong
+        >
+      </p>
+      <hr />
+      <p>
+        <strong>{% trans "Instructions:" %}</strong>
+      </p>
+      <p>&#9888; {% trans "Your Name + Phone Number + Item Code" %}</p>
+      <hr />
+      <p>
+        {% trans "Once payment is made, notify the shop owner by texting the
+        following format to 0938 100 525:" %}
+      </p>
+      <p>&#9888; {% trans "Your Name + Phone Number + Item Code" %}</p>
+      <p>{% trans "Example: Nguyen Van A, 0909 909 090, PK026" %}</p>
+    </div>
+    <div class="payment-method">
+      <input
+        type="radio"
+        id="cash-on-delivery"
+        name="payment-method"
+        onclick="showDetails('cash-on-delivery-details')"
+      />
+      <label for="cash-on-delivery">{% trans "Cash on Delivery" %}</label>
+    </div>
+    <div
+      id="cash-on-delivery-details"
+      class="payment-details"
+      style="display: none"
+    >
+      <p>
+        <strong
+          >{% trans "For COD, shipping costs are based on the destination
+          province/city." %}</strong
+        >
+      </p>
+      <p>
+        {% trans "The shop will call to confirm the order and inform you of the
+        exact shipping fee." %}
+      </p>
+    </div>
+    <!-- Additional Order Notes Section -->
+    <div class="order-notes">
+      <h3>{% trans "Additional Information" %}</h3>
+      <label for="order-notes">{% trans "Order Notes (optional)" %}</label>
+      <textarea
+        id="order-notes"
+        name="order_notes"
+        placeholder="{% trans 'Notes about the order, such as delivery time or more detailed delivery instructions.' %}"
+      ></textarea>
+    </div>
+    <!-- Personal Info Policy Section -->
+    <div class="personal-info-policy">
+      <h3>
+        {% blocktrans %}Your personal information will be used to process your
+        order, enhance your website experience, and for other specific purposes
+        described in our <a href="#">privacy policy</a>.{% endblocktrans %}
+      </h3>
+    </div>
+  </div>
+</div>
+<!-- Additional Info Section -->
+<div class="additional-info">
+  <div class="contact-info">
+    <h2>{% trans "CONTACT INFORMATION" %}</h2>
+    <p>
+      <strong>{% trans "Address:" %}</strong> Anime Enthusiasts Company, Mang,
+      No. 10, Hai Ba Trung, Hanoi
+    </p>
+    <p><strong>{% trans "Zalo:" %}</strong> 0938 100 432 (please text)</p>
+    <p>
+      <strong>{% trans "Email:" %}</strong> pythonnaiteimywibulist2@gmail.com
+    </p>
+    <p>
+      <strong>{% trans "Working Hours:" %}</strong> {% trans "All days of the
+      week" %} / 8:00 AM - 5:00 PM
+    </p>
+  </div>
+  <div class="important-info">
+    <h2>{% trans "IMPORTANT INFORMATION" %}</h2>
+    <p>
+      <a href="#">Returns Policy</a>
+    </p>
+    <p>
+      <a href="#">Delivery Instructions</a>
+    </p>
+    <p>
+      <a href="#">Contact Us</a>
+    </p>
+  </div>
+</div>
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock content %}
