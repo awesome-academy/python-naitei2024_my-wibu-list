@@ -26,6 +26,7 @@ from django.shortcuts import redirect, render
 from .models import Users
 from .forms import LoginForm
 from django.views import View
+from django.contrib import messages
 
 
 def _get_user_from_session(request):
@@ -152,7 +153,6 @@ def search_content(request):
 
 def filter_by_genre(request, genre):
     userr = _get_user_from_session(request)
-
     # Lọc content theo thể loại và sắp xếp theo scoreAvg
     filtered_content = Content.objects.filter(genres__icontains=genre).order_by('-scoreAvg')[:ITEMS_PER_PAGE]
 
@@ -195,3 +195,29 @@ class LoginView(View):
 def logout(request):
     request.session.flush()
     return redirect('homepage')
+
+def user_profile(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login')
+
+    try:
+        userr = Users.objects.get(uid=user_id)
+    except Users.DoesNotExist:
+        return redirect('homepage')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        date_of_birth = request.POST.get('dateOfBirth')
+
+        #Update
+        userr.username = username
+        userr.email = email
+        userr.dateOfBirth = date_of_birth
+        userr.save()
+
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('user_profile')
+
+    return render(request, 'html/user_profile.html', {'userr': userr})

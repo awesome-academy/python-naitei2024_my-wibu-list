@@ -1,0 +1,152 @@
+.detail-container {
+  display: grid;
+  grid-template-rows: repeat(20, 50px);
+  grid-template-columns: repeat(20, 1fr);
+  height: auto;
+}
+
+.detail-container .cover-picture {
+  grid-area: 9 / 3 / 10 / 9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+}
+
+.detail-container .info1 {
+  grid-area: 5 / 13 / 21 / 19;
+  gap: 10px;
+  align-items: center;
+}
+
+.info1 p {
+  font-size: 1.5em;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.info1 h3 {
+  font-size: 3.5em;
+  margin-bottom: 30px;
+}
+
+.info1 strong {
+  display: block;
+  font-weight: bold;
+}
+
+.info1 input[type="text"],
+.info1 input[type="email"],
+.info1 input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.info1 input[type="date"] {
+  background-color: #f9f9f9;
+  max-width: 300px;
+}
+
+.info1 input[type="text"],
+.info1 input[type="email"] {
+  max-width: 300px;
+}
+
+.info1 input[type="date"][disabled] {
+  background-color: #f9f9f9;
+  color: #333;
+  cursor: not-allowed;
+  opacity: 1;
+  border: 1px solid #ddd;
+}
+
+.save-changes-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+}
+
+.save-changes-btn:hover {
+  background-color: #45a049;
+}
+
+.save-changes-btn:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.messages {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.messages li {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.messages .success {
+  background-color: #4CAF50;
+}
+
+.messages .error {
+  background-color: #f44336;
+}
+
+.save-changes-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.save-changes-btn:hover {
+  background-color: #45a049;
+}
+
+.cover-picture {
+  position: relative; /* Đảm bảo label được định vị tương đối với ảnh */
+}
+
+.update-avatar-label {
+  display: none; /* Ẩn nút khi không có tương tác */
+  position: absolute;
+  bottom: 10px; /* Đặt nút ở dưới ảnh */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7); /* Màu nền đen mờ */
+  color: white; /* Màu chữ trắng */
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Hiển thị nút khi di chuột vào cover-picture */
+.cover-picture:hover .update-avatar-label {
+  display: block;
+}

@@ -27,7 +27,7 @@
           </li>
           <li>
             <a href="#">{% trans "GENRE" %}<i class="fa-solid fa-chevron-down"></i></a>
-            <ul class="submenu">
+              <ul class="submenu">
               <li><a href="{% url 'filter_by_genre' genre='Action' %}">{% trans "Action" %}</a></li>
               <li><a href="{% url 'filter_by_genre' genre='Comedy' %}">{% trans "Comedy" %}</a></li>
               <li><a href="{% url 'filter_by_genre' genre='Drama' %}">{% trans "Drama" %}</a></li>
@@ -63,6 +63,7 @@
                   <li><a href="#">{% trans "Winter 2021" %}</a></li>
                   <li><a href="#">{% trans "Fall 2021" %}</a></li>
                   <li><a href="#">{% trans "Summer 2021" %}</a></li>
+                  <li><a href="#">{% trans "Summer 2021" %}</a></li>
               </ul>
           </li>
           <li><a href="#">{% trans "LIBRARY" %}</a></li>
@@ -94,7 +95,7 @@
         </a>
         <div class="user-menu">
             <ul>
-                <li><a href="#">{% trans 'Profile' %}</a></li>
+                <li><a href="{% url 'user_profile' %}">{% trans 'Profile' %}</a></li>
                 <li><a href="#">{% trans 'My Cart' %}</a></li>
                 <li><a href="{% url 'logout' %}">{% trans 'Logout' %}</a></li>
             </ul>

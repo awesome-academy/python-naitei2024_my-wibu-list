@@ -19,5 +19,5 @@ urlpatterns = [
     path('filter_by_genre/<str:genre>/', views.filter_by_genre, name='filter_by_genre'),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.logout, name='logout'),
-
+    path('user_profile/', views.user_profile, name='user_profile'),
 ]
