@@ -3,7 +3,7 @@
 {% load static i18n %}
 
 {% block notification %}
-{% endblock notification %} 
+{% endblock notification %}
 
 {% block top_carousel %}
 {% endblock top_carousel %}
@@ -13,7 +13,12 @@
 
 {% block title %}Filtered Content - {{ selected_genre }}{% endblock %}
 
+{% block header %}
+    {% include 'html/header.html' %}
+{% endblock %}
+
 {% block latest_updates %}
+
 <div class="row mt-4">
     <div class="col-12">
       <h2>{% trans "Filtered Content: " %} {{ selected_genre }}</h2>

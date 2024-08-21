@@ -17,4 +17,7 @@ urlpatterns = [
     path('product/',views.list_product,name='product'),
     path('search_content/', views.search_content, name='search_content'),
     path('filter_by_genre/<str:genre>/', views.filter_by_genre, name='filter_by_genre'),
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('logout/', views.logout, name='logout'),
+
 ]

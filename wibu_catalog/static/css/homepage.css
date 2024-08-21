@@ -1,599 +1,666 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
 }
 
 /* header */
 header {
-    background-color: #0F1416;
-    padding: 5px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background-color: #0F1416;
+  padding: 5px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .mywibulist-title {
-    color: brown;
+  color: brown;
 }
 
 .mywibulist-link {
-    text-decoration: none;
-    color: brown;
+  text-decoration: none;
+  color: brown;
 }
 
 header h1 {
-    margin: 0;
-    font-size: 20px;
+  margin: 0;
+  font-size: 20px;
 }
 
+
+/* Login và user */
+/* CSS cơ bản cho thông báo và user */
+/* CSS cơ bản cho thông báo và user */
+.notification-icon, .user-dropdown {
+  position: relative;
+  cursor: pointer;
+  margin: 7px;
+}
+
+.notification-content, .user-menu {
+  display: none;  /* Ẩn menu con ban đầu */
+  position: absolute;
+  top: 100%;
+  right: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-width: 250px;
+  opacity: 0; /* Ẩn menu con bằng opacity ban đầu */
+  transition: opacity 0.3s ease; /* Thêm transition cho opacity */
+}
+
+/* Hiển thị menu con khi di chuột qua */
+.notification-icon:hover .notification-content,
+.user-dropdown:hover .user-menu {
+  display: block;
+  opacity: 1; /* Hiển thị menu con bằng opacity */
+}
+
+.notification-content ul, .user-menu ul {
+  list-style: none;
+  padding: 0;
+  width: 150px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-content li a, .user-menu li a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+}
+
+.notification-content li a:hover, .user-menu li a:hover {
+  background-color: #f5f5f5;
+}
+
+.notification-content, .user-menu {
+  column-count: 1;
+}
+
+.notification-icon .notification-icon {
+  background-color: #e74c3c;
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.user-dropdown .user-icon {
+  background-color: #2ecc71;
+  padding: 5px;
+  border-radius: 50%;
+}
+/*---------------------------*/
 nav {
-    display: flex;
+  display: flex;
 }
 
 nav ul {
-    list-style: none;
-    display: flex;
-    margin-right: 20px;
-    margin-top: 15px;
+  list-style: none;
+  display: flex;
+  margin-right: 20px;
+  margin-top: 15px;
 }
 
 nav ul li {
-    position: relative;
-    margin-left: 20px;
+  position: relative;
+  margin-left: 20px;
 }
 
 nav ul li a {
-    display: block;
-    color: white;
-    font-weight: bold;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 8px 12px;
-    border-bottom: 3px solid transparent;
-    transition: background-color 0.3s ease;
+  display: block;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 8px 12px;
+  border-bottom: 3px solid transparent;
+  transition: background-color 0.3s ease;
 }
 
 nav ul li a i {
-    font-size: 13px;
-    font-weight: bold;
-    color: #B5E745;
+  font-size: 13px;
+  font-weight: bold;
+  color: #B5E745;
 }
 
 nav ul li a:hover {
-    border-bottom: 3px solid #B5E745;
+  border-bottom: 3px solid #B5E745;
 }
 
 .submenu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: white;
-    padding: 0;
-    margin: 0;
-    min-width: 600px;
-    z-index: 1000;
-    flex-wrap: wrap;
-    gap: 10px;
-    border-top: 5px solid #B5E745;
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  min-width: 600px;
+  z-index: 1000;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 5px solid #B5E745;
 }
 
 .submenu li {
-    flex: 1 1 calc(33.33% - 15px);
-    margin: 5px 0;
-    box-sizing: border-box;
+  flex: 1 1 calc(33.33% - 15px);
+  margin: 5px 0;
+  box-sizing: border-box;
 }
 
 .submenu li a {
-    padding: 10px 15px;
-    color: black;
-    background-color: white;
-    display: block;
-    text-align: left;
-    transition: background-color 0.3s ease;
-    border-radius: 4px;
+  padding: 10px 15px;
+  color: black;
+  background-color: white;
+  display: block;
+  text-align: left;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
 }
 
 .submenu li a:hover {
-    color: #5f5f5f;
+  color: #5f5f5f;
 }
 
 nav ul li:hover .submenu {
-    display: flex;
+  display: flex;
 }
 
 .timkiem {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .searchbox {
-    display: flex;
-    align-items: center;
-    background-color: #0A0E0F;
-    border-radius: 25px;
-    padding: 5px 10px;
-    border: 2px solid #333;
-    margin-right: 20px;
+  display: flex;
+  align-items: center;
+  background-color: #0A0E0F;
+  border-radius: 25px;
+  padding: 5px 10px;
+  border: 2px solid #333;
+  margin-right: 20px;
 }
 
 .searchbox input {
-    border: none;
-    outline: none;
-    padding: 5px;
-    font-size: 16px;
-    flex: 1;
-    margin-left: 10px;
-    border-radius: 25px;
-    background-color: #0A0E0F;
-    color: #808283;
+  border: none;
+  outline: none;
+  padding: 5px;
+  font-size: 16px;
+  flex: 1;
+  margin-left: 10px;
+  border-radius: 25px;
+  background-color: #0A0E0F;
+  color: #808283;
 }
 
 .searchbox i {
-    color: #808283;
-    font-size: 18px;
+  color: #808283;
+  font-size: 18px;
 }
 
 .buttonlogin button {
-    background-color: #B71C1C;
-    font-weight: bold;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #B71C1C;
+  font-weight: bold;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .buttonlogin button:hover {
-    background-color: #263238;
+  background-color: #263238;
 }
 .buttonregister button {
-    background-color: #B71C1C;
-    font-weight: bold;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #B71C1C;
+  font-weight: bold;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .buttonregister button:hover {
-    background-color: #263238;
+  background-color: #263238;
 }
 
 
 @media screen and (max-width: 768px) {
-    nav ul {
-        display: none;
-    }
+  nav ul {
+      display: none;
+  }
 
-    .timkiem {
-        flex-direction: column;
-    }
+  .timkiem {
+      flex-direction: column;
+  }
 
-    .searchbox {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
+  .searchbox {
+      margin-right: 0;
+      margin-bottom: 10px;
+  }
 }
 
 /* section */
 /* notification */
 section {
-    background-color: #263238;
-    padding: 20px 0;
+  background-color: #263238;
+  padding: 20px 0;
 }
 
 section .center {
-    background-color: black;
-    padding: 5px 10px;
-    margin: 0 auto;
-    max-width: 1300px;
-    color: #ecf0f1;
+  background-color: black;
+  padding: 5px 10px;
+  margin: 0 auto;
+  max-width: 1300px;
+  color: #ecf0f1;
 }
 
 .notification {
-    background-color: #2D2D2D;
-    margin: 10px;
-    padding: 10px;
+  background-color: #2D2D2D;
+  margin: 10px;
+  padding: 10px;
 }
 
 .notification i {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .notification ul li {
-    color: yellow;
-    font-size: 23px;
-    display: flex;
-    margin-left: -10px;
+  color: yellow;
+  font-size: 23px;
+  display: flex;
+  margin-left: -10px;
 }
 
 .notification ul li a {
-    color: white;
-    text-decoration: none;
-    padding-left: 4px;
-    padding-right: 4px;
+  color: white;
+  text-decoration: none;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .notification ul li p a {
-    color: red;
+  color: red;
 }
 
 .notification ul li i {
-    font-size: 5px;
-    margin: 15px 10px;
+  font-size: 5px;
+  margin: 15px 10px;
 }
 
 .notification ul li:nth-child(2) {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .notification ul li:nth-child(3) {
-    margin-top: -5px;
+  margin-top: -5px;
 }
 
 .notification ul li:nth-child(1) a:hover {
-    color: rgb(138, 138, 138);
+  color: rgb(138, 138, 138);
 }
 
 /* carousel */
 .carousel-container {
-    position: relative;
-    max-width: 100%;
-    overflow: hidden;
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .carousel {
-    display: flex;
-    align-items: center;
-    position: relative;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .carousel-wrapper {
-    display: flex;
-    transition: transform 0.5s ease;
-    width: calc(100% * 2);
+  display: flex;
+  transition: transform 0.5s ease;
+  width: calc(100% * 2);
 }
 
 .carousel-slide {
-    flex: 1 0 calc(100% / 6);
-    box-sizing: border-box;
-    padding: 10px;
-    text-align: center;
-    /* cursor: pointer; */
+  flex: 1 0 calc(100% / 6);
+  box-sizing: border-box;
+  padding: 10px;
+  text-align: center;
+  /* cursor: pointer; */
 }
 
 .carousel-slide img {
-    max-width: 100%;
-    border-radius: 10px;
+  max-width: 100%;
+  border-radius: 10px;
 }
 
 .carousel-button {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 24px;
-    border-radius: 50%;
-    z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  border-radius: 50%;
+  z-index: 1;
 }
 
 .carousel-button.prev {
-    left: 10px;
+  left: 10px;
 }
 
 .carousel-button.next {
-    right: 10px;
+  right: 10px;
 }
 
 .anime-info {
-    background-color: #222;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
+  background-color: #222;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
 }
 
 .anime-info h1 {
-    font-size: 2rem;
+  font-size: 2rem;
 }
 
 .anime-info p {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .sidebar .card {
-    background-color: #222;
-    border: 1px solid #333;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: none;
+  background-color: #222;
+  border: 1px solid #333;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: none;
 }
 
 .carousel-indicators [data-bs-target] {
-    background-color: white;
-    border-radius: 50%;
-    width: 10px;
-    height: 10px;
+  background-color: white;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
 }
 
 .carousel-indicators .active {
-    background-color: red;
+  background-color: red;
 }
 
 .container {
-    max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .card {
-    border: none;
-    border-radius: 8px;
-    overflow: hidden;
-    height: 100%;
+  border: none;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 100%;
 }
 
 .card img {
-    border-radius: 8px;
+  border-radius: 8px;
 }
 
 .card-body {
-    padding: 20px;
-    color: #ddd;
+  padding: 20px;
+  color: #ddd;
 }
 
 .btn-outline-light {
-  color: #fff;
-  border-color: #fff;
+color: #fff;
+border-color: #fff;
 }
 
 .btn-outline-light:hover {
-    background-color: #fff;
-    color: #000;
+  background-color: #fff;
+  color: #000;
 }
 
 .text-white {
-    color: #fff;
+  color: #fff;
 }
 
 .Wdgt {
-    background-color: #222;
-    padding: 20px;
-    border-radius: 5px;
-    color: #ddd;
+  background-color: #222;
+  padding: 20px;
+  border-radius: 5px;
+  color: #ddd;
 }
 
 .Title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #f8f8f8;
-    margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #f8f8f8;
+  margin-bottom: 10px;
 }
 
 .underline {
-    border-top: 3px solid #8bc34a;
-    width: 50px;
-    /* margin: 10px auto 20px auto; */
+  border-top: 3px solid #8bc34a;
+  width: 50px;
+  /* margin: 10px auto 20px auto; */
 }
 
 .Wdgt p {
-    font-size: 14px;
-    color: #aaa;
-    margin-bottom: 20px;
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 20px;
 }
 
 .Button.TPlay.AAIco-play_arrow {
-    background-color: #d9534f;
-    color: white;
-    font-weight: bold;
-    padding: 10px 15px;
-    text-transform: uppercase;
-    border-radius: 5px;
-    text-decoration: none;
-    display: inline-block;
+  background-color: #d9534f;
+  color: white;
+  font-weight: bold;
+  padding: 10px 15px;
+  text-transform: uppercase;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .Button.TPlay.AAIco-play_arrow:hover {
-    background-color: #c9302c;
-    text-decoration: none;
+  background-color: #c9302c;
+  text-decoration: none;
 }
 
 .fb-comments-section {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    margin-top: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 20px;
 }
 
 .fb-like-box {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .like-box-header {
-    font-weight: bold;
-    font-size: 14px;
-    color: #000;
+  font-weight: bold;
+  font-size: 14px;
+  color: #000;
 }
 
 .like-box-content {
-    font-size: 12px;
-    color: #000;
+  font-size: 12px;
+  color: #000;
 }
 
 .like-box-content .btn {
-    margin-top: 5px;
-    margin-bottom: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .fb-comments .comment {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 10px;
-    color: #000;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  color: #000;
 }
 
 .fb-comments .comment img.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
 .fb-comments .comment .comment-content {
-    flex: 1;
+  flex: 1;
 }
 
 .fb-comments .comment p {
-    margin: 0;
-    color: #000;
+  margin: 0;
+  color: #000;
 }
 
 .fb-comments .comment small {
-    font-size: 11px;
-    color: #666;
+  font-size: 11px;
+  color: #666;
 }
 
 .fb-comments .reply {
-    margin-left: 50px;
+  margin-left: 50px;
 }
 
 .btn-load-more {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-    padding: 5px;
-    background-color: #3b5998;
-    color: white;
-    text-align: center;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 5px;
+  background-color: #3b5998;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .btn-load-more:hover {
-    background-color: #334d84;
+  background-color: #334d84;
 }
 
 .anime-updates {
-    background-color: #1c1c1c;
-    border: 1px solid #333;
-    border-radius: 5px;
-    color: #fff;
-    padding: 10px;
+  background-color: #1c1c1c;
+  border: 1px solid #333;
+  border-radius: 5px;
+  color: #fff;
+  padding: 10px;
 }
 
 .list-group-header {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .list-group-header h5 {
-    font-size: 16px;
-    color: #fff;
+  font-size: 16px;
+  color: #fff;
 }
 
 .divider {
-    height: 2px;
-    background-color: #8bc34a;
-    margin-top: 5px;
+  height: 2px;
+  background-color: #8bc34a;
+  margin-top: 5px;
 }
 
 .list-group-item {
-    background-color: #1c1c1c;
-    border: none;
-    color: #999;
-    padding: 10px 15px;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
+  background-color: #1c1c1c;
+  border: none;
+  color: #999;
+  padding: 10px 15px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
 }
 
 .list-group-item:hover {
-    color: #fff;
-    background-color: #1c1c1c;
+  color: #fff;
+  background-color: #1c1c1c;
 }
 
 .list-group-item::before {
-    content: "";
-    width: 4px;
-    height: 100%;
-    background-color: transparent;
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    border-radius: 4px 0 0 4px;
-    transition: background-color 0.3s ease;
+  content: "";
+  width: 4px;
+  height: 100%;
+  background-color: transparent;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 4px 0 0 4px;
+  transition: background-color 0.3s ease;
 }
 
 .list-group-item:hover::before {
-    background-color: #e53935;
+  background-color: #e53935;
 }
 
 .anime-title {
-    color: #ff4081;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  color: #ff4081;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .episode {
-    color: #999;
-    font-weight: bold;
-    flex-shrink: 0;
+  color: #999;
+  font-weight: bold;
+  flex-shrink: 0;
 }
 
 .see-more {
-    text-align: center;
-    font-weight: bold;
-    font-size: 14px;
-    color: #fff;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  color: #fff;
 }
 
 .see-more:hover {
-    color: #8bc34a;
+  color: #8bc34a;
 }
 
 .gray {
-    color: gray;
+  color: gray;
 }
 
 .red {
-    color: #f44336;
+  color: #f44336;
 }
 
 .viewall {
-    position: relative;
-    margin: 0 0 10px 0;
-    text-align: center;
-    display: block;
-    text-transform: uppercase;
-    font-size: 18px;
-    padding: 5px;
-    background: #161e21;
-    text-decoration: none;
-    color: white;
+  position: relative;
+  margin: 0 0 10px 0;
+  text-align: center;
+  display: block;
+  text-transform: uppercase;
+  font-size: 18px;
+  padding: 5px;
+  background: #161e21;
+  text-decoration: none;
+  color: white;
 }
 
 .viewall:hover {
-    color: gray;
+  color: gray;
 }

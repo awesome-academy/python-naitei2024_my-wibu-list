@@ -26,7 +26,7 @@
               </ul>
           </li>
           <li>
-            <a href="#">{% trans "Genre" %}<i class="fa-solid fa-chevron-down"></i></a>
+            <a href="#">{% trans "GENRE" %}<i class="fa-solid fa-chevron-down"></i></a>
             <ul class="submenu">
               <li><a href="{% url 'filter_by_genre' genre='Action' %}">{% trans "Action" %}</a></li>
               <li><a href="{% url 'filter_by_genre' genre='Comedy' %}">{% trans "Comedy" %}</a></li>
@@ -62,7 +62,7 @@
                   <li><a href="#">{% trans "Spring 2022" %}</a></li>
                   <li><a href="#">{% trans "Winter 2021" %}</a></li>
                   <li><a href="#">{% trans "Fall 2021" %}</a></li>
-                  <li><a href="#">{% trans "Summer 2021" %}</a></li>                     
+                  <li><a href="#">{% trans "Summer 2021" %}</a></li>
               </ul>
           </li>
           <li><a href="#">{% trans "LIBRARY" %}</a></li>
@@ -70,16 +70,43 @@
       </ul>
   </ul>
   <div class="timkiem">
+      {% block search %}
       <div class="searchbox">
           <form action="{% url 'search_content' %}" method="get" onsubmit="return false;">
               <input type="text" name="q" id="search-input" placeholder="{% trans 'Tìm: tên tiếng Nhật, Anh, Việt' %}" onkeypress="if(event.keyCode === 13) this.form.submit();">
               <i class="fa-solid fa-magnifying-glass" onclick="document.getElementById('search-input').focus();"></i>
           </form>
-      </div>            
-      <div class="buttonlogin">
-          <button type="submit">{% trans "Login" %}</button>
-          <button type="button" onclick="window.location.href='/register'">{% trans "Register" %}</button>
       </div>
-  </div>
+      {% endblock %}
+      {% block user_area %}
+        {% if userr %}
+        <div class="notification-icon">
+          <a href="#">
+              <img src="{% static 'images/bell.png' %}" alt="Notification Icon" width="30" height="30" class="notification-icon">
+          </a>
+          <div class="notification-content">
+          </div>
+      </div>
+
+      <div class="user-dropdown">
+        <a href="#">
+            <img src="{% static 'images/user.png' %}" alt="{% trans 'User Icon' %}" width="30" height="30" class="user-icon">
+        </a>
+        <div class="user-menu">
+            <ul>
+                <li><a href="#">{% trans 'Profile' %}</a></li>
+                <li><a href="#">{% trans 'My Cart' %}</a></li>
+                <li><a href="{% url 'logout' %}">{% trans 'Logout' %}</a></li>
+            </ul>
+        </div>
+    </div>
+    {% else %}
+        <div class="buttonlogin">
+            <button type="button" onclick="window.location.href='/login'">{% trans 'Login' %}</button>
+            <button type="button" onclick="window.location.href='/register'">{% trans 'Register' %}</button>
+        </div>
+    {% endif %}
+      {% endblock %}
+        </div>
 </nav>
 </header>
