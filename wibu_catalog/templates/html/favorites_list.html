@@ -1,0 +1,74 @@
+{% extends "html/base.html" %}
+{% load static i18n %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>{% trans "Favorites list page:" %} {{ page_number }}</title>
+  <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-..." crossorigin="anonymous">
+  <link rel="stylesheet" href="styles_content_list.css">
+</head>
+
+{% block content %}
+<section>
+  <div class="center">
+    {% block favorites-list %}
+      <link rel="stylesheet" href="{% static 'css/styles_content_list.css' %}">
+      <div class="list-container">
+
+        <div class="list-header">
+          <h1>{% trans "Favorites List" %}</h1>
+        </div>
+
+        <div class="actual-content-list">
+          {% if favorites_list %}
+              {% for content in favorites_list %}
+                <div class="content-pic-name">
+                  <a href="{{ content.get_absolute_url }}">
+                    {% if content.picture %}
+                        <img src="{{ content.picture.url }}" alt="{{ content.name }} {% trans 'cover picture' %}" class="img-fluid" style="border-radius: 5px;">
+                    {% else %}
+                        <img src="{% static 'images/list_detail_default.jpg' %}" class="card-img-top" alt="Default Image">
+                    {% endif %}
+                  </a>
+                  <a href="{{ content.get_absolute_url }}">{{ content.name }}</a>
+                </div>
+              {% endfor %}
+          {% else %}
+            <p>{% trans "There is nothing in favorites list." %}</p>
+          {% endif %}
+        </div>
+
+        <div class="content-list-pagination">
+          {% block pagination %}
+
+            {% if is_paginated %}
+              <div class="pagination">
+                <span class="page-links">
+                  {% if page_obj.has_previous %}
+                    <button onclick="location.href='{{ request.path }}?page={{ page_obj.previous_page_number }}'">
+                      {% trans "previous" %}
+                    </button>
+                  {% endif %}
+                  <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                  </span>
+                  {% if page_obj.has_next %}
+                    <button onclick="location.href='{{ request.path }}?page={{ page_obj.next_page_number }}'">
+                      {% trans "next" %}
+                    </button>
+                  {% endif %}
+                </span>
+              </div>
+            {% endif %}
+
+          {% endblock %}
+        </div>
+
+      </div>
+    {% endblock favorites-list %}
+  </div>
+
+</section>
+{% endblock %}

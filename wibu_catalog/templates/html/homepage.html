@@ -25,10 +25,12 @@
                 <button class="carousel-button prev">&#10094;</button>
                 <div class="carousel-wrapper">
                     {% for content in top_watching_content %}
+                      <a href="{{ content.get_absolute_url }}" style="text-decoration: none; color: inherit;">
                         <div class="carousel-slide">
                             <img src="{{ content.picture.url }}" alt="{{ content.name }}">
                             <p>{{ content.name }}</p>
                         </div>
+                      </a>
                     {% endfor %}
                 </div>
                 <button class="carousel-button next">&#10095;</button>
@@ -100,6 +102,7 @@
                             {% for content in latest_content %}
                                 <!-- Phim {{ forloop.counter }} -->
                                 <div class="col-6 col-md-4 col-lg-3 mb-4">
+                                  <a href="{{ content.get_absolute_url }}" style="text-decoration: none; color: inherit;">
                                     <div class="card bg-dark text-white">
                                         <img src="{{ content.picture.url }}" class="card-img-top" alt="{{ content.name }}">
                                         <div class="card-body">
@@ -107,6 +110,7 @@
                                             <p class="card-text">{% trans "Views: " %} {{ content.watching }}</p>
                                         </div>
                                     </div>
+                                  </a>
                                 </div>
                             {% endfor %}
                             <!-- Các phần phim khác tiếp tục tương tự -->
@@ -163,7 +167,7 @@
                         </div>
                         <div style="height: 250px;" class="card text-center">
                             <div class="card-body p-0">
-                                <a href="#"><img src="{% static 'giff.gif' %}" alt="{% trans 'Ad Image' %}" class="img-fluid"></a>
+                                <a href="https://www.youtube.com/watch?v=UZZATMP1yMQ"><img src="{% static 'images/fireflymlem.gif' %}" alt="{% trans 'Ad Image' %}" class="img-fluid"></a>
                             </div>
                         </div>
 

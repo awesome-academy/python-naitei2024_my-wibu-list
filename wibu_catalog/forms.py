@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm
 
+from wibu_catalog.models import Comments
+
 class RegistrationForm(forms.ModelForm):
     username = forms.CharField(
         max_length=30,
@@ -39,6 +41,7 @@ class RegistrationForm(forms.ModelForm):
         if password != password_confirm:
             raise ValidationError(_("Password and confirm password are not the same."))
 
+
 class LoginForm(AuthenticationForm):
     email = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
@@ -49,3 +52,14 @@ class LoginForm(AuthenticationForm):
         label='Password'
     )
 
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comments
+        fields = ['content']
+
+
+class EditCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comments
+        fields = ['content']  # Assuming 'content' is the field you want to allow editing
