@@ -335,12 +335,12 @@ class FavoriteList(models.Model):
     )
 
     contentStatus = (
-        (1, "Watching"),
-        (2, "Completed"),
-        (3, "On_Hold"),
-        (4, "Dropped"),
-        (5, "Re_Watching"),
-        (6, "Plan_to_Watch"),
+        (1, _("Watching")),
+        (2, _("Completed")),
+        (3, _("On Hold")),
+        (4, _("Dropped")),
+        (5, _("Re-Watching")),
+        (6, _("Plan to Watch")),
     )
     status = models.CharField(
         max_length=FIELD_MAX_LENGTH_S,
@@ -357,16 +357,19 @@ class FavoriteList(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk:  # Checking if the instance is being updated
-            old_fav_list = favorite_list.objects.get(pk=self.pk).status
-            update_content_fav_sta(self.cid, self.Status, old_fav_list)
+            old_fav_list = FavoriteList.objects.get(pk=self.pk).status
+            update_content_fav_sta(self.cid.cid, self.status, old_fav_list)
         else:
             # For new instance creation, only update the content table
-            update_content_fav_sta(self.cid, self.status)
+            update_content_fav_sta(self.cid.cid, self.status)
 
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.status
+
+    def get_status_display(self):
+        return dict(self.contentStatus).get(int(self.status), _("Unknown"))
 
 
 Score_tuple = [(key, value) for key, value in Score_dict.items()]
@@ -670,7 +673,7 @@ def update_content_score(content_id):
     content_instance.save(update_fields=['scoreAvg'])
 
 
-def update_content_fav_sta(content_id, new_status, old_status):
+def update_content_fav_sta(content_id, new_status, old_status=None):
     # Get or create the Score instance for the given content
     content_instance, created = Content.objects.get_or_create(cid=content_id)
 
@@ -682,10 +685,12 @@ def update_content_fav_sta(content_id, new_status, old_status):
         5: "reWatching",
         6: "planToWatch",
     }
-
+    new_status = int(new_status)
+    if old_status is not None:
+            old_status = int(old_status)
     # Update the count for the new score
     if new_status:
-        field_name = f'{Content_status[new_status]}'
+        field_name = Content_status[new_status]
         current_count = getattr(content_instance, field_name)
         setattr(content_instance, field_name, current_count + 1)
         fav_count = getattr(content_instance, "favorites")
@@ -693,7 +698,7 @@ def update_content_fav_sta(content_id, new_status, old_status):
 
     # Update the count for the old score if it exists
     if old_status:
-        old_field_name = f'{Content_status[old_status]}'
+        old_field_name = Content_status[old_status]
         old_current_count = getattr(content_instance, old_field_name)
         setattr(content_instance, old_field_name, old_current_count - 1)
         fav_count = getattr(content_instance, "favorites")

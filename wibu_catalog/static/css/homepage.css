@@ -6,7 +6,10 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+  background-color: #263238 !important;
+  min-height: 100vh !important;
+  display: flex;
+  flex-direction: column;
 }
 
 /* header */

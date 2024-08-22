@@ -31,30 +31,61 @@
             <span style="justify-content: center;">
               <svg data-v-9ba4cb7e="" data-v-8d292eb9="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" class="icon mr-4" style="color: currentcolor;">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8A6 6 0 1 0 6 8c0 7-3 9-3 9h9m6.63-4A17.9 17.9 0 0 1 18 8m-4.27 13a2 2 0 0 1-3.46 0M17 18l2 2 4-4"></path>
-              </svg>Watch status</span>
-              <!-- sau sẽ thay bằng user.status gì đó. -->
+              </svg>{% if favorite %}
+              {{ favorite.get_status_display}}
+            {% else %}
+            {% trans "Add to favorite list" %}
+            {% endif %}</span>
           </button>
           <ul>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">None</a>
+              <form action="{% url 'update_favorite_status' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="0">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">{% trans "No status" %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">Reading</a>
+              <form action="{% url 'update_favorite_status' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="1">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">{% trans "Watching" %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">On Hold</a>
+              <form action="{% url 'update_favorite_status' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="2">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">{% trans "Completed" %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">Dropped</a>
+              <form action="{% url 'update_favorite_status' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="3">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">{% trans "On Hold" %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">Plan to Read</a>
+              <form action="{% url 'update_favorite_status' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="4">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">{% trans "Dropped" %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">Completed</a>
+              <form action="{% url 'update_favorite_status' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="5">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">{% trans "Re-Watching" %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">Re-Reading</a>
+              <form action="{% url 'update_favorite_status' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="6">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">{% trans "Plan to Watch" %}</button>
+              </form>
             </li>
           </ul>
         </div>
@@ -64,7 +95,7 @@
             <span style="justify-content: center;">
               <svg data-v-9ba4cb7e="" data-v-8d292eb9="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-star icon" viewBox="0 0 24 24" style="color: currentcolor;">
                 <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"></path>
-              </svg>Rate it</span>
+              </svg>{% trans "Rate it" %}</span>
           </button>
           <ul>
             <li style="color: black;">
@@ -136,7 +167,7 @@
         </div>
 
         <div class="item info1">
-          <h3>More info:</h3>
+          <h3>{% trans "More info:" %}</h3>
           <p><strong>{% trans 'Type' %}:</strong> {{ anime_detail.cType }}</p>
           <p><strong>{% trans 'Episodes' %}:</strong> {{ anime_detail.episodes }}</p>
           <p><strong>{% trans 'Aired' %}:</strong> {{ anime_detail.aired }}</p>
@@ -151,17 +182,17 @@
         </div>
 
         <div class="comments-section">
-          <h3>Comments:</h3>
+          <h3>{% trans "Comment:" %}</h3>
           <div class="comment-box">
             {% if userr %}
             <form action="{% url 'post_comment' anime_detail.cid %}" method="POST">
               {% csrf_token %}
-              <textarea name="content" rows="4" cols="50" placeholder="Write your comment here..."></textarea>
-              <button type="submit">Submit</button>
+              <textarea name="content" rows="4" cols="50" placeholder="{% trans 'Write your comment here...' %}"></textarea>
+              <button type="submit">{% trans "Submit" %}</button>
             </form>
             {% else %}
-              <textarea name="content" rows="4" cols="50" placeholder="Write your comment here..."></textarea>
-              <button>Submit</button>
+              <textarea name="content" rows="4" cols="50" placeholder="{% trans 'Write your comment here...' %}"></textarea>
+              <button>{% trans "Submit" %}</button>
             {% endif %}
           </div>
 
@@ -182,29 +213,29 @@
                   </div>
                 </div>
                 <div class="comment-actions">
-                  <button type="button">Like</button>
-                  <button type="button">Reply</button>
+                  <button type="button">{% trans "Like" %}</button>
+                  <button type="button">{% trans "Reply" %}</button>
                   {% if comment.uid == userr%}
                     <div class="edit-cmt-div">
                       <button type="button" class="edit-cmt-button">Edit</button>
                       <form class="edit-cmt-form" action="{% url 'edit_comment' comment.id %}" method="POST">
                         {% csrf_token %}
                         <textarea name="content" rows="4" cols="50">{{ comment.content }}</textarea>
-                        <button type="submit">Save</button>
+                        <button type="submit">{% trans "Save" %}</button>
                         <a href="{% url 'anime_detail' anime_detail.cid %}" style="text-decoration: none; padding: 10px;">
-                          <button type="button">Cancel</button>
+                          <button type="button">{% trans "Cancel" %}</button>
                         </a>
                       </form>
                     </div>
                     <div class="delete-cmt-div">
-                      <button type="button" class="delete-cmt-button">Delete</button>
+                      <button type="button" class="delete-cmt-button">{% trans "Delete" %}</button>
                       <div class="confirm-del-cmt">
                         <p><strong>{% trans 'Are you sure to delete the comment?' %}</strong></p>
                         <form action="{% url 'delete_comment' comment.id %}" method="post">
                           {% csrf_token %}
-                          <button type="submit">Yes!</button>
+                          <button type="submit">{% trans "Yes!" %}</button>
                           <a href="{% url 'anime_detail' anime_detail.cid %}" style="text-decoration: none; padding: 10px;">
-                            <button type="button">Nah, I'd win.</button>
+                            <button type="button">{% trans "Nah, I'd win" %}</button>
                           </a>
                         </form>
                       </div>
@@ -219,8 +250,8 @@
                 <div class="pagination">
                   <span class="step-links">
                     {% if comments.has_previous %}
-                      <a href="?page=1">&laquo; first</a>
-                      <a href="?page={{ comments.previous_page_number }}">previous</a>
+                      <a href="?page=1">&laquo; {% trans "first" %}</a>
+                      <a href="?page={{ comments.previous_page_number }}">{% trans "Previous" %}</a>
                     {% endif %}
 
                     <span class="current">
@@ -228,14 +259,14 @@
                     </span>
 
                     {% if comments.has_next %}
-                      <a href="?page={{ comments.next_page_number }}">next</a>
-                      <a href="?page={{ comments.paginator.num_pages }}">last &raquo;</a>
+                      <a href="?page={{ comments.next_page_number }}">{% trans "Next" %}</a>
+                      <a href="?page={{ comments.paginator.num_pages }}">{% trans "Last" %} &raquo;</a>
                     {% endif %}
                   </span>
                 </div>
               {% else %}
                 <a href="https://youtu.be/dQw4w9WgXcQ?si=70pc7Pd7EiJ0aG-3" style="text-decoration: none; color: inherit;">
-                  <button type="button">See more comments</button>
+                  <button type="button">{% trans "See more comment" %}</button>
                 </a>
               {% endif %}
             </div>
@@ -244,12 +275,12 @@
               <div class="comment-item">
                 <div class="comment-header">
                   <img src="{% static 'images/list_detail_default.jpg' %}" class="avatar" alt="Default avatar">
-                  <p><strong>WYSI:</strong> No comments yet. Be the first to comment!</p>
+                  <p><strong>{% trans "WYSI:" %}</strong>{% trans "No comments yet. Be the first to comment!" %} </p>
                   <small>30/2/4727</small>
                 </div>
                 <div class="comment-actions">
-                  <button type="button">Like</button>
-                  <button type="button">Reply</button>
+                  <button type="button">{% trans "Like" %}</button>
+                  <button type="button">{% trans "Reply" %}</button>
                 </div>
               </div>
             {% endif %}
