@@ -10,6 +10,7 @@ from .views import list_product, search_content, filter_by_genre
 from .views import post_comment, edit_comment, delete_comment
 
 
+
 urlpatterns = [
     path('', views.homepage, name='homepage'),
     path('register/', views.register, name='register'),
@@ -38,4 +39,6 @@ urlpatterns = [
 
     # url mapping for favorite list view
     path('favorites/', views.FavoriteListView.as_view(), name='favorite_list'),
+    path('user_profile/', views.user_profile, name='user_profile'),
+
 ]

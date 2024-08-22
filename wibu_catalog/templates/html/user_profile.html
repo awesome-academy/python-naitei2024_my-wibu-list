@@ -1,0 +1,52 @@
+{% extends "html/base.html" %}
+{% load static i18n %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>{% trans "Profile" %}</title>
+  <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+</head>
+
+{% block content %}
+<section>
+  {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+  <div class="center">
+    {% block profile %}
+      <link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+      <div class="detail-container">
+
+        <div class="item cover-picture">
+          <img src="{% if userr.profilePicture %}{{ userr.profilePicture.url }}{% else %}{% static 'images/avatar_default.jpg' %}{% endif %}"
+              alt="{% trans 'Profile Picture' %}" class="img-fluid" style="border-radius: 5px;">
+          <label for="profilePicture" class="update-avatar-label">{% trans "Update Avatar" %}</label>
+          <input type="file" id="profilePicture" name="profilePicture" style="display:none;">
+        </div>
+
+
+
+        <div class="item info1">
+          <h3>{% trans "User Profile" %}</h3>
+        <form method="post" action="{% url 'user_profile' %}">
+          {% csrf_token %}
+          <p><strong>{% trans 'Name' %}:</strong> <input type="text" name="username" value="{{ userr.username }}"></p>
+          <p><strong>{% trans 'Email' %}:</strong> <input type="email" name="email" value="{{ userr.email }}"></p>
+          <p><strong>{% trans 'Date of Birth' %}:</strong> <input type="date" name="dateOfBirth" value="{{ userr.dateOfBirth|date:'Y-m-d' }}"></p>
+          <p><strong>{% trans 'Registration Date' %}:</strong> <input type="date" name="registrationDate" value="{{ userr.registrationDate|date:'Y-m-d' }}" disabled></p>
+          <button type="submit" class="save-changes-btn">{% trans "Save Changes" %}</button>
+        </form>
+        </div>
+
+      </div>
+
+    {% endblock profile %}
+  </div>
+
+</section>
+{% endblock %}
+
