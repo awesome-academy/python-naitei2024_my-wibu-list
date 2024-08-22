@@ -94,7 +94,7 @@
         </a>
         <div class="user-menu">
             <ul>
-                <li><a href="#">{% trans 'Profile' %}</a></li>
+                <li><a href="{% url 'user_profile' %}">{% trans 'Profile' %}</a></li>
                 <li><a href="#">{% trans 'My Cart' %}</a></li>
                 <li><a href="{% url 'logout' %}">{% trans 'Logout' %}</a></li>
             </ul>
