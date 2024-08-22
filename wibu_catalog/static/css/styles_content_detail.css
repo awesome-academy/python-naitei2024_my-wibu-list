@@ -10,11 +10,13 @@
   grid-area: 2 / 3 / 10 / 9;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 5px;
+  overflow: hidden !important;
+
 }
 
 .detail-container .cover-picture img {
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 100%;
   border-radius: 5px;
 }
 

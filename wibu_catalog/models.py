@@ -400,15 +400,15 @@ class ScoreList(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk:  # Checking if the instance is being updated
-            old_score = score_list.objects.get(pk=self.pk).score
-            update_score_table(self.cid, self.score, old_score)
+            old_score = ScoreList.objects.get(pk=self.pk).score
+            update_score_table(self.cid.cid, self.score, old_score)
         else:
             # For new instance creation, only update the score table
-            update_score_table(self.cid, self.score)
+            update_score_table(self.cid.cid, self.score)
 
         super().save(*args, **kwargs)
         # Update content score after saving
-        update_content_score(self.cid)
+        update_content_score(self.cid.cid)
 
     def __str__(self):
         return self.score
@@ -608,7 +608,7 @@ class Feedback(models.Model):
         return f"Feedback by User {str(self.uid)} on Product {(self.pid)}"
 
 
-def update_score_table(content_id, new_score, old_score):
+def update_score_table(content_id, new_score, old_score = None):
     # Get or create the Score instance for the given content
     score_instance, created = Score.objects.get_or_create(cid=content_id)
 
@@ -633,7 +633,7 @@ def update_content_score(content_id):
     content_instance = Content.objects.get(cid=content_id)
 
     # Fetch the associated score instance
-    score_instance = Score.objects.get(cid=content)
+    score_instance = Score.objects.get(cid=content_id)
 
     # Calculate the new score
     total_scores = sum([
@@ -669,7 +669,7 @@ def update_content_score(content_id):
         average_score = 0
 
     # Update the Score_avg field in the Content model
-    content_instance.scoreAvg = average_score
+    content_instance.scoreAvg = round(average_score, 2)
     content_instance.save(update_fields=['scoreAvg'])
 
 
