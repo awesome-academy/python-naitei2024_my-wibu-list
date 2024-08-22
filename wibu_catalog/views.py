@@ -20,8 +20,25 @@ from wibu_catalog.models import Product, Order, OrderItems, Feedback
 
 from .constants import TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMIT
 from wibu_catalog.constants import ITEMS_PER_PAGE
+from django.contrib.auth.hashers import check_password
+
+from django.shortcuts import redirect, render
+from .models import Users
+from .forms import LoginForm
+from django.views import View
+
+
+def _get_user_from_session(request):
+    user_id = request.session.get('user_id')
+    if user_id:
+        try:
+            return Users.objects.get(uid=user_id)
+        except Users.DoesNotExist:
+            return None
+    return None
 
 def homepage(request):
+    userr = _get_user_from_session(request)
     top_watching_content = Content.objects.order_by('-watching')[:TOP_WATCHING_LIMIT]
 
     latest_content = Content.objects.order_by('-lastUpdate')[:LATEST_CONTENT_LIMIT]
@@ -32,6 +49,7 @@ def homepage(request):
         'top_watching_content': top_watching_content,
         'latest_content': latest_content,
         'top_ranked_content': top_ranked_content,
+        'userr': userr
     })
 
 
@@ -98,6 +116,7 @@ class MangaDetailView(generic.DetailView):
         context['score_'] = score_data_
         return context
 def list_product(request):
+    userr = _get_user_from_session(request)
     query = request.GET.get('q', '')  # Lấy từ khóa tìm kiếm từ URL, mặc định là chuỗi rỗng
     sort_by = request.GET.get('sort_by', 'id')  # Giá trị mặc định là 'id'
 
@@ -119,25 +138,60 @@ def list_product(request):
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
 
-    return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by, 'query': query})
+    return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by, 'query': query,"userr":userr})
 
 def search_content(request):
-    query = request.GET.get('q','').lower() 
+    query = request.GET.get('q','').lower()
     search_results = None
     if query:
-        search_results = Content.objects.filter(name__icontains=query) 
+        search_results = Content.objects.filter(name__icontains=query)
     else:
         search_results = Content.objects.all()  # Nếu không có từ khóa, hiển thị tất cả
 
     return render(request, 'html/search_content_results.html', {'search_results': search_results,})
 
 def filter_by_genre(request, genre):
+    userr = _get_user_from_session(request)
+
     # Lọc content theo thể loại và sắp xếp theo scoreAvg
     filtered_content = Content.objects.filter(genres__icontains=genre).order_by('-scoreAvg')[:ITEMS_PER_PAGE]
 
     context = {
         'filtered_content': filtered_content,
-        'selected_genre': genre  # Truyền thể loại đã chọn để hiển thị trên trang kết quả
+        'selected_genre': genre,
+        'userr': userr
     }
     return render(request, 'html/filtered_content.html', context)
 
+
+
+class LoginView(View):
+    def _authenticate_user(self, email, password):
+        try:
+            user = Users.objects.get(email=email)
+            if password == user.password:
+                return user
+            else:
+                return None
+        except Users.DoesNotExist:
+            return None
+
+    def post(self, request):
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = self._authenticate_user(email=email, password=password)
+        if user is not None:
+            request.session['user_id'] = user.uid
+            return redirect('homepage')
+        else:
+            form = LoginForm()
+            return render(request, 'html/loginform.html', {'form': form})
+
+    def get(self, request):
+        form = LoginForm()
+        return render(request, 'html/loginform.html', {'form': form})
+
+
+def logout(request):
+    request.session.flush()
+    return redirect('homepage')
