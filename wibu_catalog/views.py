@@ -26,7 +26,9 @@ from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from functools import wraps
 from django.utils.translation import gettext as _
-
+from django.core.exceptions import ObjectDoesNotExist
+from random import randint
+from enum import Enum
 
 # Function definition:
 def _get_user_from_session(request):
@@ -46,11 +48,21 @@ def homepage(request):
 
     top_ranked_content = Content.objects.order_by('ranked')[:TOP_RANKED_LIMIT]
 
+    content_random = randint(1,17562)
+    what_to_watch = None
+    while (what_to_watch is None):
+        content_random = randint(1,17562)
+        try:
+            what_to_watch = Content.objects.get(cid=content_random)
+        except ObjectDoesNotExist:
+            what_to_watch = None
+
     return render(request, 'html/homepage.html', {
         'top_watching_content': top_watching_content,
         'latest_content': latest_content,
         'top_ranked_content': top_ranked_content,
-        'userr': userr
+        'userr': userr,
+        'what_to_watch': what_to_watch,
     })
 
 
@@ -212,11 +224,17 @@ class AnimeDetailView(generic.DetailView):
         if userr:
             favorite = FavoriteList.objects.filter(uid=userr, cid=content_instance).first()
 
+        # User score
+        if userr != None:
+            score_str = score_to_str(content_instance.cid, userr.uid)
+        else:
+            score_str = None
+        # Sumarize context
         context["score_"] = score_data_
         context["userr"] = userr
         context["comments"] = comments
+        context["score_str"] = score_str
         context["favorite"] = favorite
-
         return context
 
 class MangaListView(generic.ListView):
@@ -327,6 +345,7 @@ def user_profile(request):
 
     return render(request, 'html/user_profile.html', {'userr': userr})
 
+
 @require_login
 def update_favorite_status(request, content_id):
     userr = _get_user_from_session(request)
@@ -349,3 +368,43 @@ def update_favorite_status(request, content_id):
 
     return redirect('anime_detail', pk=content_id)
 
+
+@require_login
+def update_score(request, content_id):
+    """ Function to add or update content score rated by user """
+    userr = _get_user_from_session(request)
+    if not userr:
+        return HttpResponseForbidden(_("You must be logged in to rate or update rated score."))
+
+    content_instance = get_object_or_404(Content, cid=content_id)
+
+    if request.method == 'POST':
+        score, created = ScoreList.objects.get_or_create(
+            uid=userr,
+            cid=content_instance,
+        )
+        score.score = request.POST.get('score')
+        score.save()
+
+    return redirect('anime_detail', pk=content_id)
+
+class ScoreEnum(Enum):
+    """ In case want to display not just score"""
+    ONE = "1"
+    TWO = "2"
+    THREE = "3"
+    FOUR = "4"
+    FIVE = "5"
+    SIX = "6"
+    SEVEN = "7"
+    EIGHT = "8"
+    NINE = "9"
+    TEN = "10"
+
+def score_to_str(content_cid, user_uid):
+    try:
+        user_score = ScoreList.objects.get(cid=content_cid, uid=user_uid)
+        score_int = user_score.score
+        return ScoreEnum(str(score_int)).value
+    except ObjectDoesNotExist:
+        return None

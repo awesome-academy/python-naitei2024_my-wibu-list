@@ -25,12 +25,14 @@
                 <button class="carousel-button prev">&#10094;</button>
                 <div class="carousel-wrapper">
                     {% for content in top_watching_content %}
-                      <a href="{{ content.get_absolute_url }}" style="text-decoration: none; color: inherit;">
                         <div class="carousel-slide">
+                          <a href="{{ content.get_absolute_url }}" style="text-decoration: none; color: inherit;">
                             <img src="{{ content.picture.url }}" alt="{{ content.name }}">
+                          </a>
+                          <a href="{{ content.get_absolute_url }}" style="text-decoration: none; color: inherit;">
                             <p>{{ content.name }}</p>
+                          </a>
                         </div>
-                      </a>
                     {% endfor %}
                 </div>
                 <button class="carousel-button next">&#10095;</button>
@@ -115,7 +117,8 @@
                             {% endfor %}
                             <!-- Các phần phim khác tiếp tục tương tự -->
                         </div>
-                        <a href="/anime-bo/" class="viewall">{% trans "See More" %} <i class="ion-ios-arrow-right"></i></a>
+                        <!-- Will make the url redirect to Lastest update later -->
+                        <a href="{% url 'anime' %}" class="viewall">{% trans "See More" %} <i class="ion-ios-arrow-right"></i></a>
                     </div>
                     {% endblock latest_updates %}
 
@@ -135,17 +138,21 @@
                                 {% for content in top_ranked_content %}
                                     <div class="col-6 col-md-4 col-lg-3 mb-4">
                                         <div class="card bg-dark text-white">
+                                          <a href="{{ content.get_absolute_url }}" style="text-decoration: none; color: inherit;">
                                             <img src="{{ content.picture.url }}" class="card-img-top" alt="{{ content.name }}">
+
                                             <div class="card-body">
                                                 <h6 class="card-title">{{ content.name }}</h6>
                                                 <p class="card-text">{% trans "Views: " %} {{ content.watching }}</p>
                                             </div>
+                                          </a>
                                         </div>
                                     </div>
                                 {% endfor %}
                             </div>
                             <div class="text-center">
-                                <a href="#" class="btn btn-outline-light">{% trans "See More" %}</a>
+                                <!-- <a href="#" class="btn btn-outline-light">{% trans "See More" %}</a> -->
+                                <a href="{% url 'anime' %}" class="viewall">{% trans "See More" %} <i class="ion-ios-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -160,9 +167,15 @@
                                 <div class="Title">{% trans "What to Watch Today?" %}</div>
                                 <hr class="underline">
                                 <p>{% trans "If you're feeling down and don't know what to watch today, let us pick something for you." %}</p>
-                                <a href="https://animevietsub.app/phim/kizumonogatari-iii-reiketsu-hen-i3-a185/" class="Button TPlay AAIco-play_arrow">
+                                {% if what_to_watch %}
+                                  <a href="{{ what_to_watch.get_absolute_url }}" class="Button TPlay AAIco-play_arrow">
                                     {% trans "Watch Random Anime" %}
-                                </a>
+                                  </a>
+                                {% else %}
+                                  <a href="{% url 'homepage' %}" class="Button TPlay AAIco-play_arrow">
+                                    {% trans "Watch Random Anime" %}
+                                  </a>
+                                {% endif %}
                             </section>
                         </div>
                         <div style="height: 250px;" class="card text-center">

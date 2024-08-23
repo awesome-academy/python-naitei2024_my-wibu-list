@@ -93,42 +93,86 @@
         <div class="item rate-button">
           <button style="height: 100%; width: 100%; border-radius: 5px;">
             <span style="justify-content: center;">
-              <svg data-v-9ba4cb7e="" data-v-8d292eb9="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-star icon" viewBox="0 0 24 24" style="color: currentcolor;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-star icon" viewBox="0 0 24 24" style="color: currentcolor;">
                 <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"></path>
-              </svg>{% trans "Rate it" %}</span>
+              </svg>{% if score_str %}  {{ score_str }}
+              {% else %}  Rate it{% endif %}
+            </span>
           </button>
+          {% if userr %}
           <ul>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(10) {% trans 'Masterpiece' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="10">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(10) {% trans 'Masterpiece' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(9) {% trans 'Great' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="9">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(9) {% trans 'Great' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(8) {% trans 'Very Good' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="8">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(8) {% trans 'Very Good' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(7) {% trans 'Good' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="7">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(7) {% trans 'Good' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(6) {% trans 'Fine' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="6">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(6) {% trans 'Fine' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(5) {% trans 'Average' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="5">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(5) {% trans 'Average' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(4) {% trans 'Bad' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="4">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(4) {% trans 'Bad' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(3) {% trans 'Very Bad' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="3">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(3) {% trans 'Very Bad' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(2) {% trans 'Horrible' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="2">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(2) {% trans 'Horrible' %}</button>
+              </form>
             </li>
             <li style="color: black;">
-              <a href="#" style="text-decoration: none; color: inherit;">(1) {% trans 'Appalling' %}</a>
+              <form action="{% url 'update_score' anime_detail.cid %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="score" value="1">
+                <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer;">(1) {% trans 'Appalling' %}</button>
+              </form>
             </li>
           </ul>
+          {% endif %}
         </div>
 
         <div class="item average-score-display">
@@ -202,11 +246,10 @@
               <div class="comment-item">
                 <div class="comment-header">
                   {% if comment.uid.profilePicture %}
-                      <img src="user1-avatar.jpg" alt="User {{ comment.uid.username }} Avatar" class="avatar">
+                      <img src="{{ comment.uid.profilePicture.url }}" alt="User {{ comment.uid.username }} Avatar" class="avatar">
                   {% else %}
                       <img src="{% static 'images/list_detail_default.jpg' %}" class="avatar" alt="Default avatar">
                   {% endif %}
-                  <img src="{% static 'images/list_detail_default.jpg' %}" class="avatar" alt="Default avatar">
                   <div class="comment-text">
                     <p><strong>{{ comment.uid.username }}:</strong> {{ comment.content }}</p>
                     <p class="cmt-date">{{ comment.dateOfCmt }}</p>
