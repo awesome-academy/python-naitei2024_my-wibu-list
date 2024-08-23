@@ -195,28 +195,29 @@ class AnimeListView(generic.ListView):
 class AnimeDetailView(generic.DetailView):
     """Class based view for anime detail."""
     model = Content
-    context_object_name = "anime_detail" # get overide by get_context_data
+    context_object_name = "anime_detail"
     template_name = "html/anime_detail.html"
 
-    # passing Score to view
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         content_instance = self.get_object()
         score_data_ = content_instance.score_data.all()
-        # Auth user if user in User table
         userr = _get_user_from_session(self.request)
-        # Get comments for this anime
         comments_list = Comments.objects.filter(cid=content_instance.cid).order_by('-dateOfCmt')
-        # Pagination
         paginator = Paginator(comments_list, 5)
         page_number = self.request.GET.get('page')
         comments = paginator.get_page(page_number)
-        # Sumarize context
+
+        favorite = None
+        if userr:
+            favorite = FavoriteList.objects.filter(uid=userr, cid=content_instance).first()
+
         context["score_"] = score_data_
         context["userr"] = userr
         context["comments"] = comments
-        return context
+        context["favorite"] = favorite
 
+        return context
 
 class MangaListView(generic.ListView):
     """Class for the view of the book list."""
@@ -325,3 +326,26 @@ def user_profile(request):
         return redirect('user_profile')
 
     return render(request, 'html/user_profile.html', {'userr': userr})
+
+@require_login
+def update_favorite_status(request, content_id):
+    userr = _get_user_from_session(request)
+    if not userr:
+        return HttpResponseForbidden(_("You must be logged in to update your status."))
+
+    content_instance = get_object_or_404(Content, cid=content_id)
+
+    status = request.POST.get('status')
+
+    if status in ['1', '2', '3', '5', '6']:
+        favorite, created = FavoriteList.objects.get_or_create(
+            uid=userr,
+            cid=content_instance,
+        )
+        favorite.status = status
+        favorite.save()
+    else:
+        FavoriteList.objects.filter(uid=userr, cid=content_instance).delete()
+
+    return redirect('anime_detail', pk=content_id)
+
