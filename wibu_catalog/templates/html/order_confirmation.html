@@ -1,21 +1,21 @@
-{% extends 'html/base.html' %} {% load i18n %} {% load static %} {% block
-extra_css %}
+{% extends 'html/base.html' %}
+{% load i18n %} {% load static %}
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/order_confirmation.css' %}" />
 {% endblock extra_css %} {% block content %}
 <h2>{% trans "Order Confirmation" %}</h2>
 <div class="order-confirmation">
   <h3>{% trans "Thank you for your order!" %}</h3>
   <p>
-    {% blocktrans with order.oid as oid and order.orderDate|date:"Y-m-d" as
-    order_date %} Order Number: {{ oid }} Order Date: {{ order_date }} {%
-    endblocktrans %}
+    {% blocktrans with order.oid as oid and order.orderDate|date:"Y-m-d" as order_date %}
+    Order Number: {{ oid }} Order Date: {{ order_date }} {% endblocktrans %}
   </p>
   <h3>{% trans "Your Order Items" %}:</h3>
   <ul>
     {% for item in cart_items %}
     <li>
-      {% blocktrans with item.product.name as name and item.quantity as quantity
-      and item.subtotal as subtotal %} {{ name }} - Quantity: {{ quantity }} -
+      {% blocktrans with item.product.name as name and item.quantity as quantity and item.subtotal as subtotal %}
+      {{ name }} - Quantity: {{ quantity }} -
       Price: {{ subtotal }} {% endblocktrans %}
     </li>
     {% empty %}
@@ -25,8 +25,8 @@ extra_css %}
   <h3>{% trans "Shipping Address" %}</h3>
   <p>{{ shipping_address.full_name }}</p>
   <p>{{ shipping_address.address }}</p>
-  {% blocktrans with shipping_address.city as city and shipping_address.country
-  as country %} {{ city }}, {{ country }} {% endblocktrans %}
+  {% blocktrans with shipping_address.city as city and shipping_address.country as country %}
+  {{ city }}, {{ country }} {% endblocktrans %}
   <p>{{ shipping_address.phone }}</p>
   <a href="{% url 'homepage' %}" class="btn btn-primary"
     >{% trans "Return to Home" %}</a

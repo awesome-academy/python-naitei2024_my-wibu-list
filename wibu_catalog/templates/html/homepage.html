@@ -1,5 +1,10 @@
-{% extends "html/base.html" %} {% load static %} {% load static i18n %} {% block
-header %} {% include 'html/header.html' %} {% endblock %} {% block content %}
+{% extends "html/base.html" %}
+{% load static %}
+{% load static i18n %}
+{% block header %}
+  {% include 'html/header.html' %}
+{% endblock %}
+{% block content %}
 <section>
   <div class="center">
     {% block notification %}
@@ -7,14 +12,14 @@ header %} {% include 'html/header.html' %} {% endblock %} {% block content %}
       <i class="fa-regular fa-bell"></i>
       <ul>
         <li>
-          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>{% trans
-          "Save or remember the shortened link" %}
-          <a href="">bit.ly/mywibulist</a> {% trans "to access when the network
-          is blocked!" %}
+          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
+          {% trans "Save or remember the shortened link" %}
+          <a href="">bit.ly/mywibulist</a>
+          {% trans "to access when the network is blocked!" %}
         </li>
         <li>
-          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>{% trans
-          "Join our Group" %}
+          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
+          {% trans "Join our Group" %}
           <p class="Group">
             <a href="#">{% trans "here!" %}</a>
           </p>
@@ -28,8 +33,8 @@ header %} {% include 'html/header.html' %} {% endblock %} {% block content %}
           </p>
         </li>
         <li>
-          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>{% trans "Due
-          to funding shortages, ads may be annoying. We hope you understand!" %}
+          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
+          {% trans "Due to funding shortages, ads may be annoying. We hope you understand!" %}
         </li>
       </ul>
     </div>

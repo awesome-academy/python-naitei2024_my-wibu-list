@@ -89,5 +89,6 @@ class ContentAdmin(admin.ModelAdmin):
 
     def get_field_display(self, obj):
         return _("Title: {name} - Last updated: {last_update}").format(
-            name=obj.name, last_update=obj.lastUpdate
+            name=obj.name,
+            last_update=obj.lastUpdate
         )

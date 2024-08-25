@@ -1,12 +1,15 @@
+# Python Standard Library
 import json
 import uuid
 from enum import Enum
 from functools import wraps
 from random import randint
 
+# Django Core and Utilities
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -15,28 +18,31 @@ from django.views import View, generic
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods, require_POST
 
+# Django Authentication
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.hashers import check_password
+
+# Import data from constants.py
 from wibu_catalog.constants import (
-    AVAILABLE_SIZES,
-    ITEMS_PER_PAGE,
-    ITEMS_PER_PAGE_MORE,
-)
-from wibu_catalog.models import (
-    Comments,
-    Content,
-    FavoriteList,
-    Order,
-    OrderItems,
-    Product,
-    ScoreList,
-    Users,
+    Role_dict, Score_dict, ITEMS_PER_PAGE_MORE, ITEMS_PER_PAGE,
+    Content_category, Manga_status, Anime_status, Manga_rating, Anime_rating,
+    FIELD_MAX_LENGTH_S, FIELD_MAX_LENGTH_M,
+    FIELD_MAX_LENGTH_L, FIELD_MAX_LENGTH_XL, AVAILABLE_SIZES,
+    TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMIT, ScoreEnum,
 )
 
-from .constants import (
-    LATEST_CONTENT_LIMIT,
-    TOP_RANKED_LIMIT,
-    TOP_WATCHING_LIMIT,
+# Import models from models.py
+from wibu_catalog.models import (
+    Content, Score, Users, FavoriteList,
+    ScoreList, Comments, Notifications,
+    Product, Order, OrderItems, Feedback,
 )
-from .forms import CommentForm, EditCommentForm, LoginForm, RegistrationForm
+
+# Import from forms.py
+from wibu_catalog.forms import (
+    RegistrationForm, LoginForm,
+    CommentForm, EditCommentForm,
+)
 
 
 def _get_user_from_session(request):
@@ -61,10 +67,10 @@ def homepage(request):
 
     top_ranked_content = Content.objects.order_by("ranked")[:TOP_RANKED_LIMIT]
 
-    content_random = randint(1, 17562)
     what_to_watch = None
-    while what_to_watch is None:
-        content_random = randint(1, 17562)
+    while (what_to_watch is None):
+        rand_range = Content.objects.count()
+        content_random = randint(1, rand_range)
         try:
             what_to_watch = Content.objects.get(cid=content_random)
         except ObjectDoesNotExist:
@@ -130,9 +136,8 @@ def post_comment(request, content_id):
             comment.uid = userr
             comment.dateOfCmt = timezone.now().date()
             comment.save()
-            # debuging corner
-            return redirect("anime_detail", pk=content_id)
-    return redirect("anime_detail", pk=content_id)
+            return redirect('anime_detail', pk=content_id)
+    return redirect('anime_detail', pk=content_id)
 
 
 def edit_comment(request, comment_id):
@@ -215,18 +220,16 @@ class AnimeDetailView(generic.DetailView):
         content_instance = self.get_object()
         score_data_ = content_instance.score_data.all()
         userr = _get_user_from_session(self.request)
-        comments_list = Comments.objects.filter(
-            cid=content_instance.cid
-        ).order_by("-dateOfCmt")
+        comments_list = Comments.objects.\
+            filter(cid=content_instance.cid).order_by('-dateOfCmt')
         paginator = Paginator(comments_list, 5)
         page_number = self.request.GET.get("page")
         comments = paginator.get_page(page_number)
 
         favorite = None
         if userr:
-            favorite = FavoriteList.objects.filter(
-                uid=userr, cid=content_instance
-            ).first()
+            favorite = FavoriteList.objects.\
+                filter(uid=userr, cid=content_instance).first()
 
         # User score
         if userr is not None:
@@ -309,9 +312,8 @@ def filter_by_genre(request, genre):
     userr = _get_user_from_session(request)
 
     # Lọc content theo thể loại và sắp xếp theo scoreAvg
-    filtered_content = Content.objects.filter(genres__icontains=genre).order_by(
-        "-scoreAvg"
-    )[:ITEMS_PER_PAGE]
+    filtered_content = Content.objects.\
+        filter(genres__icontains=genre).order_by("-scoreAvg")[:ITEMS_PER_PAGE]
 
     context = {
         "filtered_content": filtered_content,
@@ -359,12 +361,8 @@ class FavoriteListView(generic.ListView):
     def get_queryset(self):
         userr = _get_user_from_session(self.request)
         if userr:
-            # favListInstance = FavoriteList.objects.get(uid=userr.uid)
-            # return FavoriteList.objects.filter(uid=userr).select_related('cid')
-            # return Content.objects.filter(category='manga').all()
-            favorite_content_cids = FavoriteList.objects.filter(
-                uid=userr
-            ).values_list("cid", flat=True)
+            favorite_content_cids = FavoriteList.objects.filter(uid=userr)\
+                .values_list('cid', flat=True)
             return Content.objects.filter(cid__in=favorite_content_cids)
         return FavoriteList.objects.none()
 
@@ -535,7 +533,11 @@ def remove_from_cart(request):
             return JsonResponse(
                 {
                     "success": False,
-                    "error": f"Item with id {item_id} does not exist in the cart.",
+                    "error": (
+                        f"Item with id {item_id} "
+                        f"does not exist in the cart."
+                    ),
+
                 },
                 status=400,
             )
@@ -560,7 +562,10 @@ def update_quantity(request):
     if request.method == "POST":
         product_id = request.POST.get("product_id")
         if product_id is None:
-            return JsonResponse({"error": "No product_id provided"}, status=400)
+            return JsonResponse(
+                {"error": "No product_id provided"},
+                status=400
+            )
         quantity = int(request.POST.get("quantity"))
         checked = request.POST.get("checked")
         # Get the price of the product
@@ -583,7 +588,6 @@ def update_quantity(request):
                 item["subtotal"] = item["quantity"] * price
                 break
 
-        # Calculate the new total
         # Calculate the new total
         new_total = sum(
             item["quantity"] * get_product_price(item["product_id"])
@@ -747,7 +751,10 @@ def order_confirmation(request):
     customer_info = request.session.get("customer_info", {})
 
     shipping_address = {
-        "full_name": f"{customer_info.get('first_name', '')} {customer_info.get('last_name', '')}",
+        "full_name": (
+            f"{customer_info.get('first_name', '')} "
+            f"{customer_info.get('last_name', '')}"
+        ),
         "address": customer_info.get("address", ""),
         "phone": customer_info.get("phone", ""),
         "city": customer_info.get("city", ""),
@@ -813,22 +820,8 @@ def update_score(request, content_id):
     return redirect("anime_detail", pk=content_id)
 
 
-class ScoreEnum(Enum):
-    """In case want to display not just score"""
-
-    ONE = "1"
-    TWO = "2"
-    THREE = "3"
-    FOUR = "4"
-    FIVE = "5"
-    SIX = "6"
-    SEVEN = "7"
-    EIGHT = "8"
-    NINE = "9"
-    TEN = "10"
-
-
 def score_to_str(content_cid, user_uid):
+    """Convert score int to a sentence"""
     try:
         user_score = ScoreList.objects.get(cid=content_cid, uid=user_uid)
         score_int = user_score.score

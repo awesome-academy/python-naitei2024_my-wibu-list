@@ -4,6 +4,8 @@ SPECIAL THANKS TO:
     https://github.com/Hernan4444/MyAnimeList-Database/blob/master/data/watching_status.csv
     https://api.mangadex.org/docs/2-limitations/
 """
+from enum import Enum
+
 ITEMS_PER_PAGE = 10
 ITEMS_PER_PAGE_MORE = 20
 
@@ -11,6 +13,11 @@ FIELD_MAX_LENGTH_S = 1
 FIELD_MAX_LENGTH_M = 20
 FIELD_MAX_LENGTH_L = 255
 FIELD_MAX_LENGTH_XL = 500
+
+TOP_WATCHING_LIMIT = 5
+LATEST_CONTENT_LIMIT = 10
+TOP_RANKED_LIMIT = 10
+AVAILABLE_SIZES = ["S", "M", "L", "XL"]
 
 Content_category = {
     "anime": "Anime",
@@ -76,7 +83,15 @@ Score_dict = {
 }
 
 
-TOP_WATCHING_LIMIT = 5
-LATEST_CONTENT_LIMIT = 10
-TOP_RANKED_LIMIT = 10
-AVAILABLE_SIZES = ["S", "M", "L", "XL"]
+class ScoreEnum(Enum):
+    """ In case want to display not just score"""
+    ONE = "1"
+    TWO = "2"
+    THREE = "3"
+    FOUR = "4"
+    FIVE = "5"
+    SIX = "6"
+    SEVEN = "7"
+    EIGHT = "8"
+    NINE = "9"
+    TEN = "10"

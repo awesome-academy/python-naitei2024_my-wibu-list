@@ -18,8 +18,8 @@
     crossorigin="anonymous"
   />
 </head>
-{% block header %} {% include 'html/header.html' %} {% endblock %} {% block
-content %}
+{% block header %} {% include 'html/header.html' %} {% endblock %}
+{% block content %}
 <section>
   <div class="center">
     {% block manga-detail %}
@@ -178,8 +178,7 @@ content %}
       </div>
       <div class="item average-score-display">
         <p style="text-align: center; vertical-align: middle">
-          <strong>{% trans 'Average Score:' %}</strong> {{ manga_detail.scoreAvg
-          }}
+          <strong>{% trans 'Average Score:' %}</strong> {{ manga_detail.scoreAvg }}
         </p>
         {% if score_ %}
         <ul class="score-list">
