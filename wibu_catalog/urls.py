@@ -92,5 +92,13 @@ urlpatterns = [
         "order-confirmation/",
         views.order_confirmation,
         name="order-confirmation",
-    )
+    ),
+
+    # url for change password view
+    path(
+        'change-password/',
+        views.ChangePassword.as_view(),
+        name='change_password'
+    ),
+
 ]

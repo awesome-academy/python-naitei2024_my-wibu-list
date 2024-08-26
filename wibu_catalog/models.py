@@ -1,8 +1,12 @@
 # wibu_catalog/models.py
+import uuid
 from cloudinary.models import CloudinaryField
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.hashers import make_password, check_password
 
 # import data from constant
 from wibu_catalog.constants import (
@@ -322,6 +326,15 @@ class Users(models.Model):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        if self.password and not self.password.startswith('pbkdf2_'):
+            self.password = make_password(self.password)
+        super(Users, self).save(*args, **kwargs)
+
+    def verify_password(user_input_password, user):
+        hashed_password = user.password
+        return check_password(user_input_password, hashed_password)
 
 
 class FavoriteList(models.Model):
