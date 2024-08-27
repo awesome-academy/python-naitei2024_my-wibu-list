@@ -29,6 +29,7 @@ from wibu_catalog.constants import (
     FIELD_MAX_LENGTH_S, FIELD_MAX_LENGTH_M,
     FIELD_MAX_LENGTH_L, FIELD_MAX_LENGTH_XL, AVAILABLE_SIZES,
     TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMIT, ScoreEnum,
+    PRODUCTS_PER_PAGE_DETAIL, COMMENTS_PER_PAGE_DETAIL,
 )
 
 # Import models from models.py
@@ -68,14 +69,7 @@ def homepage(request):
 
     top_ranked_content = Content.objects.order_by("ranked")[:TOP_RANKED_LIMIT]
 
-    what_to_watch = None
-    while (what_to_watch is None):
-        rand_range = Content.objects.count()
-        content_random = randint(1, rand_range)
-        try:
-            what_to_watch = Content.objects.get(cid=content_random)
-        except ObjectDoesNotExist:
-            what_to_watch = None
+    what_to_watch = random_button()
 
     return render(
         request,
@@ -88,6 +82,19 @@ def homepage(request):
             "what_to_watch": what_to_watch,
         },
     )
+
+
+def random_button():
+    """Give random content cid"""
+    what_to_watch = None
+    while (what_to_watch is None):
+        rand_range = Content.objects.count()
+        content_random = randint(1, rand_range)
+        try:
+            what_to_watch = Content.objects.get(cid=content_random)
+        except ObjectDoesNotExist:
+            what_to_watch = None
+    return what_to_watch
 
 
 def user(request):
@@ -221,12 +228,29 @@ class AnimeDetailView(generic.DetailView):
         content_instance = self.get_object()
         score_data_ = content_instance.score_data.all()
         userr = _get_user_from_session(self.request)
+
+        # comments related
         comments_list = Comments.objects.\
             filter(cid=content_instance.cid).order_by('-dateOfCmt')
-        paginator = Paginator(comments_list, 5)
-        page_number = self.request.GET.get("page")
-        comments = paginator.get_page(page_number)
+        comments_paginator = Paginator(comments_list, COMMENTS_PER_PAGE_DETAIL)
+        comments_page_number = self.request.GET.get("comments_page")
+        comments = comments_paginator.get_page(comments_page_number)
 
+        # Random content button related
+        what_to_watch = random_button()
+
+        # Product related
+        products = None
+        products_list = Product.objects.\
+            filter(cid=content_instance.cid).order_by("-ravg")
+        if products_list:
+            products_paginator = Paginator(products_list, PRODUCTS_PER_PAGE_DETAIL)
+            products_page_number = self.request.GET.get("product_page")
+            products = products_paginator.get_page(products_page_number)
+        else:
+            product = None
+
+        # user's favorite status
         favorite = None
         if userr:
             favorite = FavoriteList.objects.\
@@ -237,12 +261,15 @@ class AnimeDetailView(generic.DetailView):
             score_str = score_to_str(content_instance.cid, userr.uid)
         else:
             score_str = None
+
         # Sumarize context
         context["score_"] = score_data_
         context["userr"] = userr
         context["comments"] = comments
         context["score_str"] = score_str
         context["favorite"] = favorite
+        context["what_to_watch"] = what_to_watch
+        context["products"] = products
         return context
 
 

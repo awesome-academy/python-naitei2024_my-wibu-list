@@ -8,6 +8,8 @@ from enum import Enum
 
 ITEMS_PER_PAGE = 10
 ITEMS_PER_PAGE_MORE = 20
+PRODUCTS_PER_PAGE_DETAIL = 4
+COMMENTS_PER_PAGE_DETAIL = 5
 
 FIELD_MAX_LENGTH_S = 1
 FIELD_MAX_LENGTH_M = 20
@@ -41,7 +43,7 @@ Anime_status = {
     2: "Completed",
     3: "On-Hold",
     4: "Dropped",
-    5: "Re-Watching",  # count as watching
+    5: "Re-Watching",
     6: "Plan to Watch",
 }
 
