@@ -1,0 +1,181 @@
+/* Nền tổng thể của trang */
+body {
+  background-color: #333; /* Màu xám nhạt cho nền ngoài */
+  color: #e0e0e0; /* Màu chữ tối hơn để dễ đọc trên nền xám nhạt */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container chính của giỏ hàng */
+.cart-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5; /* Màu xám nhạt hơn cho nền bên trong */
+  color: #333; /* Màu chữ tối hơn */
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm chút shadow để phân biệt container */
+}
+
+/* Tiêu đề của giỏ hàng */
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  padding: 10px 0;
+  border-bottom: 2px solid #ccc; /* Viền màu xám nhạt hơn */
+  background-color: #e0e0e0; /* Nền tiêu đề màu xám nhạt */
+  text-align: center;
+  font-size: 16px;
+}
+
+/* Các sản phẩm trong giỏ hàng */
+.cart-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc; /* Viền màu xám nhạt hơn */
+  background-color: #e0e0e0; /* Nền màu xám nhạt */
+  text-align: center;
+  position: relative;
+  gap: 10px;
+}
+
+/* Định vị dấu "×" */
+.remove-item-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #ff4d4d; /* Màu đỏ nổi bật cho nút xóa */
+}
+
+/* Các phần tử trong cart-item */
+.cart-item > div,
+.cart-item input[type="number"] {
+  flex: 1;
+  min-width: 80px;
+  box-sizing: border-box;
+}
+
+/* Ảnh sản phẩm */
+.cart-item-image {
+  flex: 0 0 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cart-item-image img {
+  width: 70%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Tên sản phẩm */
+.cart-item-details {
+  flex: 1;
+  font-size: 16px;
+  color: #333; /* Màu chữ tối hơn */
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Giá sản phẩm */
+.item-price {
+  font-weight: bold;
+  color: #333; /* Màu chữ tối hơn */
+  display: inline;
+}
+
+/* Số lượng sản phẩm */
+.cart-item input[type="number"] {
+  width: 50px;
+  padding: 5px;
+  border: 1px solid #ccc; /* Viền màu xám nhạt hơn */
+  background-color: #f5f5f5; /* Nền màu xám nhạt hơn */
+  color: #333; /* Màu chữ tối hơn */
+  text-align: center;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Tạm tính của từng sản phẩm */
+.item-subtotal {
+  font-weight: bold;
+  color: #333; /* Màu chữ tối hơn */
+}
+
+/* Cộng giỏ hàng */
+.cart-summary {
+  margin-top: 30px; /* Tạo khoảng cách lớn hơn so với phần phía trên */
+  padding: 20px;
+  background-color: burlywood; /* Nền màu xám nhạt */
+  border: 2px solid #fff; /* Viền màu trắng */
+  text-align: right; /* Căn giữa nội dung */
+  width: 50%; /* Chiều rộng 50% của container */
+  margin-left: auto; /* Căn giữa khối */
+  margin-right: auto; /* Căn giữa khối */
+  border-radius: 5px;
+}
+
+/* Tiêu đề trong phần cộng giỏ hàng */
+.cart-summary h3 {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333; /* Màu chữ tối hơn */
+}
+
+/* Tổng số tiền */
+#cart-subtotal,
+#cart-total {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333; /* Màu chữ tối hơn */
+  margin-bottom: 10px;
+}
+
+/* Nút tiến hành thanh toán */
+.checkout-btn {
+  display: inline-block;
+  background-color: brown;
+  color: #fff;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+/* Thông báo giỏ hàng trống */
+.empty-cart {
+  text-align: center;
+  font-size: 18px;
+  color: #ff4d4d;
+  font-weight: bold;
+  margin-top: 50px;
+}
+
+/* CSS for the checkbox */
+.select-input {
+  display: block;
+  margin: 10px; /* Remove any default margin */
+  float: left; /* Align to the left */
+  width: 20px; /* Increase the width */
+  height: 20px; /* Increase the height */
+}
+
+/* CSS for the checkbox container */
+.product-select {
+  width: 50px !important; /* Same as .select-input */
+  height: 20px; /* Same as .select-input */
+  float: left; /* Align to the left */
+}

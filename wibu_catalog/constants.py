@@ -46,12 +46,12 @@ Manga_rating = {
     4: "pornographic",
 }
 Anime_rating = {
-    1: "G",      # All Ages
-    2: "PG",     # Children
+    1: "G",  # All Ages
+    2: "PG",  # Children
     3: "PG-13",  # Teens 13 or older
-    4: "R",      # 17+ (violence & profanity)
-    5: "R+",     # Mild Nudity
-    6: "R18",    # Hentai[/quote]
+    4: "R",  # 17+ (violence & profanity)
+    5: "R+",  # Mild Nudity
+    6: "R18",  # Hentai[/quote]
 }
 
 Role_dict = {
@@ -79,4 +79,4 @@ Score_dict = {
 TOP_WATCHING_LIMIT = 5
 LATEST_CONTENT_LIMIT = 10
 TOP_RANKED_LIMIT = 10
-ITEMS_PER_PAGE = 15 
+AVAILABLE_SIZES = ["S", "M", "L", "XL"]

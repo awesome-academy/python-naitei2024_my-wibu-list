@@ -1,0 +1,48 @@
+/* Order Confirmation Page Styles */
+.order-confirmation {
+  max-width: 600px; /* Width of the rectangular box */
+  margin: 50px auto; /* Center the box horizontally and add vertical margin */
+  padding: 20px; /* Padding inside the box */
+  background-color: #f9f9f9; /* Background color of the box */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  text-align: center; /* Center-align the text */
+}
+
+.order-confirmation h2,
+.order-confirmation h3 {
+  color: #333; /* Darker text color for headings */
+  margin-bottom: 15px; /* Space below headings */
+}
+
+.order-confirmation p {
+  color: #555; /* Lighter text color for paragraphs */
+  margin: 10px 0; /* Space above and below paragraphs */
+}
+
+.order-confirmation ul {
+  list-style: none; /* Remove bullet points */
+  padding: 0; /* Remove padding from the list */
+  margin: 15px 0; /* Space above and below the list */
+}
+
+.order-confirmation ul li {
+  margin: 5px 0; /* Space between list items */
+  color: #444; /* Slightly darker text color for list items */
+}
+
+.btn.btn-primary {
+  background-color: #007bff; /* Primary button color */
+  color: #fff; /* White text color */
+  padding: 10px 20px; /* Padding inside the button */
+  border: none; /* Remove button border */
+  border-radius: 5px; /* Rounded corners */
+  text-decoration: none; /* Remove underline from the link */
+  font-weight: bold; /* Make text bold */
+  display: inline-block; /* Display as block-level element */
+  margin-top: 20px; /* Space above the button */
+}
+
+.btn.btn-primary:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}

@@ -23,7 +23,7 @@
   grid-gap: 1rem;
 }
 
-.list-container .content-list-pagination{
+.list-container .content-list-pagination {
   grid-area: 3 / 1 / 4 / 2;
 }
 /*end of grid placement*/
@@ -76,29 +76,29 @@
 
 /*pagination*/
 .content-list-pagination .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
 }
 
 .content-list-pagination .pagination button {
-    background-color: #007bff;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .content-list-pagination .pagination button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .content-list-pagination .pagination .current-page {
-    font-weight: bold;
-    color: #333;
+  font-weight: bold;
+  color: #333;
 }

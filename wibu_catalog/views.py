@@ -1,38 +1,46 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RegistrationForm, LoginForm, CommentForm, EditCommentForm
-from django.contrib.auth.forms import UserCreationForm
-from django.views import generic, View
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.utils import timezone
-
-from django.db.models import Q
-# import data from constants.py
-from wibu_catalog.constants import Role_dict, Score_dict, ITEMS_PER_PAGE_MORE
-from wibu_catalog.constants import ITEMS_PER_PAGE, Content_category
-from wibu_catalog.constants import Manga_status, Anime_status
-from wibu_catalog.constants import Manga_rating, Anime_rating
-from wibu_catalog.constants import FIELD_MAX_LENGTH_S, FIELD_MAX_LENGTH_M
-from wibu_catalog.constants import FIELD_MAX_LENGTH_L, FIELD_MAX_LENGTH_XL
-
-# import models form models.py
-from wibu_catalog.models import Content, Score, Users, FavoriteList
-from wibu_catalog.models import ScoreList, Comments, Notifications
-from wibu_catalog.models import Product, Order, OrderItems, Feedback
-
-from .constants import TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMIT
-from wibu_catalog.constants import ITEMS_PER_PAGE
-from django.contrib.auth.hashers import check_password
+import json
+import uuid
+from enum import Enum
+from functools import wraps
+from random import randint
 
 from django.contrib import messages
-from functools import wraps
-from django.utils.translation import gettext as _
 from django.core.exceptions import ObjectDoesNotExist
-from random import randint
-from enum import Enum
+from django.core.paginator import Paginator
+from django.http import HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
+from django.utils.translation import gettext as _
+from django.views import View, generic
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods, require_POST
 
-# Function definition:
+from wibu_catalog.constants import (
+    AVAILABLE_SIZES,
+    ITEMS_PER_PAGE,
+    ITEMS_PER_PAGE_MORE,
+)
+from wibu_catalog.models import (
+    Comments,
+    Content,
+    FavoriteList,
+    Order,
+    OrderItems,
+    Product,
+    ScoreList,
+    Users,
+)
+
+from .constants import (
+    LATEST_CONTENT_LIMIT,
+    TOP_RANKED_LIMIT,
+    TOP_WATCHING_LIMIT,
+)
+from .forms import CommentForm, EditCommentForm, LoginForm, RegistrationForm
+
+
 def _get_user_from_session(request):
-    user_id = request.session.get('user_id')
+    user_id = request.session.get("user_id")
     if user_id:
         try:
             return Users.objects.get(uid=user_id)
@@ -40,55 +48,81 @@ def _get_user_from_session(request):
             return None
     return None
 
+
 def homepage(request):
     userr = _get_user_from_session(request)
-    top_watching_content = Content.objects.order_by('-watching')[:TOP_WATCHING_LIMIT]
+    top_watching_content = Content.objects.order_by("-watching")[
+        :TOP_WATCHING_LIMIT
+    ]
 
-    latest_content = Content.objects.order_by('-lastUpdate')[:LATEST_CONTENT_LIMIT]
+    latest_content = Content.objects.order_by("-lastUpdate")[
+        :LATEST_CONTENT_LIMIT
+    ]
 
-    top_ranked_content = Content.objects.order_by('ranked')[:TOP_RANKED_LIMIT]
+    top_ranked_content = Content.objects.order_by("ranked")[:TOP_RANKED_LIMIT]
 
-    content_random = randint(1,17562)
+    content_random = randint(1, 17562)
     what_to_watch = None
-    while (what_to_watch is None):
-        content_random = randint(1,17562)
+    while what_to_watch is None:
+        content_random = randint(1, 17562)
         try:
             what_to_watch = Content.objects.get(cid=content_random)
         except ObjectDoesNotExist:
             what_to_watch = None
 
-    return render(request, 'html/homepage.html', {
-        'top_watching_content': top_watching_content,
-        'latest_content': latest_content,
-        'top_ranked_content': top_ranked_content,
-        'userr': userr,
-        'what_to_watch': what_to_watch,
-    })
+    return render(
+        request,
+        "html/homepage.html",
+        {
+            "top_watching_content": top_watching_content,
+            "latest_content": latest_content,
+            "top_ranked_content": top_ranked_content,
+            "userr": userr,
+            "what_to_watch": what_to_watch,
+        },
+    )
+
+
+def user(request):
+    top_watching_content = Content.objects.order_by("-watching")[
+        :TOP_WATCHING_LIMIT
+    ]
+
+    latest_content = Content.objects.order_by("-lastUpdate")[
+        :LATEST_CONTENT_LIMIT
+    ]
+
+    top_ranked_content = Content.objects.order_by("ranked")[:TOP_RANKED_LIMIT]
+
+    return render(
+        request,
+        "html/homepage_user.html",
+        {
+            "top_watching_content": top_watching_content,
+            "latest_content": latest_content,
+            "top_ranked_content": top_ranked_content,
+        },
+    )
 
 
 def register(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
+            user.set_password(form.cleaned_data["password"])
             user.save()
-            return redirect('homepage')
+            return redirect("homepage")
     else:
         form = RegistrationForm()
-    return render(request, 'html/registerform.html', {'form': form})
-
-
-def logout(request):
-    request.session.flush()
-    return redirect('homepage')
+    return render(request, "html/registerform.html", {"form": form})
 
 
 # Comment section:
 def post_comment(request, content_id):
     userr = _get_user_from_session(request)
     cmtedContent = get_object_or_404(Content, cid=content_id)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
@@ -97,10 +131,8 @@ def post_comment(request, content_id):
             comment.dateOfCmt = timezone.now().date()
             comment.save()
             # debuging corner
-            print("Comment saved:", comment)  # Debugging line
-            print(Comments.objects.filter(uid=userr, cid=cmtedContent))
-            return redirect('anime_detail', pk=content_id)
-    return redirect('anime_detail', pk=content_id)
+            return redirect("anime_detail", pk=content_id)
+    return redirect("anime_detail", pk=content_id)
 
 
 def edit_comment(request, comment_id):
@@ -108,87 +140,54 @@ def edit_comment(request, comment_id):
     try:
         comment = Comments.objects.get(id=comment_id, uid=userr.uid)
     except Comments.DoesNotExist:
-        return redirect('anime_detail', pk=comment.cid.cid)
+        return redirect("anime_detail", pk=comment.cid.cid)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = EditCommentForm(request.POST, instance=comment)
         if form.is_valid():
             comment.dateOfCmt = timezone.now().date()  # Update the date
             comment.save()
-            return redirect('anime_detail', pk=comment.cid.cid)
+            return redirect("anime_detail", pk=comment.cid.cid)
             # somehow comment.cid = Content.__str__
     else:
         form = EditCommentForm(instance=comment)
 
-    return redirect('anime_detail', pk=comment.cid.cid)
+    return redirect("anime_detail", pk=comment.cid.cid)
 
 
 def delete_comment(request, comment_id):
-    userr = _get_user_from_session(request)
-
     try:
         comment = Comments.objects.get(id=comment_id)
         comment.delete()
     except Comments.DoesNotExist:
-        return redirect('anime_detail', pk=comment.cid.cid)
-    return redirect('anime_detail', pk=comment.cid.cid)
+        return redirect("anime_detail", pk=comment.cid.cid)
+    return redirect("anime_detail", pk=comment.cid.cid)
+
+
 # end of Comment section
 
 
-def list_product(request):
-    userr = _get_user_from_session(request)
-    query = request.GET.get('q', '')  # Lấy từ khóa tìm kiếm từ URL, mặc định là chuỗi rỗng
-    sort_by = request.GET.get('sort_by', 'id')  # Giá trị mặc định là 'id'
-
-    # Tìm kiếm sản phẩm theo từ khóa
-    if query:
-        products_list = Product.objects.filter(name__icontains=query)
-    else:
-        products_list = Product.objects.all()
-
-    # Sắp xếp sản phẩm theo yêu cầu
-    if sort_by == 'highest_rate':
-        products_list = products_list.order_by('-ravg')
-    elif sort_by == 'low_to_high':
-        products_list = products_list.order_by('price')
-    elif sort_by == 'high_to_low':
-        products_list = products_list.order_by('-price')
-
-    paginator = Paginator(products_list, 12)
-    page_number = request.GET.get('page')
-    products = paginator.get_page(page_number)
-
-    return render(request, 'html/warehouse.html', {'products': products, 'current_sort': sort_by, 'query': query,"userr":userr})
-
-
 def search_content(request):
-    query = request.GET.get('q','').lower()
-    search_results = None
-    if query:
-        search_results = Content.objects.filter(name__icontains=query)
-    else:
-        search_results = Content.objects.all()  # Nếu không có từ khóa, hiển thị tất cả
-
-    return render(request, 'html/search_content_results.html', {'search_results': search_results,})
-
-
-def filter_by_genre(request, genre):
     userr = _get_user_from_session(request)
+    query = request.GET.get("q", "").lower()
+    search_results = Content.objects.all()
+    if query:
+        search_results = search_results.filter(name__icontains=query)
 
-    # Lọc content theo thể loại và sắp xếp theo scoreAvg
-    filtered_content = Content.objects.filter(genres__icontains=genre).order_by('-scoreAvg')[:ITEMS_PER_PAGE]
-
-    context = {
-        'filtered_content': filtered_content,
-        'selected_genre': genre,
-        'userr': userr
-    }
-    return render(request, 'html/filtered_content.html', context)
+    return render(
+        request,
+        "html/search_content_results.html",
+        {
+            "search_results": search_results,
+            "userr": userr,
+        },
+    )
 
 
 # Class definition:
 class AnimeListView(generic.ListView):
     """Class based view for anime list."""
+
     model = Content
     context_object_name = "anime_list"
     paginate_by = ITEMS_PER_PAGE_MORE
@@ -206,6 +205,7 @@ class AnimeListView(generic.ListView):
 
 class AnimeDetailView(generic.DetailView):
     """Class based view for anime detail."""
+
     model = Content
     context_object_name = "anime_detail"
     template_name = "html/anime_detail.html"
@@ -215,17 +215,21 @@ class AnimeDetailView(generic.DetailView):
         content_instance = self.get_object()
         score_data_ = content_instance.score_data.all()
         userr = _get_user_from_session(self.request)
-        comments_list = Comments.objects.filter(cid=content_instance.cid).order_by('-dateOfCmt')
+        comments_list = Comments.objects.filter(
+            cid=content_instance.cid
+        ).order_by("-dateOfCmt")
         paginator = Paginator(comments_list, 5)
-        page_number = self.request.GET.get('page')
+        page_number = self.request.GET.get("page")
         comments = paginator.get_page(page_number)
 
         favorite = None
         if userr:
-            favorite = FavoriteList.objects.filter(uid=userr, cid=content_instance).first()
+            favorite = FavoriteList.objects.filter(
+                uid=userr, cid=content_instance
+            ).first()
 
         # User score
-        if userr != None:
+        if userr is not None:
             score_str = score_to_str(content_instance.cid, userr.uid)
         else:
             score_str = None
@@ -237,15 +241,17 @@ class AnimeDetailView(generic.DetailView):
         context["favorite"] = favorite
         return context
 
+
 class MangaListView(generic.ListView):
     """Class for the view of the book list."""
+
     model = Content
     paginate_by = ITEMS_PER_PAGE_MORE
     context_object_name = "manga_list"
     template_name = "html/manga_list.html"
 
     def get_queryset(self):
-        return Content.objects.filter(category='manga').all()
+        return Content.objects.filter(category="manga").all()
 
 
 class MangaDetailView(generic.DetailView):
@@ -258,8 +264,61 @@ class MangaDetailView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         content_instance = self.get_object()
         score_data_ = content_instance.score_data.all()
-        context['score_'] = score_data_
+        context["score_"] = score_data_
         return context
+
+
+def list_product(request):
+    userr = _get_user_from_session(request)
+    query = request.GET.get(
+        "q", ""
+    )  # Lấy từ khóa tìm kiếm từ URL, mặc định là chuỗi rỗng
+    sort_by = request.GET.get("sort_by", "id")  # Giá trị mặc định là 'id'
+
+    # Tìm kiếm sản phẩm theo từ khóa
+    if query:
+        products_list = Product.objects.filter(name__icontains=query)
+    else:
+        products_list = Product.objects.all()
+
+    # Sắp xếp sản phẩm theo yêu cầu
+    if sort_by == "highest_rate":
+        products_list = products_list.order_by("-ravg")
+    elif sort_by == "low_to_high":
+        products_list = products_list.order_by("price")
+    elif sort_by == "high_to_low":
+        products_list = products_list.order_by("-price")
+
+    paginator = Paginator(products_list, ITEMS_PER_PAGE)
+    page_number = request.GET.get("page")
+    products = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "html/warehouse.html",
+        {
+            "products": products,
+            "current_sort": sort_by,
+            "query": query,
+            "userr": userr,
+        },
+    )
+
+
+def filter_by_genre(request, genre):
+    userr = _get_user_from_session(request)
+
+    # Lọc content theo thể loại và sắp xếp theo scoreAvg
+    filtered_content = Content.objects.filter(genres__icontains=genre).order_by(
+        "-scoreAvg"
+    )[:ITEMS_PER_PAGE]
+
+    context = {
+        "filtered_content": filtered_content,
+        "selected_genre": genre,
+        "userr": userr,
+    }
+    return render(request, "html/filtered_content.html", context)
 
 
 class LoginView(View):
@@ -274,23 +333,24 @@ class LoginView(View):
             return None
 
     def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        email = request.POST.get("email")
+        password = request.POST.get("password")
         user = self._authenticate_user(email=email, password=password)
         if user is not None:
-            request.session['user_id'] = user.uid
-            return redirect('homepage')
+            request.session["user_id"] = user.uid
+            return redirect("homepage")
         else:
             form = LoginForm()
-            return render(request, 'html/loginform.html', {'form': form})
+            return render(request, "html/loginform.html", {"form": form})
 
     def get(self, request):
         form = LoginForm()
-        return render(request, 'html/loginform.html', {'form': form})
+        return render(request, "html/loginform.html", {"form": form})
 
 
 class FavoriteListView(generic.ListView):
     """Class based view for favorite anime list."""
+
     model = Content
     context_object_name = "favorites_list"
     paginate_by = ITEMS_PER_PAGE_MORE
@@ -302,7 +362,9 @@ class FavoriteListView(generic.ListView):
             # favListInstance = FavoriteList.objects.get(uid=userr.uid)
             # return FavoriteList.objects.filter(uid=userr).select_related('cid')
             # return Content.objects.filter(category='manga').all()
-            favorite_content_cids = FavoriteList.objects.filter(uid=userr).values_list('cid', flat=True)
+            favorite_content_cids = FavoriteList.objects.filter(
+                uid=userr
+            ).values_list("cid", flat=True)
             return Content.objects.filter(cid__in=favorite_content_cids)
         return FavoriteList.objects.none()
 
@@ -312,51 +374,56 @@ class FavoriteListView(generic.ListView):
         context["userr"] = userr
         return context
 
+
 def require_login(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         userr = _get_user_from_session(request)
         if not userr:
-            return redirect('login')
+            return redirect("login")
         return view_func(request, *args, **kwargs)
+
     return _wrapped_view
+
 
 @require_login
 def user_profile(request):
-    user_id = request.session.get('user_id')
+    user_id = request.session.get("user_id")
     try:
         userr = Users.objects.get(uid=user_id)
     except Users.DoesNotExist:
-        return redirect('homepage')
+        return redirect("homepage")
 
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        date_of_birth = request.POST.get('dateOfBirth')
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        date_of_birth = request.POST.get("dateOfBirth")
 
-        #Update
+        # Update
         userr.username = username
         userr.email = email
         userr.dateOfBirth = date_of_birth
         userr.save()
 
-        messages.success(request, _('Profile updated successfully!'))
-        return redirect('user_profile')
+        messages.success(request, _("Profile updated successfully!"))
+        return redirect("user_profile")
 
-    return render(request, 'html/user_profile.html', {'userr': userr})
+    return render(request, "html/user_profile.html", {"userr": userr})
 
 
 @require_login
 def update_favorite_status(request, content_id):
     userr = _get_user_from_session(request)
     if not userr:
-        return HttpResponseForbidden(_("You must be logged in to update your status."))
+        return HttpResponseForbidden(
+            _("You must be logged in to update your status.")
+        )
 
     content_instance = get_object_or_404(Content, cid=content_id)
 
-    status = request.POST.get('status')
+    status = request.POST.get("status")
 
-    if status in ['1', '2', '3', '5', '6']:
+    if status in ["1", "2", "3", "5", "6"]:
         favorite, created = FavoriteList.objects.get_or_create(
             uid=userr,
             cid=content_instance,
@@ -366,30 +433,389 @@ def update_favorite_status(request, content_id):
     else:
         FavoriteList.objects.filter(uid=userr, cid=content_instance).delete()
 
-    return redirect('anime_detail', pk=content_id)
+    return redirect("anime_detail", pk=content_id)
+
+
+def logout(request):
+    request.session.flush()
+    return redirect("homepage")
+
+
+def order_history(request):
+    userr = _get_user_from_session(request)
+    orders = Order.objects.filter(uid_id=uuid)
+    return render(
+        request, "html/order_history.html", {"orders": orders, "userr": userr}
+    )
+
+
+def product_detail(request, pid=None):
+    userr = _get_user_from_session(request)
+    product = Product.objects.get(pid=pid)
+    return render(
+        request,
+        "html/product_detail.html",
+        {
+            "product": product,
+            "userr": userr,
+            "available_sizes": AVAILABLE_SIZES,
+        },
+    )
+
+
+@ensure_csrf_cookie  # Ensures the CSRF token is set for the session
+def add_to_cart(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        product_id = data.get("product_id")
+        quantity = int(data.get("quantity", 1))  # Convert quantity to int
+
+        try:
+            product = Product.objects.get(pid=product_id)
+            cart = request.session.get("cart", [])
+            found = False
+
+            for item in cart:
+                if item["product_id"] == product_id:
+                    item["quantity"] += quantity
+                    found = True
+                    # Update subtotal for existing item
+                    item["subtotal"] = item["quantity"] * product.price
+                    break
+
+            if not found:
+                cart.append(
+                    {
+                        "product_id": product_id,
+                        "quantity": quantity,
+                        "subtotal": product.price
+                        * quantity,  # Calculate subtotal for new item
+                    }
+                )
+
+            # Update the cart total in the session
+            request.session["cart_total"] = sum(
+                item.get("subtotal", 0) for item in cart
+            )
+            request.session["cart"] = cart
+
+            return JsonResponse(
+                {"success": True, "cart_total": request.session["cart_total"]}
+            )
+
+        except Product.DoesNotExist:
+            return JsonResponse(
+                {"success": False, "error": "Product not found."}
+            )
+    else:
+        return JsonResponse(
+            {"success": False, "error": "Invalid request method."}
+        )
+
+
+@csrf_exempt
+@require_POST
+def remove_from_cart(request):
+    try:
+        item_id = int(request.POST.get("item_id"))
+
+        # Retrieve the cart from the session
+        cart_items = request.session.get("cart", {})
+        # Filter out the item to be removed
+        item_to_remove = None
+        for item in cart_items:
+            if str(item["product_id"]) == str(item_id):
+                item_to_remove = item
+                break
+
+        if item_to_remove is not None:
+            cart_items.remove(item_to_remove)
+            cart_total = _calculate_cart_total(cart_items)
+        else:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": f"Item with id {item_id} does not exist in the cart.",
+                },
+                status=400,
+            )
+
+        request.session["cart"] = cart_items
+        request.session.modified = True
+        return JsonResponse({"success": True, "cart_total": cart_total})
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+def get_product_price(product_id):
+    try:
+        product = Product.objects.get(pid=product_id)
+        return product.price
+    except Product.DoesNotExist:
+        return None
+
+
+@csrf_exempt
+def update_quantity(request):
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        if product_id is None:
+            return JsonResponse({"error": "No product_id provided"}, status=400)
+        quantity = int(request.POST.get("quantity"))
+        checked = request.POST.get("checked")
+        # Get the price of the product
+        price = get_product_price(product_id)
+        if price is None:
+            return JsonResponse(
+                {
+                    "error": "Product with id {} does not exist".format(
+                        product_id
+                    )
+                },
+                status=400,
+            )
+
+        # Update the quantity in the session
+        for item in request.session["cart"]:
+            if item["product_id"] == product_id:
+                item["quantity"] = quantity
+                item[checked] = checked
+                item["subtotal"] = item["quantity"] * price
+                break
+
+        # Calculate the new total
+        # Calculate the new total
+        new_total = sum(
+            item["quantity"] * get_product_price(item["product_id"])
+            for item in request.session["cart"]
+            if get_product_price(item["product_id"]) is not None
+        )
+        request.session["total"] = new_total
+
+        return JsonResponse(
+            {"new_subtotal": item["subtotal"], "new_total": new_total}
+        )
+
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+
+def update_cart_item(request):
+    item_id = request.POST.get("item_id")
+    new_quantity = int(request.POST.get("new_quantity", 1))
+
+    cart_items = request.session.get("cart", [])
+
+    for item in cart_items:
+        if str(item.get("id")) == item_id:
+            item["quantity"] = new_quantity
+            try:
+                product = Product.objects.get(pid=item["product_id"])
+                item["subtotal"] = product.price * new_quantity
+            except Product.DoesNotExist:
+                return JsonResponse(
+                    {"success": False, "error": "Product not found"}
+                )
+
+    request.session["cart"] = cart_items
+
+    cart_total = _calculate_cart_total(cart_items)
+
+    return JsonResponse(
+        {
+            "success": True,
+            "item_subtotal": item["subtotal"],
+            "cart_total": cart_total,
+        }
+    )
+
+
+def _calculate_cart_total(cart_items):
+    total = 0
+    for item in cart_items:
+        total += item.get("subtotal", 0)
+    return total
+
+
+def cart(request):
+    userr = _get_user_from_session(request)
+    """Display the shopping cart page."""
+    cart_items = request.session.get("cart", [])
+    cart_total = 0  # Initialize cart total
+    valid_cart_items = []  # To store valid cart items
+
+    for item in cart_items:
+        try:
+            product = Product.objects.get(
+                pid=item["product_id"]
+            )  # Fetch the product
+            item["product"] = product  # Attach product details to the item
+            item["subtotal"] = (
+                product.price * item["quantity"]
+            )  # Calculate subtotal
+            cart_total += item["subtotal"]  # Add to cart total
+            valid_cart_items.append(item)  # Keep valid items
+        except Product.DoesNotExist:
+            # Log or handle the case where the product does not exis
+            continue  # Skip this item since it does not exist
+    context = {
+        "cart_items": valid_cart_items,  # Use only valid cart items
+        "cart_total": cart_total,
+        "userr": userr,
+    }
+    return render(request, "html/cart.html", context)
+
+
+@require_http_methods(["GET", "POST"])
+def checkout(request):
+    userr = _get_user_from_session(request)
+
+    if request.method == "POST":
+        cart_items = request.session.get("cart", [])
+        cart_total = 0  # Initialize cart total
+
+        for item in cart_items:
+            try:
+                product = Product.objects.get(
+                    pid=item["product_id"]
+                )  # Fetch the product
+                item["subtotal"] = (
+                    product.price * item["quantity"]
+                )  # Calculate subtotal
+                cart_total += item["subtotal"]  # Add to cart total
+            except Product.DoesNotExist:
+                continue  # Skip this item since it does not exist
+
+        # Lưu thông tin người dùng vào session
+        customer_info = {
+            "first_name": request.POST.get("first_name"),
+            "last_name": request.POST.get("last_name"),
+            "address": request.POST.get("address"),
+            "phone": request.POST.get("phone"),
+            "city": request.POST.get("city"),
+            "country": request.POST.get("country"),
+            "email": request.POST.get("email"),
+        }
+
+        request.session["customer_info"] = customer_info
+        request.session.modified = True  # Đảm bảo session được cập nhật
+
+        context = {
+            "cart_items": cart_items,
+            "cart_total": cart_total,
+            "userr": customer_info,  # Truyền customer_info vào context
+        }
+        return render(request, "html/checkout.html", context)
+
+    elif request.method == "GET":
+        cart_items = request.session.get("cart", [])
+        valid_cart_items = [
+            item for item in cart_items if item.get("product_id")
+        ]
+        cart_total = 0
+
+        for item in valid_cart_items:
+            try:
+                product = Product.objects.get(pid=item["product_id"])
+                item["subtotal"] = product.price * item["quantity"]
+                cart_total += item["subtotal"]
+            except Product.DoesNotExist:
+                valid_cart_items.remove(item)  # Remove invalid item
+
+        customer_info = request.session.get("customer_info", {})
+
+        context = {
+            "cart_items": valid_cart_items,
+            "cart_total": cart_total,
+            "userr": userr,
+            "customer_info": customer_info,
+        }
+
+        return render(request, "html/checkout.html", context)
+
+
+def order_confirmation(request):
+    userr = _get_user_from_session(request)
+
+    # Tạo đơn order
+    order = Order.objects.create(
+        uid=userr,
+        orderDate=timezone.now(),  # Sử dụng 'orderDate' để lưu trữ
+        status="Pending",  # Gán trạng thái mặc định
+    )
+
+    # Lấy thông tin từ session `customer_info`
+    customer_info = request.session.get("customer_info", {})
+
+    shipping_address = {
+        "full_name": f"{customer_info.get('first_name', '')} {customer_info.get('last_name', '')}",
+        "address": customer_info.get("address", ""),
+        "phone": customer_info.get("phone", ""),
+        "city": customer_info.get("city", ""),
+        "country": customer_info.get("country", ""),
+    }
+
+    # Lấy thông tin từ session `cart`
+    cart_items = request.session.get("cart", [])
+
+    # Xử lý các item trong giỏ cart
+    valid_cart_items = []
+    cart_total = 0
+
+    for item in cart_items:
+        try:
+            product = Product.objects.get(pid=item["product_id"])
+            if "subtotal" not in item:
+                item["subtotal"] = product.price * item["quantity"]
+            cart_total += item["subtotal"]
+            item["product"] = product  # Thêm đối tượng Product vào item
+            valid_cart_items.append(item)  # Thêm item hợp lệ vào danh sách
+
+            # Lưu thông tin OrderItems vào database
+            OrderItems.objects.create(
+                oid=order,  # Liên kết với đơn order vừa tạo
+                pid=product,  # Liên kết với sản phẩm
+                quantity=item["quantity"],  # Số lượng
+                buyPrice=product.price,  # Giá sản phẩm
+            )
+        except Product.DoesNotExist:
+            pass
+
+    context = {
+        "userr": userr,
+        "shipping_address": shipping_address,
+        "cart_items": valid_cart_items,
+        "cart_total": cart_total,
+        "order": order,
+    }
+
+    return render(request, "html/order_confirmation.html", context)
 
 
 @require_login
 def update_score(request, content_id):
-    """ Function to add or update content score rated by user """
+    """Function to add or update content score rated by user"""
     userr = _get_user_from_session(request)
     if not userr:
-        return HttpResponseForbidden(_("You must be logged in to rate or update rated score."))
+        return HttpResponseForbidden(
+            _("You must be logged in to rate or update rated score.")
+        )
 
     content_instance = get_object_or_404(Content, cid=content_id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         score, created = ScoreList.objects.get_or_create(
             uid=userr,
             cid=content_instance,
         )
-        score.score = request.POST.get('score')
+        score.score = request.POST.get("score")
         score.save()
 
-    return redirect('anime_detail', pk=content_id)
+    return redirect("anime_detail", pk=content_id)
+
 
 class ScoreEnum(Enum):
-    """ In case want to display not just score"""
+    """In case want to display not just score"""
+
     ONE = "1"
     TWO = "2"
     THREE = "3"
@@ -400,6 +826,7 @@ class ScoreEnum(Enum):
     EIGHT = "8"
     NINE = "9"
     TEN = "10"
+
 
 def score_to_str(content_cid, user_uid):
     try:
