@@ -12,31 +12,68 @@
     <div class="container">
       <h2>{% trans "Register" %}</h2>
       <form method="post" action="{% url 'register' %}">
-        {% csrf_token %} {{ form.non_field_errors }}
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <div class="alert-error">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
         <div class="form-group">
-          {{ form.username.label_tag }}
-          {{ form.username }}
-          {{form.username.errors }}
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {% if form.name.errors %}
+            <div class="alert-error">
+              {% for error in form.name.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
         <div class="form-group">
-          {{ form.birth_date.label_tag }}
-          {{ form.birth_date }}
-          {{ form.birth_date.errors }}
+          {{ form.dateOfBirth.label_tag }}
+          {{ form.dateOfBirth }}
+          {% if form.dateOfBirth.errors %}
+            <div class="alert-error">
+              {% for error in form.dateOfBirth.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
         <div class="form-group">
           {{ form.email.label_tag }}
           {{ form.email }}
-          {{ form.email.errors }}
+          {% if form.email.errors %}
+            <div class="alert-error">
+              {% for error in form.email.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
         <div class="form-group">
           {{ form.password.label_tag }}
           {{ form.password }}
-          {{ form.password.errors }}
+          {% if form.password.errors %}
+            <div class="alert-error">
+              {% for error in form.password.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
         <div class="form-group">
-          {{ form.password_confirm.label_tag }}
-          {{ form.password_confirm }}
-          {{ form.password_confirm.errors }}
+          {{ form.password_confirmation.label_tag }}
+          {{ form.password_confirmation }}
+          {% if form.password_confirmation.errors %}
+            <div class="alert-error">
+              {% for error in form.password_confirmation.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
         <button type="submit" class="btn btn-primary">
           {% trans "Register" %}

@@ -367,3 +367,15 @@
   display: block;
 }
 /*End of delete comment div*/
+
+/* không hiểu sao bị ghi đè,
+  do scope của prj này là python nên sẽ tạm bỏ qua phần này */
+.detail-container .rate-button .status-button-submit {
+  background: none !important;
+  border: none !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+}

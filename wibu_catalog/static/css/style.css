@@ -68,3 +68,13 @@ h2 {
   margin-top: -15px;
   margin-bottom: 10px;
 }
+
+.alert-error {
+  color: #dc3545;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.25rem;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+

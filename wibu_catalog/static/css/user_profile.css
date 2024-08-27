@@ -58,7 +58,7 @@
   max-width: 300px;
 }
 
-.info1 input[type="date"][disabled] {
+.info1 input[disabled] {
   background-color: #f9f9f9;
   color: #333;
   cursor: not-allowed;
