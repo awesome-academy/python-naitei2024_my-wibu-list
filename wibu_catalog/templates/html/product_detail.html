@@ -1,7 +1,9 @@
-{% extends "html/home.html" %} {% load static %} {% load i18n %} {% block
-notification %} {% endblock notification %} {% block top_carousel %} {% endblock
-top_carousel %} {% block anime_carousel %} {% endblock anime_carousel %} {%
-block latest_updates %}
+{% extends "html/homepage.html" %}
+{% load static %} {% load i18n %}
+{% block notification %} {% endblock notification %}
+{% block top_carousel %} {% endblock top_carousel %}
+{% block anime_carousel %} {% endblock anime_carousel %}
+{% block latest_updates %}
 <section class="product-container">
   <!-- Product Image Section -->
   {% if product.image_url %}
@@ -101,8 +103,7 @@ block latest_updates %}
     <div>
       <p>{% trans "Delivery:" %}</p>
       <p>
-        {% trans "Free standard shipping on orders over ₫35,000 before tax, plus
-        free returns." %}
+        {% trans "Free standard shipping on orders over ₫35,000 before tax, plus free returns." %}
       </p>
       <div class="delivery">
         <p>{% trans "TYPE" %}</p>

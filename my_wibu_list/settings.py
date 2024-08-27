@@ -19,10 +19,16 @@ import cloudinary.uploader
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
+# Cloudinary settings
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(os.path.join(BASE_DIR, ".env"), override=True)
+load_dotenv(os.path.join(BASE_DIR, '.env'), override=True)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/

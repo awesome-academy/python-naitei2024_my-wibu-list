@@ -11,23 +11,37 @@ class RegistrationForm(forms.ModelForm):
     username = forms.CharField(
         max_length=30,
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": _("Username")}
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Username")
+            }
         ),
         label=_("Username"),
     )
     birth_date = forms.DateField(
-        widget=forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        widget=forms.DateInput(
+            attrs={
+                "class": "form-control",
+                "type": "date"
+            }
+        ),
         label=_("Date Of Birth"),
     )
     email = forms.EmailField(
         widget=forms.EmailInput(
-            attrs={"class": "form-control", "placeholder": _("Email")}
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Email")
+            }
         ),
         label=_("Email"),
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": _("Password")}
+            attrs={
+                "class": "form-control",
+                "placeholder": _("Password")
+            }
         ),
         label=_("Password"),
     )
@@ -59,13 +73,19 @@ class RegistrationForm(forms.ModelForm):
 class LoginForm(AuthenticationForm):
     email = forms.CharField(
         widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "Email"}
+            attrs={
+                "class": "form-control",
+                "placeholder": "Email"
+            }
         ),
         label="Email",
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "Password"}
+            attrs={
+                "class": "form-control",
+                "placeholder": "Password"
+            }
         ),
         label="Password",
     )
@@ -80,6 +100,4 @@ class CommentForm(forms.ModelForm):
 class EditCommentForm(forms.ModelForm):
     class Meta:
         model = Comments
-        fields = [
-            "content"
-        ]  # Assuming 'content' is the field you want to allow editing
+        fields = ["content"]

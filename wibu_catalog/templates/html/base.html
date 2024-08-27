@@ -13,7 +13,9 @@
   </head>
   <body>
     <script src="{% static 'homepage.js' %}"></script>
-    {% block header %} {% include 'html/header.html' %} {% endblock %} {% block
-    content %}{% endblock %}
+    {% block header %}
+      {% include 'html/header.html' %}
+    {% endblock %}
+    {% block content %}{% endblock %}
   </body>
 </html>

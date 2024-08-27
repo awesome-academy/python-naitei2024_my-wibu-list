@@ -1,8 +1,10 @@
-{% extends 'html/base.html' %} {% load static %} {% load i18n %} {% block
-extra_css %}
+{% extends 'html/base.html' %}
+{% load static %} {% load i18n %}
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/checkout.css' %}" />
-{% endblock extra_css %} {% block header %} {% include 'html/header.html' %} {%
-endblock %} {% block content %}
+{% endblock extra_css %}
+{% block header %} {% include 'html/header.html' %} {% endblock %}
+{% block content %}
 <h2>{% trans "Checkout" %}</h2>
 <div class="checkout-container">
   <!-- Customer Information Section -->

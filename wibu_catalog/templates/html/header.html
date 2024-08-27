@@ -9,9 +9,10 @@
         <a href="{% url 'homepage' %}">{% trans "HOME" %}</a>
       </li>
       <li>
-        <a href="#"
-          >{% trans "CATEGORIES" %} <i class="fa-solid fa-chevron-down"></i
-        ></a>
+        <a href="#">
+          {% trans "CATEGORIES" %}
+          <i class="fa-solid fa-chevron-down"></i>
+        </a>
         <ul class="submenu">
           <li>
             <a href="{% url 'anime' %}">Anime</a>
@@ -22,67 +23,45 @@
         </ul>
       </li>
       <li>
-        <a href="#">TOP<i class="fa-solid fa-chevron-down"></i></a>
+        <a href="#">
+          {% trans "GENRE" %}
+          <i class="fa-solid fa-chevron-down"></i>
+        </a>
         <ul class="submenu">
           <li>
-            <a href="">{% trans "By Day" %}</a>
+            <a href="{% url 'filter_by_genre' genre='Action' %}">
+              {% trans "Action" %}
+            </a>
           </li>
           <li>
-            <a href="">{% trans "By Month" %}</a>
+            <a href="{% url 'filter_by_genre' genre='Comedy' %}">
+              {% trans "Comedy" %}
+            </a>
           </li>
           <li>
-            <a href="">{% trans "By Year" %}</a>
+            <a href="{% url 'filter_by_genre' genre='Drama' %}">
+              {% trans "Drama" %}
+            </a>
           </li>
           <li>
-            <a href="">{% trans "Favorites" %}</a>
+            <a href="{% url 'filter_by_genre' genre='Game' %}">
+              {% trans "Game" %}
+            </a>
           </li>
           <li>
-            <a href="">{% trans "Popular" %}</a>
+            <a href="{% url 'filter_by_genre' genre='Horror' %}">
+              {% trans "Horror" %}
+            </a>
           </li>
           <li>
-            <a href="">{% trans "By Season" %}</a>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#"
-          >{% trans "GENRE" %}<i class="fa-solid fa-chevron-down"></i
-        ></a>
-        <ul class="submenu">
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Action' %}"
-              >{% trans "Action" %}</a
-            >
+            <a href="{% url 'filter_by_genre' genre='Adventure' %}">
+              {% trans "Adventure" %}
+            </a>
           </li>
           <li>
-            <a href="{% url 'filter_by_genre' genre='Comedy' %}"
-              >{% trans "Comedy" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Drama' %}"
-              >{% trans "Drama" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Game' %}"
-              >{% trans "Game" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Horror' %}"
-              >{% trans "Horror" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Adventure' %}"
-              >{% trans "Adventure" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Dementia' %}"
-              >{% trans "Dementia" %}</a
-            >
+            <a href="{% url 'filter_by_genre' genre='Dementia' %}">
+              {% trans "Dementia" %}
+            </a>
           </li>
           <li>
             <a href="{% url 'filter_by_genre' genre='Ecchi' %}"
@@ -90,91 +69,38 @@
             >
           </li>
           <li>
-            <a href="{% url 'filter_by_genre' genre='Harem' %}"
-              >{% trans "Harem" %}</a
+            <a href="{% url 'filter_by_genre' genre='Harem' %}">
+              {% trans "Harem" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Josei' %}">
+              {% trans "Josei" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Cartoon' %}">
+              {% trans "Cartoon" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Demons' %}">
+              {% trans "Demons" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Fantasy' %}">{% trans "Fantasy" %}</a
             >
           </li>
           <li>
-            <a href="{% url 'filter_by_genre' genre='Josei' %}"
-              >{% trans "Josei" %}</a
-            >
+            <a href="{% url 'filter_by_genre' genre='Historical' %}">
+              {% trans "Historical" %}
+            </a>
           </li>
           <li>
-            <a href="{% url 'filter_by_genre' genre='Cartoon' %}"
-              >{% trans "Cartoon" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Demons' %}"
-              >{% trans "Demons" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Fantasy' %}"
-              >{% trans "Fantasy" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Historical' %}"
-              >{% trans "Historical" %}</a
-            >
-          </li>
-          <li>
-            <a href="{% url 'filter_by_genre' genre='Kids' %}"
-              >{% trans "Kids" %}</a
-            >
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#"
-          >{% trans "SEASON" %} <i class="fa-solid fa-chevron-down"></i
-        ></a>
-        <ul class="submenu">
-          <li>
-            <a href="#">{% trans "Winter 2024" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Fall 2024" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Summer 2024" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Spring 2024" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Winter 2023" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Fall 2023" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Summer 2023" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Spring 2023" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Winter 2022" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Fall 2022" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Summer 2022" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Spring 2022" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Winter 2021" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Fall 2021" %}</a>
-          </li>
-          <li>
-            <a href="#">{% trans "Summer 2021" %}</a>
+            <a href="{% url 'filter_by_genre' genre='Kids' %}">
+              {% trans "Kids" %}
+            </a>
           </li>
         </ul>
       </li>

@@ -1,8 +1,14 @@
-{% extends "html/base.html" %} {% load static %} {% load i18n %} {% block header
-%} {% include "html/header.html" %} {% endblock header %} {% block title %} {%
-trans "Your Cart" %} {% endblock title %} {% block extra_css %}
+{% extends "html/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block header %}
+  {% include "html/header.html" %}
+{% endblock header %}
+{% block title %} {% trans "Your Cart" %} {% endblock title %}
+{% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/cart.css' %}" />
-{% endblock extra_css %} {% block content %}
+{% endblock extra_css %}
+{% block content %}
 <h2>{% trans "Your Cart" %}</h2>
 <!-- Main container for the cart -->
 <div class="cart-container" id="cart-container">
@@ -58,9 +64,9 @@ trans "Your Cart" %} {% endblock title %} {% block extra_css %}
 <div class="cart-summary">
   <h3>{% trans "Total:" %}</h3>
   <p id="cart-total">₫0.00</p>
-  <a href="{% url 'checkout' %}" class="checkout-btn"
-    >{% trans "PROCEED TO CHECKOUT" %} →</a
-  >
+  <a href="{% url 'checkout' %}" class="checkout-btn">
+    {% trans "PROCEED TO CHECKOUT" %} →
+  </a>
 </div>
 <!-- Empty cart notification -->
 {% if not cart_items %}

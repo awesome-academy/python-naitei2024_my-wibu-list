@@ -182,6 +182,12 @@ class Content(models.Model):
         help_text=_("On Hold."),
     )
 
+    reWatching = models.IntegerField(
+        default=0,
+        null=True,
+        help_text=_("Re-Watching."),
+    )
+
     dropped = models.IntegerField(
         default=0,
         null=True,
@@ -568,8 +574,9 @@ class OrderItems(models.Model):
     def __str__(self):
         return f"{str(self.oid)} - {str(self.pid)}"
 
+    # Access the name from the related Product
     def product_name(self):
-        return self.pid.name  # Access the name from the related Product
+        return self.pid.name
 
     product_name.short_description = (
         "Product Name"  # Label for the column in the admin
@@ -671,10 +678,18 @@ def update_content_score(content_id):
 
 
 def update_content_fav_sta(content_id, new_status, old_status=None):
-    # Get or create the Score instance for the given content
+    """Function to update number of status
+        when user change their status for a content.
+        Input:
+            content_id: Content.cid
+            new_status: status of newly inputed FavoriteList instance
+            old_status: status of current FavoriteList instance
+        Output:
+            no output, just update status number in Content
+    """
     content_instance, created = Content.objects.get_or_create(cid=content_id)
 
-    Content_status = {
+    content_status = {
         1: "watching",
         2: "completed",
         3: "onHold",
@@ -687,7 +702,7 @@ def update_content_fav_sta(content_id, new_status, old_status=None):
         old_status = int(old_status)
     # Update the count for the new score
     if new_status:
-        field_name = Content_status[new_status]
+        field_name = content_status[new_status]
         current_count = getattr(content_instance, field_name)
         setattr(content_instance, field_name, current_count + 1)
         fav_count = getattr(content_instance, "favorites")
@@ -695,7 +710,7 @@ def update_content_fav_sta(content_id, new_status, old_status=None):
 
     # Update the count for the old score if it exists
     if old_status:
-        old_field_name = Content_status[old_status]
+        old_field_name = content_status[old_status]
         old_current_count = getattr(content_instance, old_field_name)
         setattr(content_instance, old_field_name, old_current_count - 1)
         fav_count = getattr(content_instance, "favorites")
