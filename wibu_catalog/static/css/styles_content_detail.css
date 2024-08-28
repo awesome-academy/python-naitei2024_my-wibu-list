@@ -311,17 +311,24 @@
 
 /*End of Comment section*/
 
-/*Edit comment div*/
-.edit-cmt-div .edit-cmt-form {
-  display: none;
+/* Edit comment div */
+.edit-cmt-div {
   position: relative;
-  top: -55px;
-  padding: 55px 0 0 0;
-  margin: 0;
+  cursor: pointer;
 }
 
-.edit-cmt-div {
-  cursor: pointer;
+.edit-cmt-form {
+  display: none;
+  position: absolute;
+  top: 100%; 
+  left: 0;
+  margin: 0;
+  padding: 10px;
+  background-color: #f9f9f9; 
+  border: 1px solid #ccc; 
+  border-radius: 10px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .edit-cmt-div:hover .edit-cmt-form,
@@ -330,40 +337,50 @@
 }
 
 .edit-cmt-div,
-.edit-cmt-div .edit-cmt-button :hover {
-  display: block;
+.edit-cmt-div .edit-cmt-button:hover {
+  display: inline-block; 
+  vertical-align: middle;
 }
-/*End of edit comment div*/
 
-/*Delete comment div*/
+.comment-actions {
+  display: inline-flex;
+  gap: 10px; 
+}
+
+/* Delete comment div */
+.delete-cmt-div {
+  position: relative;
+  cursor: pointer;
+  display: inline-block; /* Đảm bảo các nút trên cùng một hàng */
+  vertical-align: middle;
+}
 .delete-cmt-div .confirm-del-cmt {
   display: none;
-  position: relative;
-  top: -55px;
-  padding: 55px 0 0 0;
+  position: absolute;
+  top: 100%; /* Xuất hiện ngay dưới nút Delete */
+  left: 0;
   margin: 0;
   border: 1px solid #ccc;
   background-color: #f5f5f5;
   border-radius: 5px;
   padding: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10; /* Đảm bảo hộp xác nhận xuất hiện trên các phần tử khác */
+  min-width: 300px; /* Đặt độ rộng tối thiểu cho hộp */
 }
 
 .delete-cmt-div .confirm-del-cmt p {
   color: black;
 }
 
-.delete-cmt-div {
-  cursor: pointer;
-}
-
 .delete-cmt-div .delete-cmt-button:active + .confirm-del-cmt,
-.delete-cmt-div .confirm-del-cmt:hover {
+.delete-cmt-div .delete-cmt-button:hover + .confirm-del-cmt {
   display: block;
 }
 
-.delete-cmt-div .delete-cmt-button:active,
-.delete-cmt-div .delete-cmt-button:hover {
-  display: block;
+/* Đảm bảo các nút Like, Reply, Edit, Delete cùng hàng */
+.comment-actions {
+  display: inline-flex;
+  gap: 10px; /* Khoảng cách giữa các nút */
+  vertical-align: middle;
 }
-/*End of delete comment div*/
