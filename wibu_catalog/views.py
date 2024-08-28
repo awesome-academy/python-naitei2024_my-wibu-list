@@ -11,16 +11,16 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.views import View, generic
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods, require_POST
+from django.views import generic, View
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 
 # Django Authentication
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 
 # Import data from constants.py
 from wibu_catalog.constants import (
@@ -42,6 +42,7 @@ from wibu_catalog.models import (
 from wibu_catalog.forms import (
     RegistrationForm, LoginForm,
     CommentForm, EditCommentForm,
+    ChangePasswordForm
 )
 
 
@@ -327,7 +328,7 @@ class LoginView(View):
     def _authenticate_user(self, email, password):
         try:
             user = Users.objects.get(email=email)
-            if password == user.password:
+            if check_password(password, user.password):
                 return user
             else:
                 return None
@@ -828,3 +829,27 @@ def score_to_str(content_cid, user_uid):
         return ScoreEnum(str(score_int)).value
     except ObjectDoesNotExist:
         return None
+
+
+class ChangePassword(View):
+    def post(self, request):
+        old_password = request.POST.get("old_password")
+        new_password = request.POST.get("new_password")
+        new_password_confirmation = request.POST.\
+            get("new_password_confirmation")
+        userr = _get_user_from_session(request)
+
+        if (
+            check_password(old_password, userr.password) and
+            new_password == new_password_confirmation
+        ):
+            userr.password = make_password(new_password)
+            userr.save()
+            return redirect("homepage")
+        else:
+            form = ChangePasswordForm()
+            return render(request, "html/change_password.html", {"form": form})
+
+    def get(self, request):
+        form = ChangePasswordForm()
+        return render(request, "html/change_password.html", {"form": form})
