@@ -17,6 +17,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.views import generic, View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.urls import reverse
 
 # Django Authentication
 from django.contrib.auth.forms import UserCreationForm
@@ -41,8 +42,8 @@ from wibu_catalog.models import (
 
 # Import from forms.py
 from wibu_catalog.forms import (
-    LoginForm, CommentForm, EditCommentForm,
-    ChangePasswordForm, UserRegistrationForm,
+    LoginForm, ChangePasswordForm, UserRegistrationForm,
+    CommentForm, EditCommentForm, ReplyForm,
 )
 
 
@@ -157,54 +158,6 @@ class UserRegistrationView(View):
         return redirect('login')
 
 
-# Comment section:
-def post_comment(request, content_id):
-    userr = _get_user_from_session(request)
-    cmtedContent = get_object_or_404(Content, cid=content_id)
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.cid = cmtedContent
-            comment.uid = userr
-            comment.dateOfCmt = timezone.now().date()
-            comment.save()
-            return redirect('anime_detail', pk=content_id)
-    return redirect('anime_detail', pk=content_id)
-
-
-def edit_comment(request, comment_id):
-    userr = _get_user_from_session(request)
-    try:
-        comment = Comments.objects.get(id=comment_id, uid=userr.uid)
-    except Comments.DoesNotExist:
-        return redirect("anime_detail", pk=comment.cid.cid)
-
-    if request.method == "POST":
-        form = EditCommentForm(request.POST, instance=comment)
-        if form.is_valid():
-            comment.dateOfCmt = timezone.now().date()  # Update the date
-            comment.save()
-            return redirect("anime_detail", pk=comment.cid.cid)
-            # somehow comment.cid = Content.__str__
-    else:
-        form = EditCommentForm(instance=comment)
-
-    return redirect("anime_detail", pk=comment.cid.cid)
-
-
-def delete_comment(request, comment_id):
-    try:
-        comment = Comments.objects.get(id=comment_id)
-        comment.delete()
-    except Comments.DoesNotExist:
-        return redirect("anime_detail", pk=comment.cid.cid)
-    return redirect("anime_detail", pk=comment.cid.cid)
-
-
-# end of Comment section
-
-
 def search_content(request):
     userr = _get_user_from_session(request)
     query = request.GET.get("q", "").lower()
@@ -260,6 +213,10 @@ class AnimeDetailView(generic.DetailView):
         comments_paginator = Paginator(comments_list, COMMENTS_PER_PAGE_DETAIL)
         comments_page_number = self.request.GET.get("comments_page")
         comments = comments_paginator.get_page(comments_page_number)
+        liked_comments = {
+            comment.id
+            for comment in comments
+            if self.request.user in comment.userLikes.all()}
 
         # Random content button related
         what_to_watch = random_button()
@@ -269,7 +226,10 @@ class AnimeDetailView(generic.DetailView):
         products_list = Product.objects.\
             filter(cid=content_instance.cid).order_by("-ravg")
         if products_list:
-            products_paginator = Paginator(products_list, PRODUCTS_PER_PAGE_DETAIL)
+            products_paginator = Paginator(
+                products_list,
+                PRODUCTS_PER_PAGE_DETAIL
+            )
             products_page_number = self.request.GET.get("product_page")
             products = products_paginator.get_page(products_page_number)
         else:
@@ -287,6 +247,9 @@ class AnimeDetailView(generic.DetailView):
         else:
             score_str = None
 
+        # Handle reply form
+        reply_form = ReplyForm()
+
         # Sumarize context
         context["score_"] = score_data_
         context["userr"] = userr
@@ -295,6 +258,8 @@ class AnimeDetailView(generic.DetailView):
         context["favorite"] = favorite
         context["what_to_watch"] = what_to_watch
         context["products"] = products
+        context["liked_comments"] = liked_comments
+        context['reply_form'] = reply_form
         return context
 
 
@@ -903,3 +868,95 @@ class ChangePassword(View):
     def get(self, request):
         form = ChangePasswordForm()
         return render(request, "html/change_password.html", {"form": form})
+
+
+# Comment section:
+@require_login
+def post_comment(request, content_id):
+    userr = _get_user_from_session(request)
+    cmtedContent = get_object_or_404(Content, cid=content_id)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.cid = cmtedContent
+            comment.uid = userr
+            comment.dateOfCmt = timezone.now().date()
+            comment.save()
+            return redirect('anime_detail', pk=content_id)
+    return redirect('anime_detail', pk=content_id)
+
+
+@require_login
+def edit_comment(request, comment_id):
+    userr = _get_user_from_session(request)
+    try:
+        comment = Comments.objects.get(id=comment_id, uid=userr.uid)
+    except Comments.DoesNotExist:
+        return redirect("anime_detail", pk=comment.cid.cid)
+
+    if request.method == "POST":
+        form = EditCommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment.dateOfCmt = timezone.now().date()  # Update the date
+            comment.save()
+            return redirect("anime_detail", pk=comment.cid.cid)
+    else:
+        form = EditCommentForm(instance=comment)
+
+    return redirect("anime_detail", pk=comment.cid.cid)
+
+
+@require_login
+def delete_comment(request, comment_id):
+    try:
+        comment = Comments.objects.get(id=comment_id)
+        comment.delete()
+    except Comments.DoesNotExist:
+        return redirect("anime_detail", pk=comment.cid.cid)
+    return redirect("anime_detail", pk=comment.cid.cid)
+
+
+@require_login
+def toggle_like_comment(request, comment_id):
+    """Function to update likes in comments"""
+    userr = _get_user_from_session(request)
+    if request.method == "POST":
+        comment = get_object_or_404(Comments, id=comment_id)
+
+        if userr in comment.userLikes.all():
+            comment.userLikes.remove(userr)
+            if comment.likes >= 1:
+                comment.likes += -1
+            else:
+                comment.likes = 0
+        else:
+            comment.userLikes.add(userr)
+            comment.likes += 1
+
+        comment.save()
+
+        return redirect("anime_detail", pk=comment.cid.cid)
+    return HttpResponse(status=405)
+
+
+@require_login
+def reply_comment(request, comment_id):
+    userr = _get_user_from_session(request)
+    parent_comment = get_object_or_404(Comments, id=comment_id)
+
+    if request.method == "POST":
+        form = ReplyForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.uid = userr
+            reply.cid = parent_comment.cid
+            reply.parent = parent_comment
+            reply.dateOfCmt = timezone.now().date()
+            reply.save()
+            return redirect('anime_detail', pk=parent_comment.cid.cid)
+        else:
+            return redirect("anime_detail", pk=parent_comment.cid.cid)
+    return redirect('anime_detail', pk=parent_comment.cid.cid)
+
+# end of Comment section
