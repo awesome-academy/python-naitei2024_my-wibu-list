@@ -7,21 +7,20 @@ from random import randint
 
 # Django Core and Utilities
 from django.contrib import messages
+# Django Authentication
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.hashers import check_password, make_password
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.views import View, generic
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods, require_POST
-from django.views import generic, View
-from django.shortcuts import render, redirect, get_object_or_404
-from django.utils import timezone
-
-# Django Authentication
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.hashers import check_password, make_password
-
+from django.core.exceptions import ObjectDoesNotExist
 # Import data from constants.py
 from wibu_catalog.constants import (
     Role_dict, Score_dict, ITEMS_PER_PAGE_MORE, ITEMS_PER_PAGE,
@@ -31,14 +30,6 @@ from wibu_catalog.constants import (
     TOP_WATCHING_LIMIT, LATEST_CONTENT_LIMIT, TOP_RANKED_LIMIT, ScoreEnum,
     PRODUCTS_PER_PAGE_DETAIL, COMMENTS_PER_PAGE_DETAIL,
 )
-
-# Import models from models.py
-from wibu_catalog.models import (
-    Content, Score, Users, FavoriteList,
-    ScoreList, Comments, Notifications,
-    Product, Order, OrderItems, Feedback,
-)
-
 # Import from forms.py
 from wibu_catalog.forms import (
     LoginForm, CommentForm, EditCommentForm,
@@ -169,8 +160,8 @@ def post_comment(request, content_id):
             comment.uid = userr
             comment.dateOfCmt = timezone.now().date()
             comment.save()
-            return redirect('anime_detail', pk=content_id)
-    return redirect('anime_detail', pk=content_id)
+            return redirect("anime_detail", pk=content_id)
+    return redirect("anime_detail", pk=content_id)
 
 
 def edit_comment(request, comment_id):
@@ -278,8 +269,9 @@ class AnimeDetailView(generic.DetailView):
         # user's favorite status
         favorite = None
         if userr:
-            favorite = FavoriteList.objects.\
-                filter(uid=userr, cid=content_instance).first()
+            favorite = FavoriteList.objects.filter(
+                uid=userr, cid=content_instance
+            ).first()
 
         # User score
         if userr is not None:
@@ -365,8 +357,9 @@ def filter_by_genre(request, genre):
     userr = _get_user_from_session(request)
 
     # Lọc content theo thể loại và sắp xếp theo scoreAvg
-    filtered_content = Content.objects.\
-        filter(genres__icontains=genre).order_by("-scoreAvg")[:ITEMS_PER_PAGE]
+    filtered_content = Content.objects.filter(genres__icontains=genre).order_by(
+        "-scoreAvg"
+    )[:ITEMS_PER_PAGE]
 
     context = {
         "filtered_content": filtered_content,
@@ -414,8 +407,9 @@ class FavoriteListView(generic.ListView):
     def get_queryset(self):
         userr = _get_user_from_session(self.request)
         if userr:
-            favorite_content_cids = FavoriteList.objects.filter(uid=userr)\
-                .values_list('cid', flat=True)
+            favorite_content_cids = FavoriteList.objects.filter(
+                uid=userr
+            ).values_list("cid", flat=True)
             return Content.objects.filter(cid__in=favorite_content_cids)
         return FavoriteList.objects.none()
 
@@ -501,6 +495,12 @@ def order_history(request):
 def product_detail(request, pid=None):
     userr = _get_user_from_session(request)
     product = Product.objects.get(pid=pid)
+    cart = request.session.get("cart", [])
+    product_quantity_in_cart = 0
+    for item in cart:
+        if item.get("product_id") == str(product.pid):
+            product_quantity_in_cart = item.get("quantity", 0)
+            break
     return render(
         request,
         "html/product_detail.html",
@@ -508,6 +508,7 @@ def product_detail(request, pid=None):
             "product": product,
             "userr": userr,
             "available_sizes": AVAILABLE_SIZES,
+            "product_quantity_in_cart": product_quantity_in_cart,
         },
     )
 
@@ -567,37 +568,27 @@ def add_to_cart(request):
 def remove_from_cart(request):
     try:
         item_id = int(request.POST.get("item_id"))
+        cart_items = request.session.get("cart", [])
 
-        # Retrieve the cart from the session
-        cart_items = request.session.get("cart", {})
-        # Filter out the item to be removed
-        item_to_remove = None
-        for item in cart_items:
-            if str(item["product_id"]) == str(item_id):
-                item_to_remove = item
-                break
+        item_to_remove = next((item for item in cart_items if item["product_id"] == item_id), None)
 
         if item_to_remove is not None:
             cart_items.remove(item_to_remove)
             cart_total = _calculate_cart_total(cart_items)
+            request.session["cart"] = cart_items
+            request.session["total"] = cart_total
+            return JsonResponse({"success": True, "total": cart_total}, status=200)
         else:
-            return JsonResponse(
-                {
-                    "success": False,
-                    "error": (
-                        f"Item with id {item_id} "
-                        f"does not exist in the cart."
-                    ),
+            return JsonResponse({
+                "success": False,
+                "error": f"Item with id {item_id} does not exist in the cart."
+            }, status=400)
 
-                },
-                status=400,
-            )
-
-        request.session["cart"] = cart_items
-        request.session.modified = True
-        return JsonResponse({"success": True, "cart_total": cart_total})
+    except ValueError:
+        return JsonResponse({"success": False, "error": "Invalid item ID."}, status=404)
     except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)}, status=500)
+        return JsonResponse({"success": False, "error": str(e)}, status=200)
+
 
 
 def get_product_price(product_id):
@@ -605,20 +596,35 @@ def get_product_price(product_id):
         product = Product.objects.get(pid=product_id)
         return product.price
     except Product.DoesNotExist:
-        return None
+        raise ObjectDoesNotExist("Product not found")
 
 
 @csrf_exempt
 def update_quantity(request):
     if request.method == "POST":
         product_id = request.POST.get("product_id")
+        quantity = int(request.POST.get("quantity"))
+        cart = request.session.get("cart", [])
+        checked = request.POST.get("checked") == "true"
         if product_id is None:
             return JsonResponse(
-                {"error": "No product_id provided"},
-                status=400
+                {"success": False, "error": "Product ID is missing"}, status=400
             )
-        quantity = int(request.POST.get("quantity"))
-        checked = request.POST.get("checked")
+
+        try:
+            product = Product.objects.get(pid=product_id)
+        except Product.DoesNotExist:
+            return JsonResponse(
+                {"success": False, "error": "Product does not exist"},
+                status=404,
+            )
+
+        if quantity <= 0 or quantity > product.inventory:
+            return JsonResponse(
+                {"success": False, "error": "Invalid quantity"}, status=400
+            )
+
+
         # Get the price of the product
         price = get_product_price(product_id)
         if price is None:
@@ -632,62 +638,67 @@ def update_quantity(request):
             )
 
         # Update the quantity in the session
-        for item in request.session["cart"]:
+        for item in cart:
             if item["product_id"] == product_id:
                 item["quantity"] = quantity
-                item[checked] = checked
-                item["subtotal"] = item["quantity"] * price
+                item["checked"] = checked
+                item["subtotal"] = price * item["quantity"]
                 break
 
         # Calculate the new total
         new_total = sum(
             item["quantity"] * get_product_price(item["product_id"])
-            for item in request.session["cart"]
+            for item in cart
             if get_product_price(item["product_id"]) is not None
         )
         request.session["total"] = new_total
-
+        request.session["cart"] = cart
+        print(cart)
+        request.session.modified = True  # Ensure session is updated
         return JsonResponse(
             {"new_subtotal": item["subtotal"], "new_total": new_total}
         )
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-
+@csrf_exempt
+@require_POST
 def update_cart_item(request):
-    item_id = request.POST.get("item_id")
-    new_quantity = int(request.POST.get("new_quantity", 1))
-
+    item_id = request.POST.get("product_id")
+    checked = request.POST.get("checked", "true").lower() == "true"
     cart_items = request.session.get("cart", [])
 
+
     for item in cart_items:
-        if str(item.get("id")) == item_id:
-            item["quantity"] = new_quantity
+        if item["product_id"] == item_id:
+            item["checked"] = checked
             try:
                 product = Product.objects.get(pid=item["product_id"])
-                item["subtotal"] = product.price * new_quantity
+                if item:
+                    item["subtotal"] = product.price * item["quantity"]
+                else:
+                    return JsonResponse({"error": "Item not found"}, status=404)
             except Product.DoesNotExist:
                 return JsonResponse(
                     {"success": False, "error": "Product not found"}
                 )
-
+            break
     request.session["cart"] = cart_items
-
     cart_total = _calculate_cart_total(cart_items)
-
     return JsonResponse(
         {
             "success": True,
             "item_subtotal": item["subtotal"],
             "cart_total": cart_total,
+            "subtotal": item["subtotal"],
         }
     )
-
 
 def _calculate_cart_total(cart_items):
     total = 0
     for item in cart_items:
-        total += item.get("subtotal", 0)
+        if item.get("checked", True):
+            total += item["subtotal"]
     return total
 
 
@@ -723,24 +734,24 @@ def cart(request):
 @require_http_methods(["GET", "POST"])
 def checkout(request):
     userr = _get_user_from_session(request)
-
     if request.method == "POST":
         cart_items = request.session.get("cart", [])
         cart_total = 0  # Initialize cart total
 
         for item in cart_items:
-            try:
-                product = Product.objects.get(
-                    pid=item["product_id"]
-                )  # Fetch the product
-                item["subtotal"] = (
-                    product.price * item["quantity"]
-                )  # Calculate subtotal
-                cart_total += item["subtotal"]  # Add to cart total
-            except Product.DoesNotExist:
-                continue  # Skip this item since it does not exist
+            if item.get("checked"):
+                try:
+                    product = Product.objects.get(
+                        pid=item["product_id"]
+                    )  # Fetch the product
+                    item["subtotal"] = (
+                        product.price * item["quantity"]
+                    )  # Calculate subtotal
+                    cart_total += item["subtotal"]  # Add to cart total
+                except Product.DoesNotExist:
+                    continue  # Skip this item since it does not exist
 
-        # Lưu thông tin người dùng vào session
+        # Save user information to session
         customer_info = {
             "first_name": request.POST.get("first_name"),
             "last_name": request.POST.get("last_name"),
@@ -752,41 +763,36 @@ def checkout(request):
         }
 
         request.session["customer_info"] = customer_info
-        request.session.modified = True  # Đảm bảo session được cập nhật
+        request.session.modified = True  # Ensure session is updated
 
         context = {
-            "cart_items": cart_items,
+            "cart_items": [item for item in cart_items if item.get("checked")],
             "cart_total": cart_total,
-            "userr": customer_info,  # Truyền customer_info vào context
+            "userr": customer_info,  # Pass customer_info into context
         }
         return render(request, "html/checkout.html", context)
 
     elif request.method == "GET":
         cart_items = request.session.get("cart", [])
-        valid_cart_items = [
-            item for item in cart_items if item.get("product_id")
-        ]
         cart_total = 0
-
-        for item in valid_cart_items:
-            try:
-                product = Product.objects.get(pid=item["product_id"])
-                item["subtotal"] = product.price * item["quantity"]
-                cart_total += item["subtotal"]
-            except Product.DoesNotExist:
-                valid_cart_items.remove(item)  # Remove invalid item
+        print(cart_items)
+        for item in cart_items:
+            if item.get("checked"):
+                try:
+                    product = Product.objects.get(pid=item["product_id"])
+                    item["subtotal"] = product.price * item["quantity"]
+                    cart_total += item["subtotal"]
+                except Product.DoesNotExist:
+                    cart_items.remove(item)  # Remove invalid item
 
         customer_info = request.session.get("customer_info", {})
-
         context = {
-            "cart_items": valid_cart_items,
+            "cart_items": cart_items,
             "cart_total": cart_total,
             "userr": userr,
             "customer_info": customer_info,
         }
-
         return render(request, "html/checkout.html", context)
-
 
 def order_confirmation(request):
     userr = _get_user_from_session(request)
@@ -820,24 +826,28 @@ def order_confirmation(request):
     cart_total = 0
 
     for item in cart_items:
-        try:
-            product = Product.objects.get(pid=item["product_id"])
-            if "subtotal" not in item:
-                item["subtotal"] = product.price * item["quantity"]
-            cart_total += item["subtotal"]
-            item["product"] = product  # Thêm đối tượng Product vào item
-            valid_cart_items.append(item)  # Thêm item hợp lệ vào danh sách
+        if item.get("checked"):
+            try:
+                product = Product.objects.get(pid=item["product_id"])
+                if "subtotal" not in item:
+                    item["subtotal"] = product.price * item["quantity"]
+                cart_total += item["subtotal"]
+                item["product_id"] = product.pid  # Thêm id của Product vào item
+                item["product_name"] = product.name  # Thêm tên của Product vào item
+                valid_cart_items.append(item)  # Thêm item hợp lệ vào danh sách
 
-            # Lưu thông tin OrderItems vào database
-            OrderItems.objects.create(
-                oid=order,  # Liên kết với đơn order vừa tạo
-                pid=product,  # Liên kết với sản phẩm
-                quantity=item["quantity"],  # Số lượng
-                buyPrice=product.price,  # Giá sản phẩm
-            )
-        except Product.DoesNotExist:
-            pass
-
+                # Lưu thông tin OrderItems vào database
+                OrderItems.objects.create(
+                    oid=order,  # Liên kết với đơn order vừa tạo
+                    pid=product,  # Liên kết với sản phẩm
+                    quantity=item["quantity"],  # Số lượng
+                    buyPrice=product.price,  # Giá sản phẩm
+                )
+                cart_items = [i for i in cart_items if not i.get("checked", False)]
+            except Product.DoesNotExist:
+                pass
+        request.session["cart"] = cart_items
+        request.session.modified = True
     context = {
         "userr": userr,
         "shipping_address": shipping_address,
@@ -885,13 +895,14 @@ class ChangePassword(View):
     def post(self, request):
         old_password = request.POST.get("old_password")
         new_password = request.POST.get("new_password")
-        new_password_confirmation = request.POST.\
-            get("new_password_confirmation")
+        new_password_confirmation = request.POST.get(
+            "new_password_confirmation"
+        )
         userr = _get_user_from_session(request)
 
         if (
-            check_password(old_password, userr.password) and
-            new_password == new_password_confirmation
+            check_password(old_password, userr.password)
+            and new_password == new_password_confirmation
         ):
             userr.password = make_password(new_password)
             userr.save()

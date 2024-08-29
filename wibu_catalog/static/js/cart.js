@@ -80,12 +80,34 @@ function updateCartTotal() {
 // Add a change event listener to each checkbox
 $(document).ready(function () {
     $(".select-input").change(function () {
-        updateCartTotal();
-    });
+        var product_id = $(this).data("product-id");
+        var subtotal = $(this).data("subtotal");
+        var checked = $(this).is(":checked");
+        var quantity = $(this).data("quantity");
+        console.log("Value of checked: ", quantity);
 
-    // Call updateCartTotal to initialize the total
+        $.ajax({
+            url: '/update-cart-item/',  // Update this to the correct URL
+            type: 'POST',
+            data: {
+                'product_id': product_id,
+                'quantity': quantity,
+                'subtotal': subtotal,
+                'checked': checked,
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response){
+                // Update the cart total
+                updateCartTotal();
+            },
+            error: function(response){
+                console.log("Error: ", response);
+            }
+        });
+    });
     updateCartTotal();
 });
+
 function updateQuantity(productId, newQuantity) {
     // Send an AJAX request to the server
     $.ajax({
@@ -118,6 +140,46 @@ function updateQuantity(productId, newQuantity) {
 }
 
 // Add event listeners to quantity inputs
+$(".quantity-input").each(function () {
+    $(this).change(function () {
+        var quantity = parseInt($(this).val());
+        var inventory = parseInt($(this).data("inventory"));
+
+        if (quantity > inventory) {
+            alert(
+                "The quantity you want to order is greater than the inventory"
+            );
+            $(this).val(inventory); // Set the input value to the maximum inventory
+        } else if (quantity <= 0) {
+            alert("The quantity must be greater than 0");
+            $(this).val(1); // Set the input value to the minimum valid quantity
+        } else {
+            // Update the quantity in the cart
+            var productId = $(this).data("product-id");
+            var newQuantity = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/update_cart/", // Update this to the URL of your update cart endpoint
+                data: {
+                    product_id: productId,
+                    quantity: newQuantity,
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                },
+                success: function (response) {
+                    // Update the subtotal
+                    $("#item-" + productId + " .product-subtotal").text(
+                        "₫" + response.new_subtotal.toFixed(2)
+                    );
+
+                    // Update the quantity in the session
+                    sessionStorage.setItem("product-" + productId, newQuantity);
+                },
+            });
+        }
+    });
+});
+
 $(".quantity-input").change(function () {
     var newQuantity = $(this).val();
     var productId = $(this).data("product-id");
