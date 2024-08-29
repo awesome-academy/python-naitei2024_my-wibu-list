@@ -17,6 +17,7 @@ from wibu_catalog.constants import (
     Content_category,
     Role_dict,
     Score_dict,
+    Anime_status
 )
 
 # turn coca into tuple to use with choices
@@ -380,7 +381,7 @@ class FavoriteList(models.Model):
         return self.status
 
     def get_status_display(self):
-        return dict(self.contentStatus).get(int(self.status), _("Unknown"))
+        return Anime_status.get(int(self.status), _("Unknown"))
 
 
 Score_tuple = [(key, value) for key, value in Score_dict.items()]

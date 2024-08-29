@@ -8,248 +8,195 @@
 <section>
   <div class="center">
     {% block notification %}
-    <div class="notification">
-      <i class="fa-regular fa-bell"></i>
-      <ul>
-        <li>
-          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
-          {% trans "Save or remember the shortened link" %}
-          <a href="">bit.ly/mywibulist</a>
-          {% trans "to access when the network is blocked!" %}
-        </li>
-        <li>
-          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
-          {% trans "Join our Group" %}
-          <p class="Group">
-            <a href="#">{% trans "here!" %}</a>
-          </p>
-          {% trans "or join Discord" %}
-          <p class="Group">
-            <a href="#">{% trans "here!" %}</a>
-          </p>
-          {% trans "to support" %}
-          <p class="Group">
-            <a href="#">{% trans "Mywibulist" %}</a>
-          </p>
-        </li>
-        <li>
-          <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
-          {% trans "Due to funding shortages, ads may be annoying. We hope you understand!" %}
-        </li>
-      </ul>
-    </div>
-    {% endblock notification %} {% block top_carousel %}
-    <div class="carousel-container">
-      <div class="carousel">
-        <button class="carousel-button prev">&#10094;</button>
-        <div class="carousel-wrapper">
-          {% for content in top_watching_content %}
-          <div class="carousel-slide">
-            <a
-              href="{{ content.get_absolute_url }}"
-              style="text-decoration: none; color: inherit"
-            >
-              <img src="{{ content.picture.url }}" alt="{{ content.name }}" />
-            </a>
-            <a
-              href="{{ content.get_absolute_url }}"
-              style="text-decoration: none; color: inherit"
-            >
-              <p>{{ content.name }}</p>
-            </a>
-          </div>
-          {% endfor %}
-        </div>
-        <button class="carousel-button next">&#10095;</button>
+      <div class="notification">
+        <i class="fa-regular fa-bell"></i>
+        <ul>
+          <li>
+            <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
+            {% trans "Save or remember the shortened link" %}
+            <a href="">bit.ly/mywibulist</a>
+            {% trans "to access when the network is blocked!" %}
+          </li>
+          <li>
+            <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
+            {% trans "Join our Group" %}
+            <p class="Group">
+              <a href="#">{% trans "here!" %}</a>
+            </p>
+            {% trans "or join Discord" %}
+            <p class="Group">
+              <a href="#">{% trans "here!" %}</a>
+            </p>
+            {% trans "to support" %}
+            <p class="Group">
+              <a href="#">{% trans "Mywibulist" %}</a>
+            </p>
+          </li>
+          <li>
+            <i class="fa-solid fa-circle" style="color: #ffd43b"></i>
+            {% trans "Due to funding shortages, ads may be annoying. We hope you understand!" %}
+          </li>
+        </ul>
       </div>
-    </div>
+    {% endblock notification %}
+    {% block top_carousel %}
+      <div class="carousel-container">
+        <div class="carousel">
+          <button class="carousel-button prev">&#10094;</button>
+          <div class="carousel-wrapper">
+            {% for content in top_watching_content %}
+            <div class="carousel-slide">
+              <a
+                href="{{ content.get_absolute_url }}"
+                style="text-decoration: none; color: inherit"
+              >
+                <img src="{{ content.picture.url }}" alt="{{ content.name }}" />
+              </a>
+              <a
+                href="{{ content.get_absolute_url }}"
+                style="text-decoration: none; color: inherit"
+              >
+                <p>{{ content.name }}</p>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+          <button class="carousel-button next">&#10095;</button>
+        </div>
+      </div>
     {% endblock top_carousel %}
     <div class="container-fluid">
       <div class="row mt-4">
         <!-- Cột chứa animeCarousel và các phần khác -->
         <div class="col-lg-9">
           {% block anime_carousel %}
-          <div
-            id="animeCarousel"
-            class="carousel slide"
-            data-bs-ride="carousel"
-          >
-            <div class="carousel-indicators">
-              <button
-                type="button"
-                data-bs-target="#animeCarousel"
-                data-bs-slide-to="0"
-                class="active"
-                aria-current="true"
-                aria-label="Slide 1"
-              ></button>
-              <button
-                type="button"
-                data-bs-target="#animeCarousel"
-                data-bs-slide-to="1"
-                aria-label="Slide 2"
-              ></button>
-              <button
-                type="button"
-                data-bs-target="#animeCarousel"
-                data-bs-slide-to="2"
-                aria-label="Slide 3"
-              ></button>
-            </div>
-            <div class="carousel-inner">
-              <div class="carousel-item active">
-                <img
-                  src="{% static 'images/shin.jpg' %}"
-                  class="d-block w-100"
-                  alt="..."
-                />
-                <div class="carousel-caption d-none d-md-block">
-                  <h1>{% trans "Wistoria: School and Sword" %}</h1>
-                  <p>
-                    {% trans "Will Serfort swore an oath with his childhood
-                    friend to become the Magia Vander, the strongest title at
-                    the top of..." %}
-                  </p>
-                  <p><strong>{% trans "Studio:" %}</strong> A-1 Pictures</p>
-                  <p>
-                    <strong>{% trans "Genre:" %}</strong> {% trans "Shounen,
-                    School, Fantasy, Adventure, Action" %}
-                  </p>
-                  <a href="#" class="btn btn-danger"
-                    >{% trans "Watch Movie" %}</a
-                  >
-                </div>
+            <div
+              id="animeCarousel"
+              class="carousel slide"
+              data-bs-ride="carousel">
+              <div class="carousel-indicators">
+                <button
+                  type="button"
+                  data-bs-target="#animeCarousel"
+                  data-bs-slide-to="0"
+                  class="active"
+                  aria-current="true"
+                  aria-label="Slide 1"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#animeCarousel"
+                  data-bs-slide-to="1"
+                  aria-label="Slide 2"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#animeCarousel"
+                  data-bs-slide-to="2"
+                  aria-label="Slide 3"
+                ></button>
               </div>
-              <div class="carousel-item">
-                <img
-                  src="https://via.placeholder.com/1000x500"
-                  class="d-block w-100"
-                  alt="..."
-                />
-                <div class="carousel-caption d-none d-md-block">
-                  <h1>{% trans "Anime 2" %}</h1>
-                  <p>{% trans "Description for Anime 2..." %}</p>
-                  <a href="#" class="btn btn-danger"
-                    >{% trans "Watch Movie" %}</a
-                  >
-                </div>
-              </div>
-              <div class="carousel-item">
-                <img
-                  src="https://via.placeholder.com/1000x500"
-                  class="d-block w-100"
-                  alt="..."
-                />
-                <div class="carousel-caption d-none d-md-block">
-                  <h1>{% trans "Anime 3" %}</h1>
-                  <p>{% trans "Description for Anime 3..." %}</p>
-                  <a href="#" class="btn btn-danger"
-                    >{% trans "Watch Movie" %}</a
-                  >
-                </div>
-              </div>
-            </div>
-            <button
-              class="carousel-control-prev"
-              type="button"
-              data-bs-target="#animeCarousel"
-              data-bs-slide="prev"
-            >
-              <span
-                class="carousel-control-prev-icon"
-                aria-hidden="true"
-              ></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button
-              class="carousel-control-next"
-              type="button"
-              data-bs-target="#animeCarousel"
-              data-bs-slide="next"
-            >
-              <span
-                class="carousel-control-next-icon"
-                aria-hidden="true"
-              ></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div>
-          {% endblock anime_carousel %} {% block latest_updates %}
-          <!-- Phần danh sách phim -->
-          <div class="row mt-4">
-            <div class="col-12">
-              <button class="btn btn-danger fw-bold">
-                {% trans "LATEST UPDATE >" %}
-              </button>
-              <button class="btn red">{% trans "All content" %}</button>
-              <button class="btn gray">{% trans "Summer - 2024" %}</button>
-              <button class="btn gray">{% trans "Series Anime" %}</button>
-              <button class="btn gray">{% trans "Standalone Anime" %}</button>
-              <button class="btn gray">{% trans "HIT China" %}</button>
-            </div>
-            <div class="row">
-              {% for content in latest_content %}
-              <!-- Phim {{ forloop.counter }} -->
-              <div class="col-6 col-md-4 col-lg-3 mb-4">
-                <a
-                  href="{{ content.get_absolute_url }}"
-                  style="text-decoration: none; color: inherit"
-                >
-                  <div class="card bg-dark text-white">
-                    <img
-                      src="{{ content.picture.url }}"
-                      class="card-img-top"
-                      alt="{{ content.name }}"
-                    />
-                    <div class="card-body">
-                      <h6 class="card-title">{{ content.name }}</h6>
-                      <p class="card-text">
-                        {% trans "Views: " %} {{ content.watching }}
-                      </p>
-                    </div>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="{% static 'images/shin.jpg' %}"
+                    class="d-block w-100"
+                    alt="..."
+                  />
+                  <div class="carousel-caption d-none d-md-block">
+                    <h1>{% trans "Wistoria: School and Sword" %}</h1>
+                    <p>
+                      {% trans "Will Serfort swore an oath with his childhood
+                      friend to become the Magia Vander, the strongest title at
+                      the top of..." %}
+                    </p>
+                    <p><strong>{% trans "Studio:" %}</strong> A-1 Pictures</p>
+                    <p>
+                      <strong>{% trans "Genre:" %}</strong> {% trans "Shounen,
+                      School, Fantasy, Adventure, Action" %}
+                    </p>
+                    <a href="#" class="btn btn-danger"
+                      >{% trans "Watch Movie" %}</a
+                    >
                   </div>
-                </a>
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="https://via.placeholder.com/1000x500"
+                    class="d-block w-100"
+                    alt="..."
+                  />
+                  <div class="carousel-caption d-none d-md-block">
+                    <h1>{% trans "Anime 2" %}</h1>
+                    <p>{% trans "Description for Anime 2..." %}</p>
+                    <a href="#" class="btn btn-danger"
+                      >{% trans "Watch Movie" %}</a
+                    >
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="https://via.placeholder.com/1000x500"
+                    class="d-block w-100"
+                    alt="..."
+                  />
+                  <div class="carousel-caption d-none d-md-block">
+                    <h1>{% trans "Anime 3" %}</h1>
+                    <p>{% trans "Description for Anime 3..." %}</p>
+                    <a href="#" class="btn btn-danger"
+                      >{% trans "Watch Movie" %}</a
+                    >
+                  </div>
+                </div>
               </div>
-              {% endfor %}
-              <!-- Các phần phim khác tiếp tục tương tự -->
+              <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#animeCarousel"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#animeCarousel"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Next</span>
+              </button>
             </div>
-            <!-- Will make the url redirect to Lastest update later -->
-            <a href="{% url 'anime' %}" class="viewall"
-              >{% trans "See More" %} <i class="ion-ios-arrow-right"></i
-            ></a>
-          </div>
-          {% endblock latest_updates %} {% block recommend %}
-          <div class="row mt-4">
-            <div class="col-12">
-              <h5 class="text-white">{% trans "RECOMMENDS" %}</h5>
-              <div class="d-flex justify-content-between mb-2">
-                <button class="btn btn-danger">
-                  {% trans "Latest Updates" %}
+          {% endblock anime_carousel %}
+          {% block latest_updates %}
+            <!-- Phần danh sách phim -->
+            <div class="row mt-4">
+              <div class="col-12">
+                <button class="btn btn-danger fw-bold">
+                  {% trans "LATEST UPDATE >" %}
                 </button>
-                <button class="btn btn-outline-light">
-                  {% trans "All content" %}
-                </button>
-                <button class="btn btn-outline-light">
-                  {% trans "Summer - 2024" %}
-                </button>
-                <button class="btn btn-outline-light">
-                  {% trans "Series Anime" %}
-                </button>
-                <button class="btn btn-outline-light">
-                  {% trans "Standalone Anime" %}
-                </button>
-                <button class="btn btn-outline-light">
-                  {% trans "HIT China" %}
-                </button>
+                <button class="btn red">{% trans "All content" %}</button>
+                <button class="btn gray">{% trans "Summer - 2024" %}</button>
+                <button class="btn gray">{% trans "Series Anime" %}</button>
+                <button class="btn gray">{% trans "Standalone Anime" %}</button>
+                <button class="btn gray">{% trans "HIT China" %}</button>
               </div>
               <div class="row">
-                {% for content in top_ranked_content %}
+                {% for content in latest_content %}
+                <!-- Phim {{ forloop.counter }} -->
                 <div class="col-6 col-md-4 col-lg-3 mb-4">
-                  <div class="card bg-dark text-white">
-                    <a
-                      href="{{ content.get_absolute_url }}"
-                      style="text-decoration: none; color: inherit"
-                    >
+                  <a
+                    href="{{ content.get_absolute_url }}"
+                    style="text-decoration: none; color: inherit"
+                  >
+                    <div class="card bg-dark text-white">
                       <img
                         src="{{ content.picture.url }}"
                         class="card-img-top"
@@ -261,21 +208,76 @@
                           {% trans "Views: " %} {{ content.watching }}
                         </p>
                       </div>
-                    </a>
-                  </div>
+                    </div>
+                  </a>
                 </div>
                 {% endfor %}
+                <!-- Các phần phim khác tiếp tục tương tự -->
               </div>
-              <div class="text-center">
-                <!-- <a href="#" class="btn btn-outline-light">{% trans "See More" %}</a> -->
-                <a href="{% url 'anime' %}" class="viewall"
-                  >{% trans "See More" %} <i class="ion-ios-arrow-right"></i
-                ></a>
+              <!-- Will make the url redirect to Lastest update later -->
+              <a href="{% url 'anime' %}" class="viewall"
+                >{% trans "See More" %} <i class="ion-ios-arrow-right"></i
+              ></a>
+            </div>
+          {% endblock latest_updates %}
+          {% block recommend %}
+            <div class="row mt-4">
+              <div class="col-12">
+                <h5 class="text-white">{% trans "RECOMMENDS" %}</h5>
+                <div class="d-flex justify-content-between mb-2">
+                  <button class="btn btn-danger">
+                    {% trans "Latest Updates" %}
+                  </button>
+                  <button class="btn btn-outline-light">
+                    {% trans "All content" %}
+                  </button>
+                  <button class="btn btn-outline-light">
+                    {% trans "Summer - 2024" %}
+                  </button>
+                  <button class="btn btn-outline-light">
+                    {% trans "Series Anime" %}
+                  </button>
+                  <button class="btn btn-outline-light">
+                    {% trans "Standalone Anime" %}
+                  </button>
+                  <button class="btn btn-outline-light">
+                    {% trans "HIT China" %}
+                  </button>
+                </div>
+                <div class="row">
+                  {% for content in top_ranked_content %}
+                  <div class="col-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card bg-dark text-white">
+                      <a
+                        href="{{ content.get_absolute_url }}"
+                        style="text-decoration: none; color: inherit"
+                      >
+                        <img
+                          src="{{ content.picture.url }}"
+                          class="card-img-top"
+                          alt="{{ content.name }}"
+                        />
+                        <div class="card-body">
+                          <h6 class="card-title">{{ content.name }}</h6>
+                          <p class="card-text">
+                            {% trans "Views: " %} {{ content.watching }}
+                          </p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                <div class="text-center">
+                  <!-- <a href="#" class="btn btn-outline-light">{% trans "See More" %}</a> -->
+                  <a href="{% url 'anime' %}" class="viewall"
+                    >{% trans "See More" %} <i class="ion-ios-arrow-right"></i
+                  ></a>
+                </div>
               </div>
             </div>
-          </div>
+          {% endblock recommend %}
         </div>
-        {% endblock recommend %}
         <!-- Sidebar -->
         <div class="col-lg-3">
           {% block sidebar %}
