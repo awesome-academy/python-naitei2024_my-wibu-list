@@ -118,3 +118,9 @@ class UserRegistrationForm(forms.Form):
         label=_('Date of Birth'),
         required=False
     )
+
+
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model = Comments
+        fields = ['content']

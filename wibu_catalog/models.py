@@ -456,6 +456,22 @@ class Comments(models.Model):
         null=True,
         help_text=_("Number of likes."),
     )
+    userLikes = models.ManyToManyField(
+        Users,
+        related_name='liked_comments',
+        blank=True,
+        help_text=_("Users who liked the comment."),
+    )
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="replies",
+    )
+
+    def like_count(self):
+        return self.likes
 
     class Meta:
         verbose_name_plural = "Comments"
