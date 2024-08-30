@@ -342,26 +342,22 @@ def filter_by_genre(request, genre):
 
 
 class LoginView(View):
-    def _authenticate_user(self, email, password):
-        try:
-            user = Users.objects.get(email=email)
-            if check_password(password, user.password):
-                return user
-            else:
-                return None
-        except Users.DoesNotExist:
-            return None
-
     def post(self, request):
+        form = LoginForm(request.POST)
         email = request.POST.get("email")
         password = request.POST.get("password")
-        user = self._authenticate_user(email=email, password=password)
-        if user is not None:
-            request.session["user_id"] = user.uid
-            return redirect("homepage")
-        else:
-            form = LoginForm()
+        try:
+            user = Users.objects.get(email=email)
+        except Users.DoesNotExist:
+            form.add_error("email", _("Email does not exist."))
             return render(request, "html/loginform.html", {"form": form})
+
+        if not check_password(password, user.password):
+            form.add_error("password", _("Incorrect password."))
+            return render(request, "html/loginform.html", {"form": form})
+
+        request.session["user_id"] = user.uid
+        return redirect("homepage")
 
     def get(self, request):
         form = LoginForm()
@@ -848,22 +844,35 @@ def score_to_str(content_cid, user_uid):
 
 class ChangePassword(View):
     def post(self, request):
+        form = ChangePasswordForm(request.POST)
         old_password = request.POST.get("old_password")
         new_password = request.POST.get("new_password")
         new_password_confirmation = request.POST.\
             get("new_password_confirmation")
         userr = _get_user_from_session(request)
 
-        if (
-            check_password(old_password, userr.password) and
-            new_password == new_password_confirmation
-        ):
-            userr.password = make_password(new_password)
-            userr.save()
-            return redirect("homepage")
-        else:
-            form = ChangePasswordForm()
-            return render(request, "html/change_password.html", {"form": form})
+        if not check_password(old_password, userr.password):
+            form.add_error(
+                "old_password", _("Incorrect password")
+            )
+            return render(
+                            request,
+                            "html/change_password.html",
+                            {"form": form}
+                        )
+        if new_password != new_password_confirmation:
+            form.add_error(
+                "new_password_confirmation", _("Passwords do not match.")
+            )
+            return render(
+                            request,
+                            "html/change_password.html",
+                            {"form": form}
+                        )
+
+        userr.password = make_password(new_password)
+        userr.save()
+        return redirect("homepage")
 
     def get(self, request):
         form = ChangePasswordForm()
