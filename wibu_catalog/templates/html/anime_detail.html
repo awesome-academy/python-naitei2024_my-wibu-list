@@ -6,7 +6,8 @@
 {% endblock title %}
 
 {% block extra_head %}
-  <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+  <link rel="stylesheet" href="{% static 'css/styles_content_detail.css' %}">
+  <script src="{% static 'js/anime_detail_pop_up.js' %}"></script>
 {% endblock extra_head %}
 
 {% block notification %} {% endblock notification %}
@@ -17,9 +18,6 @@
   <div class="row mt-4">
     <div class="col-lg-12">
     {% block anime-detail %}
-      <link
-        rel="stylesheet"
-        href="{% static 'css/styles_content_detail.css' %}">
       <div class="detail-container">
         <div class="item cover-picture">
           {% if anime_detail.picture.url %}
@@ -395,17 +393,18 @@
           <h3>{% trans "Comment:" %}</h3>
           <div class="comment-box">
             {% if userr %}
-            <form
+              <form
+              class="comment-form"
               action="{% url 'post_comment' anime_detail.cid %}"
               method="POST">
-              {% csrf_token %}
-              <textarea
-                name="content"
-                rows="4"
-                cols="50"
-                placeholder="{% trans 'Write your comment here...' %}"></textarea>
-              <button type="submit">{% trans "Submit" %}</button>
-            </form>
+                {% csrf_token %}
+                <textarea
+                  name="content"
+                  rows="4"
+                  placeholder="{% trans 'Write your comment here...' %}"
+                  cols="50"></textarea>
+                <button type="submit">{% trans "Submit" %}</button>
+              </form>
             {% else %}
               <textarea
                 name="content"
@@ -439,15 +438,58 @@
                         {{ comment.content }}
                       </p>
                       <p class="cmt-date">{{ comment.dateOfCmt }}</p>
+                      {% if comment.parent %}
+                      <p class="cmt-date">
+                        Reply to {{ comment.parent.uid.username }}:
+                        "{{ comment.parent.content|slice:":50" }}
+                        {% if comment.parent.content|length > 50 %}...{% endif %}".
+                      </p>
+                      {% endif %}
                     </div>
                   </div>
                   <div class="comment-actions">
-                    <button type="button">{% trans "Like" %}</button>
-                    <button type="button">{% trans "Reply" %}</button>
+                    {% if userr %}
+                      <form
+                      action="{% url 'toggle_like_comment' comment.id %}"
+                      method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="like-button">
+                          {% if userr in comment.userLikes.all %}
+                            {% trans "Unlike" %}
+                          {% else %}
+                            {% trans "Like" %}
+                          {% endif %}
+                          (<span class="like_count">{{ comment.like_count }}</span>)
+                        </button>
+                      </form>
+                      <!-- reply comment -->
+                      <div class="edit-cmt-div">
+                        <button type="button" class="edit-cmt-button">
+                          {% trans "Reply" %}
+                        </button>
+                        <form
+                          class="edit-cmt-form"
+                          action="{% url 'reply_comment' comment.id %}"
+                          method="POST">
+                          {% csrf_token %}
+                          <textarea
+                          name="content"
+                          placeholder="{% trans 'Write your reply here...' %}"
+                          rows="4"
+                          cols="50"></textarea>
+                          <button type="submit">{% trans "Submit Reply" %}</button>
+                          <a
+                            href="{% url 'anime_detail' anime_detail.cid %}"
+                            style="text-decoration: none; padding: 10px;">
+                            <button type="button">{% trans "Cancel" %}</button>
+                          </a>
+                        </form>
+                      </div>
+                    {% endif%}
                     {% if comment.uid == userr%}
                       <div class="edit-cmt-div">
                         <button type="button" class="edit-cmt-button">
-                          Edit
+                          {% trans "Edit" %}
                         </button>
                         <form
                           class="edit-cmt-form"
@@ -563,7 +605,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4 mx-auto">
               <a
               href="{% url 'product_detail' pid=product.pid %}"
-              class="text-decoration-none">
+              style="text-decoration: none;">
                 <div class="card bg-light text-dark">
                   {% if product.picture %}
                     <img

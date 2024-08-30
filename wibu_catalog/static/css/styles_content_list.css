@@ -1,6 +1,6 @@
 .list-container {
   display: grid;
-  grid-template-rows: 200px 1pf 100px;
+  grid-template-rows: 200px 1fr 100px; /* Đã sửa 1pf thành 1fr */
   grid-template-columns: repeat(1, 1fr);
   height: auto;
 }
@@ -39,66 +39,69 @@
   color: white;
 }
 
-/*.actual-content-list {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-gap: 1rem;
-}*/
-
 /*display picture and name*/
 .content-pic-name {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  text-align: center;
+  flex-direction: column; /* Sắp xếp hình ảnh và tên theo chiều dọc */
+  align-items: center; /* Căn giữa hình ảnh và tên */
 }
 
-.content-pic-name a img {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
+.content-pic-name img {
+  width: 220px; /* Đặt kích thước mong muốn cho hình ảnh */
+  height: 300px; /* Đặt kích thước mong muốn cho hình ảnh */
+  object-fit: cover; /* Giữ tỉ lệ ảnh trong khung hình */
+  margin-bottom: 10px; /* Khoảng cách giữa hình ảnh và tên */
 }
 
 .content-pic-name a {
-  display: block;
-  margin-top: 0.5rem;
-  color: white; /* Assuming you want white text */
-  text-decoration: none;
+  text-decoration: none; /* Xóa gạch chân */
+  color: white; /* Màu chữ trắng */
+  text-align: center; /* Căn giữa văn bản */
+  font-size: 16px;
 }
 
+/* Nếu bạn cần thêm các thuộc tính khác cho phần liên kết */
 .content-pic-name a:hover {
-  text-decoration: underline;
+  color: #ddd; /* Ví dụ: màu chữ thay đổi khi di chuột lên liên kết */
 }
-/*end of display picture and name*/
+
+/* Nếu bạn muốn áp dụng các thuộc tính khi liên kết đang ở trạng thái active (được nhấn) */
+.content-pic-name .content-name a:active {
+  text-decoration: none; /* Xóa gạch chân khi liên kết được nhấn */
+  color: white; /* Màu chữ trắng khi liên kết được nhấn */
+}
+
+/* Nếu bạn muốn áp dụng các thuộc tính khi liên kết đang ở trạng thái visited (đã truy cập) */
+.content-pic-name .content-name a:visited {
+  text-decoration: none; /* Xóa gạch chân khi liên kết đã được truy cập */
+  color: white; /* Màu chữ trắng khi liên kết đã được truy cập */
+}
 
 /*pagination*/
 .content-list-pagination .pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
 }
 
 .content-list-pagination .pagination button {
-  background-color: #007bff;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .content-list-pagination .pagination button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
+    background-color: #cccccc;
+    cursor: not-allowed;
 }
 
 .content-list-pagination .pagination .current-page {
-  font-weight: bold;
-  color: #333;
+    font-weight: bold;
+    color: #333;
 }
