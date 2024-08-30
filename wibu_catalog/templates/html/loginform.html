@@ -20,12 +20,24 @@
         <div class="form-group">
           {{ form.email.label_tag }}
           {{ form.email }}
-          {{ form.email.errors }}
+          {% if form.email.errors %}
+            <div class="alert-error">
+              {% for error in form.email.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
         <div class="form-group">
           {{ form.password.label_tag }}
           {{ form.password }}
-          {{ form.password.errors }}
+          {% if form.password.errors %}
+            <div class="alert-error">
+              {% for error in form.password.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
         <button type="submit" class="btn btn-primary">
           {% trans "Login" %}

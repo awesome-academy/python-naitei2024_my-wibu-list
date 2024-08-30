@@ -1,12 +1,13 @@
 # wibu_catalog/models.py
 import uuid
+
 from cloudinary.models import CloudinaryField
+from django.contrib.auth.hashers import check_password, make_password
 from django.db import models
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.hashers import make_password, check_password
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 # import data from constant
 from wibu_catalog.constants import (
@@ -329,7 +330,7 @@ class Users(models.Model):
         return self.username
 
     def save(self, *args, **kwargs):
-        if self.password and not self.password.startswith('pbkdf2_'):
+        if self.password and not self.password.startswith("pbkdf2_"):
             self.password = make_password(self.password)
         super(Users, self).save(*args, **kwargs)
 
@@ -525,6 +526,7 @@ class Product(models.Model):
         null=True,
         help_text=_("Name of the product."),
     )
+    inventory = models.IntegerField(default=0)
     price = models.FloatField(
         default=0,
         null=True,
@@ -709,13 +711,13 @@ def update_content_score(content_id):
 
 def update_content_fav_sta(content_id, new_status, old_status=None):
     """Function to update number of status
-        when user change their status for a content.
-        Input:
-            content_id: Content.cid
-            new_status: status of newly inputed FavoriteList instance
-            old_status: status of current FavoriteList instance
-        Output:
-            no output, just update status number in Content
+    when user change their status for a content.
+    Input:
+        content_id: Content.cid
+        new_status: status of newly inputed FavoriteList instance
+        old_status: status of current FavoriteList instance
+    Output:
+        no output, just update status number in Content
     """
     content_instance, created = Content.objects.get_or_create(cid=content_id)
 
