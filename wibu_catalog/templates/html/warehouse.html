@@ -1,5 +1,193 @@
 {% extends 'html/homepage.html' %}
 {% load static %} {% load static i18n %}
+{% block header %}
+<header>
+  <h1 class="mywibulist-title">
+    <a href="#" class="mywibulist-link">MYWIBULIST</a>
+  </h1>
+  <nav>
+    <ul>
+      <li>
+        <a href="{% url 'homepage' %}">{% trans "HOME" %}</a>
+      </li>
+      <li>
+        <a href="#">
+          {% trans "CATEGORIES" %}
+          <i class="fa-solid fa-chevron-down"></i>
+        </a>
+        <ul class="submenu">
+          <li>
+            <a href="{% url 'anime' %}">Anime</a>
+          </li>
+          <li>
+            <a href="{% url 'manga' %}">Manga</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">
+          {% trans "GENRE" %}
+          <i class="fa-solid fa-chevron-down"></i>
+        </a>
+        <ul class="submenu">
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Action' %}">
+              {% trans "Action" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Comedy' %}">
+              {% trans "Comedy" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Drama' %}">
+              {% trans "Drama" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Game' %}">
+              {% trans "Game" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Horror' %}">
+              {% trans "Horror" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Adventure' %}">
+              {% trans "Adventure" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Dementia' %}">
+              {% trans "Dementia" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Ecchi' %}"
+              >{% trans "Ecchi" %}</a
+            >
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Harem' %}">
+              {% trans "Harem" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Josei' %}">
+              {% trans "Josei" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Cartoon' %}">
+              {% trans "Cartoon" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Demons' %}">
+              {% trans "Demons" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Fantasy' %}">{% trans "Fantasy" %}</a
+            >
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Historical' %}">
+              {% trans "Historical" %}
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'filter_by_genre' genre='Kids' %}">
+              {% trans "Kids" %}
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="{% url 'favorite_list' %}">{% trans "FAVORITES" %}</a>
+      </li>
+      <li>
+        <a href="{% url 'product' %}">{% trans "PRODUCTS" %}</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="timkiem">
+    {% block search %}
+    <div class="searchbox">
+      <form
+        action="{% url 'product' %}"
+        method="get"
+        onsubmit="return false;"
+      >
+        <input
+          type="text"
+          name="q"
+          id="search-input"
+          placeholder="{% trans 'Tìm: tên tiếng Nhật, Anh, Việt' %}"
+          onkeypress="if(event.keyCode === 13) this.form.submit();"
+        />
+        <i
+          class="fa-solid fa-magnifying-glass"
+          onclick="document.getElementById('search-input').focus();"
+        ></i>
+      </form>
+    </div>
+    {% endblock %} {% block user_area %} {% if userr %}
+    <div class="notification-icon">
+      <a href="#">
+        <img
+          src="{% static 'images/bell.png' %}"
+          alt="Notification Icon"
+          width="30"
+          height="30"
+          class="notification-icon"
+        />
+      </a>
+      <div class="notification-content"></div>
+    </div>
+    <div class="user-dropdown">
+      <a href="#">
+        <img
+          src="{% static 'images/user.png' %}"
+          alt="{% trans 'User Icon' %}"
+          width="30"
+          height="30"
+          class="user-icon"
+        />
+      </a>
+      <div class="user-menu">
+        <ul>
+          <li>
+            <a href="{% url 'user_profile' %}">{% trans 'Profile' %}</a>
+          </li>
+          <li>
+            <a href="{% url 'change_password' %}">{% trans 'Change password' %}</a>
+          </li>
+          <li>
+            <a href="{% url 'cart' %}">{% trans 'My Cart' %}</a>
+          </li>
+          <li>
+            <a href="{% url 'logout' %}">{% trans 'Logout' %}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    {% else %}
+    <div class="buttonlogin">
+      <button type="button" onclick="window.location.href='/login'">
+        {% trans 'Login' %}
+      </button>
+      <button type="button" onclick="window.location.href='/register'">
+        {% trans 'Register' %}
+      </button>
+    </div>
+    {% endif %} {% endblock %}
+  </div>
+</header>
+{% endblock %}
 {% block notification %} {% endblock notification %}
 {% block top_carousel %} {%endblock top_carousel %}
 {% block anime_carousel %} {% endblock anime_carousel%}
@@ -58,51 +246,40 @@
     </div>
   </div>
   <nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
+    <ul class="pagination">
       {% if products.has_previous %}
-      <li class="page-item">
-        <a class="page-link" href="?page=1" aria-label="First">
-          <span aria-hidden="true">&laquo;&laquo;</span>
-        </a>
-      </li>
       <li class="page-item">
         <a
           class="page-link"
-          href="?page={{ products.previous_page_number }}"
-          aria-label="Previous"
-        >
+          href="?page={{ products.previous_page_number }}&q={{ query }}&sort_by={{ current_sort }}"
+          aria-label="Previous">
           <span aria-hidden="true">&laquo;</span>
         </a>
       </li>
       {% endif %}
+
       {% for num in products.paginator.page_range %}
-        {% if products.number == num %}
-          <li class="page-item active">
-            <span class="page-link">{{ num }}</span>
-          </li>
-        {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-          </li>
-        {% endif %}
+      {% if products.number == num %}
+      <li class="page-item active">
+        <span class="page-link">{{ num }}</span>
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="?page={{ num }}&q={{ query }}&sort_by={{ current_sort }}">
+          {{ num }}
+        </a>
+      </li>
+      {% endif %}
       {% endfor %}
       {% if products.has_next %}
       <li class="page-item">
         <a
           class="page-link"
-          href="?page={{ products.next_page_number }}"
-          aria-label="Next"
-        >
+          href="?page={{ products.next_page_number }}&q={{ query }}&sort_by={{ current_sort }}"
+          aria-label="Next">
           <span aria-hidden="true">&raquo;</span>
-        </a>
-      </li>
-      <li class="page-item">
-        <a
-          class="page-link"
-          href="?page={{ products.paginator.num_pages }}"
-          aria-label="Last"
-        >
-          <span aria-hidden="true">&raquo;&raquo;</span>
         </a>
       </li>
       {% endif %}
@@ -110,3 +287,4 @@
   </nav>
 </div>
 {% endblock latest_updates %}
+{% block recommend %} {% endblock recommend %}

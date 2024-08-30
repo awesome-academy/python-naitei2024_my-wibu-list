@@ -48,7 +48,12 @@
           </p>
           <p>
             <strong>{% trans 'Email' %}:</strong>
-            <input type="email" name="email" value="{{ userr.email }}" />
+            <input
+              type="email"
+              name="email"
+              value="{{ userr.email }}"
+              disabled
+            />
           </p>
           <p>
             <strong>{% trans 'Date of Birth' %}:</strong>

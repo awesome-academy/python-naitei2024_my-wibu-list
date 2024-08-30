@@ -41,9 +41,8 @@ from wibu_catalog.models import (
 
 # Import from forms.py
 from wibu_catalog.forms import (
-    RegistrationForm, LoginForm,
-    CommentForm, EditCommentForm,
-    ChangePasswordForm
+    LoginForm, CommentForm, EditCommentForm,
+    ChangePasswordForm, UserRegistrationForm,
 )
 
 
@@ -119,17 +118,43 @@ def user(request):
     )
 
 
-def register(request):
-    if request.method == "POST":
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data["password"])
-            user.save()
-            return redirect("homepage")
-    else:
-        form = RegistrationForm()
-    return render(request, "html/registerform.html", {"form": form})
+class UserRegistrationView(View):
+    template_name = 'html/registerform.html'
+
+    def get(self, request):
+        form = UserRegistrationForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = UserRegistrationForm(request.POST)
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        password_confirmation = request.POST.get("password_confirmation")
+        dateOfBirth = request.POST.get("dateOfBirth")
+
+        if Users.objects.filter(email=email).exists():
+            form.add_error('email', _('Email address already exists.'))
+            return render(request, self.template_name, {'form': form})
+
+        if password != password_confirmation:
+            form.add_error(
+                'password_confirmation', _('Passwords do not match.')
+            )
+            return render(request, self.template_name, {'form': form})
+
+        new_uid = Users.objects.count() + 1
+        user = Users.objects.create(
+            uid=new_uid,
+            username=name,
+            role='new_user',
+            email=email,
+            password=make_password(password),
+            dateOfBirth=dateOfBirth,
+            registrationDate=timezone.now(),
+        )
+
+        return redirect('login')
 
 
 # Comment section:
@@ -312,13 +337,12 @@ def list_product(request):
     else:
         products_list = Product.objects.all()
 
-    # Sắp xếp sản phẩm theo yêu cầu
-    if sort_by == "highest_rate":
-        products_list = products_list.order_by("-ravg")
-    elif sort_by == "low_to_high":
-        products_list = products_list.order_by("price")
-    elif sort_by == "high_to_low":
-        products_list = products_list.order_by("-price")
+    if sort_by == 'highest_rate':
+        products_list = products_list.order_by('-ravg')
+    elif sort_by == 'low_to_high':
+        products_list = products_list.order_by('price')
+    elif sort_by == 'high_to_low':
+        products_list = products_list.order_by('-price')
 
     paginator = Paginator(products_list, ITEMS_PER_PAGE)
     page_number = request.GET.get("page")
@@ -332,6 +356,7 @@ def list_product(request):
             "current_sort": sort_by,
             "query": query,
             "userr": userr,
+            "paginator": paginator
         },
     )
 
@@ -414,27 +439,25 @@ def require_login(view_func):
 
 @require_login
 def user_profile(request):
-    user_id = request.session.get("user_id")
+    user_id = request.session.get('user_id')
     try:
         userr = Users.objects.get(uid=user_id)
     except Users.DoesNotExist:
-        return redirect("homepage")
+        return redirect('homepage')
 
-    if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        date_of_birth = request.POST.get("dateOfBirth")
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        date_of_birth = request.POST.get('dateOfBirth')
 
         # Update
         userr.username = username
-        userr.email = email
         userr.dateOfBirth = date_of_birth
         userr.save()
 
-        messages.success(request, _("Profile updated successfully!"))
-        return redirect("user_profile")
+        messages.success(request, _('Profile updated successfully!'))
+        return redirect('user_profile')
 
-    return render(request, "html/user_profile.html", {"userr": userr})
+    return render(request, 'html/user_profile.html', {'userr': userr})
 
 
 @require_login

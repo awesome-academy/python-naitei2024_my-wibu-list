@@ -4,14 +4,14 @@ from . import views
 from .views import (
     MangaDetailView, AnimeDetailView,
     FavoriteListView, AnimeListView, MangaListView,
-    homepage, register, LoginView, logout,
+    homepage, UserRegistrationView, LoginView, logout,
     list_product, search_content, filter_by_genre,
     post_comment, edit_comment, delete_comment,
 )
 
 urlpatterns = [
     path("", views.homepage, name="homepage"),
-    path("register/", views.register, name="register"),
+    path("register/", views.UserRegistrationView.as_view(), name="register"),
 
     # url mapping for list views
     path("anime/", views.AnimeListView.as_view(), name="anime"),
