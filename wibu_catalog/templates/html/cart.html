@@ -29,15 +29,20 @@
         class="select-input"
         data-product-id="{{ item.product.pid }}"
         data-subtotal="{{ item.subtotal }}"
+        data-quantity="{{ item.quantity }}"
       />
     </div>
     <div class="product-image">
-      <img
-        src="{% if item.image %}{{ item.image.url }}{% else %}{% static 'img/gundam.png' %}{% endif %}"
+      <div class="product-image">
+        <img src="
+        {% if item.image %}
+          {{ item.image.url }}
+        {% else %}
+          {% static 'images/gundam.jpg' %}
+        {% endif %}"
         alt="{{ item.product.name }}"
-        height="100"
-        width="100"
-      />
+        height="100" width="100" />
+      </div>
     </div>
     <div class="product-name">{{ item.product.name }}</div>
     <div class="product-price">₫{{ item.product.price|floatformat:2 }}</div>
@@ -48,6 +53,7 @@
         min="1"
         class="quantity-input"
         data-product-id="{{ item.product.pid }}"
+        data-inventory="{{ item.product.inventory }}"
       />
     </div>
     <div class="product-subtotal">₫{{ item.subtotal|floatformat:2 }}</div>
