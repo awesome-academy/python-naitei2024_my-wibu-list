@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from wibu_catalog.models import Comments
 
 
-class LoginForm(AuthenticationForm):
+class LoginForm(forms.Form):
     email = forms.CharField(
         widget=forms.TextInput(
             attrs={
@@ -40,7 +40,7 @@ class EditCommentForm(forms.ModelForm):
         fields = ["content"]
 
 
-class ChangePasswordForm(AuthenticationForm):
+class ChangePasswordForm(forms.Form):
     old_password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
