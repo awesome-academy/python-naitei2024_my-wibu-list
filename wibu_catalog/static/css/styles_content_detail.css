@@ -378,7 +378,7 @@
 
 .delete-cmt-div:hover .confirm-del-cmt,
 .delete-cmt-div .delete-cmt-button:focus + .confirm-del-cmt {
-  opacity: 1;
+  display: block;
 }
 
 /* Đảm bảo các nút Like, Reply, Edit, Delete cùng hàng */
