@@ -12,35 +12,50 @@
 <h2>{% trans "Your Cart" %}</h2>
 <!-- Main container for the cart -->
 <div class="cart-container" id="cart-container">
-  <!-- Column headers -->
   <div class="cart-header">
-    <div>{% trans "PRODUCT" %}</div>
-    <div>{% trans "PRODUCT NAME" %}</div>
-    <div>{% trans "PRICE" %}</div>
-    <div>{% trans "QUANTITY" %}</div>
-    <div>{% trans "SUBTOTAL" %}</div>
+    <div class="product">{% trans "PRODUCT" %}</div>
+    <div class="product-name">{% trans "PRODUCT NAME" %}</div>
+    <div class="price">{% trans "PRICE" %}</div>
+    <div class="size">{% trans "SIZE" %}</div> <!-- SIZE -->
+    <div class="quantity">{% trans "QUANTITY" %}</div>
+    <div class="subtotal">{% trans "SUBTOTAL" %}</div>
   </div>
-  <!-- Cart items -->
   {% for item in cart_items %}
   <div class="cart-item" id="item-{{ item.product.pid }}">
     <div class="product-select">
+      <input type="checkbox" class="select-input" data-product-id="{{ item.product.pid }}" data-subtotal="{{ item.subtotal }}" />
+      <div class="product-image">
+        <img src="{% if item.image %}{{ item.image.url }}{% else %}{% static 'img/gundam.png' %}{% endif %}"/>
       <input
         type="checkbox"
         class="select-input"
         data-product-id="{{ item.product.pid }}"
         data-subtotal="{{ item.subtotal }}"
+        data-quantity="{{ item.quantity }}"
       />
     </div>
     <div class="product-image">
-      <img
-        src="{% if item.image %}{{ item.image.url }}{% else %}{% static 'img/gundam.png' %}{% endif %}"
+      <div class="product-image">
+        <img src="
+        {% if item.image %}
+          {{ item.image.url }}
+        {% else %}
+          {% static 'images/gundam.jpg' %}
+        {% endif %}"
         alt="{{ item.product.name }}"
-        height="100"
-        width="100"
-      />
+        height="100" width="100" />
+      </div>
     </div>
     <div class="product-name">{{ item.product.name }}</div>
     <div class="product-price">₫{{ item.product.price|floatformat:2 }}</div>
+    <div class="product-size">
+      <select>
+        <option value="S">S</option>
+        <option value="M">M</option>
+        <option value="L">L</option>
+        <option value="XL">XL</option>
+      </select>
+    </div>
     <div class="product-quantity">
       <input
         type="number"
@@ -48,18 +63,15 @@
         min="1"
         class="quantity-input"
         data-product-id="{{ item.product.pid }}"
+        data-inventory="{{ item.product.inventory }}"
       />
     </div>
     <div class="product-subtotal">₫{{ item.subtotal|floatformat:2 }}</div>
-    <button
-      class="remove-item-btn"
-      onclick="removeItem('{{ item.product.pid }}')"
-    >
-      X
-    </button>
+    <button class="remove-item-btn" onclick="removeItem('{{ item.product.pid }}')">X</button>
   </div>
   {% endfor %}
 </div>
+
 <!-- Cart summary -->
 <div class="cart-summary">
   <h3>{% trans "Total:" %}</h3>

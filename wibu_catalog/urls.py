@@ -7,6 +7,7 @@ from .views import (
     homepage, UserRegistrationView, LoginView, logout,
     list_product, search_content, filter_by_genre,
     post_comment, edit_comment, delete_comment,
+    reply_comment,
 )
 
 urlpatterns = [
@@ -57,6 +58,16 @@ urlpatterns = [
         'delete_comment/<int:comment_id>/',
         views.delete_comment,
         name='delete_comment'
+    ),
+    path(
+        'toggle_like_comment/<int:comment_id>/',
+        views.toggle_like_comment,
+        name='toggle_like_comment'
+    ),
+    path(
+        'reply_comment/<int:comment_id>/',
+        views.reply_comment,
+        name='reply_comment'
     ),
 
     # url mapping for favorite list view

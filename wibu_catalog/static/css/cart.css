@@ -1,7 +1,7 @@
 /* Nền tổng thể của trang */
 body {
-  background-color: #333; /* Màu xám nhạt cho nền ngoài */
-  color: #e0e0e0; /* Màu chữ tối hơn để dễ đọc trên nền xám nhạt */
+  background-color: #333; /* Màu xám đậm cho nền ngoài */
+  color: #e0e0e0; /* Màu chữ sáng hơn để dễ đọc trên nền xám đậm */
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -18,48 +18,37 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm chút shadow để phân biệt container */
 }
 
-/* Tiêu đề của giỏ hàng */
+/* Chỉnh sửa cart-header với Grid Layout */
 .cart-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr; /* Cấu hình lưới với các cột */
+  padding: 10px;
+  border-bottom: 2px solid #ccc;
+  background-color: #e0e0e0;
   font-weight: bold;
-  padding: 10px 0;
-  border-bottom: 2px solid #ccc; /* Viền màu xám nhạt hơn */
-  background-color: #e0e0e0; /* Nền tiêu đề màu xám nhạt */
-  text-align: center;
   font-size: 16px;
-}
-
-/* Các sản phẩm trong giỏ hàng */
-.cart-item {
-  display: flex;
-  align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #ccc; /* Viền màu xám nhạt hơn */
-  background-color: #e0e0e0; /* Nền màu xám nhạt */
   text-align: center;
-  position: relative;
-  gap: 10px;
+}
+.cart-header .product-name {
+  text-align: left;
+  padding-left: 130px; /* Điều chỉnh khoảng cách từ lề phải */
+}
+.cart-header .price {
+  text-align: left;
+  padding-right: 270px; /* Điều chỉnh khoảng cách từ lề trái */
+}
+.cart-header .size {
+  text-align: right;
+  padding-right: 260px; /* Điều chỉnh khoảng cách từ lề phải */
+}
+.cart-header .quantity {
+  text-align: right;
+  padding-right: 150px; /* Điều chỉnh khoảng cách từ lề phải */
 }
 
-/* Định vị dấu "×" */
-.remove-item-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #ff4d4d; /* Màu đỏ nổi bật cho nút xóa */
-}
-
-/* Các phần tử trong cart-item */
-.cart-item > div,
-.cart-item input[type="number"] {
-  flex: 1;
-  min-width: 80px;
-  box-sizing: border-box;
+.cart-header .subtotal {
+  text-align: right;
+  padding-right: 120px; /* Điều chỉnh khoảng cách từ lề phải */
 }
 
 /* Ảnh sản phẩm */
@@ -88,17 +77,19 @@ body {
   white-space: nowrap;
 }
 
-/* Giá sản phẩm */
 .item-price {
   font-weight: bold;
-  color: #333; /* Màu chữ tối hơn */
-  display: inline;
+  color: #333;
+  display: inline-block;
+  text-align: right;
+  width: 150px; /* Đảm bảo kích thước cố định để canh lề đúng */
 }
 
 /* Số lượng sản phẩm */
 .cart-item input[type="number"] {
   width: 50px;
   padding: 5px;
+  margin-left: 80px;
   border: 1px solid #ccc; /* Viền màu xám nhạt hơn */
   background-color: #f5f5f5; /* Nền màu xám nhạt hơn */
   color: #333; /* Màu chữ tối hơn */
@@ -111,6 +102,8 @@ body {
 .item-subtotal {
   font-weight: bold;
   color: #333; /* Màu chữ tối hơn */
+  text-align: right;
+  width: 150px; /* Đảm bảo kích thước cố định để canh lề đúng */
 }
 
 /* Cộng giỏ hàng */
@@ -174,8 +167,89 @@ body {
 }
 
 /* CSS for the checkbox container */
-.product-select {
+.product-select .cart-item .select-input {
   width: 50px !important; /* Same as .select-input */
-  height: 20px; /* Same as .select-input */
+  height: 50px; /* Same as .select-input */
   float: left; /* Align to the left */
+}
+
+.product-select .product-image  {
+  width: 70px !important; /* Same as .select-input */
+  height: 70px; /* Same as .select-input */
+  float: left; /* Align to the left */
+}
+
+/* Các sản phẩm trong giỏ hàng */
+.cart-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc;
+  background-color: #e0e0e0;
+  text-align: center;
+  position: relative;
+  gap: 10px;
+  padding-right: 40px; /* Tạo khoảng cách để nút X nằm ngoài cột subtotal */
+}
+
+/* Remove item button */
+.remove-item-btn {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 1px 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.remove-item-btn:hover {
+  background-color: #c82333;
+}
+
+/* Hộp chọn SIZE nhỏ gọn */
+.product-size {
+  flex: 0 0 60px; /* Giảm kích thước hộp SIZE */
+  margin-right: 10px;
+}
+
+.product-size select {
+  width: 50%;
+  padding: 5px;
+  margin-left: 70px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+  color: #333;
+  font-size: 14px; /* Giảm kích thước chữ */
+  box-sizing: border-box;
+}
+
+/* Ảnh sản phẩm sát với checkbox */
+.product-image {
+  margin-left: 10px; /* Đưa ảnh sát vào checkbox */
+  flex: 0 0 80px; /* Giảm kích thước ảnh để căn sát hơn */
+}
+
+.product-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Căn chỉnh lề các giá trị từ hàng 2 thẳng với hàng 1 */
+.cart-container .cart-item div,
+.cart-container .cart-item input[type="number"],
+.cart-container .cart-item .product-size select {
+  text-align: center; /* Căn giữa các nội dung */
+}
+
+/* Đảm bảo các hàng căn thẳng hàng với hàng đầu tiên */
+.cart-item > div,
+.cart-item input[type="number"] {
+  flex: 1;
+  min-width: 150px;
+  box-sizing: border-box;
 }
